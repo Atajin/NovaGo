@@ -30,12 +30,13 @@
 }
 
 .custom-background {
-    background-image: url('../images/MainGoofy.png');
+    background-image: url('../images/spacebg.jpg');
     background-size: cover;
-    background-position: center;
-    height: 1024px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 100vh; /* or adjust to the desired height */
     width: 100%;
     position: absolute;
     top: 0;
-    z-index: -1;
+    z-index: -1; /* Ensures it stays behind all other content */
 }
