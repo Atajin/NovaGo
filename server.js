@@ -45,7 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
 //    res.render('pages/index', {
-    res.render('pages/connexion', {
+    res.render('pages/inscription', {
         // variables
     });
 });
