@@ -1,0 +1,57 @@
+<%- include ("../partials/header.ejs") %>
+    <div class="container-fluid mt-1"> <!--À mettre dans header-->
+        <div class="row">
+            <div class="col"></div>
+
+            <div class="col">
+                <h1>Créer un compte</h1>
+                
+                <form>
+                    <div class="row">
+                        <div class="col">
+                            <label for="prenom" class="form-label">Entrez votre prénom</label> <br>
+                            <input type="text" name="prenom" class="form-control" placeholder="Prénom">
+                        </div>
+                        <div class="col">
+                            <label for="nom" class="form-label">Entrez votre nom</label> <br>
+                            <input type="text" name="nom" class="form-control" placeholder="Nom">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="email" class="form-label">Entrez votre courriel</label> <br>
+                            <input type="email" name="email" class="form-control" placeholder="Courriel">
+                        </div>
+                        <div class="col">
+                            <label for="telephone" class="form-label">Entrez votre numéro de téléphone</label> <br>
+                            <input type="text" name="telephone" class="form-control" placeholder="Téléphone">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="planete" class="form-label">Entrez votre objet céleste courrant</label> <br>
+                            <input type="text" name="planete" class="form-control" placeholder="Planète / lune / autre">
+                        </div>
+                        <div class="col">
+                            <label for="adresse" class="form-label">Entrez votre adresse</label> <br>
+                            <input type="text" name="adresse" class="form-control" placeholder="Adresse">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="mdp" class="form-label">Entrez votre mot de passe</label> <br>
+                            <input type="password" name="mdp" class="form-control" placeholder="Mot de passe">
+                        </div>
+                        <div class="col">
+                            <label for="confirmation" class="form-label">Confirmez votre mot de passe</label> <br>
+                            <input type="password" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe">
+                        </div>
+                    </div>
+                    <submit class="btn btn-primary">Connexion au compte</submit>
+                </form>
+            </div>
+            
+            <div class="col"></div>
+        </div>
+    </div> <!--À mettre dans footer-->
+<%- include ("../partials/footer.ejs") %>
