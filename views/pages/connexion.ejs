@@ -1,3 +1,12 @@
 <%- include ("../partials/header.ejs") %>
-
+    <div class="container-fluid mt-1">
+        <h1>Connexion</h1>
+        <form action="/index">
+            <label for="email">Entrez votre courriel</label>
+            <input type="email" name="email" value="Courriel">
+            <label for="mdp">Entrez votre mot de passe</label>
+            <input type="password" name="mdp" value="Mot de passe">
+        </form><!--Action temporaire-->
+        <a href="/index" class="btn btn-primary">Connexion</a>       
+    </div>
 <%- include ("../partials/footer.ejs") %>
