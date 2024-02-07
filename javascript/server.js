@@ -21,6 +21,11 @@ const server = app.listen(4000, function () {
 });
 
 /*
+    Configuration des fichiers statiques
+*/
+app.use(express.static('static'));
+
+/*
     Configuration de EJS
 */
 app.set("views", path.join(__dirname, "..", "views"));
