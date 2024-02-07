@@ -44,7 +44,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-//    res.render('pages/index', {
+    res.render('pages/index', {
+        // variables
+    });
+});
+
+app.get('/connexion', (req, res) => {
+    res.render('pages/connexion', {
+        // variables
+    });
+});
+
+app.get('/inscription', (req, res) => {
     res.render('pages/inscription', {
         // variables
     });
