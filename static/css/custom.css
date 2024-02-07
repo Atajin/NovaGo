@@ -1,0 +1,30 @@
+@font-face {
+    font-family: 'Iceland';
+    src: url('../fonts/Iceland-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PPStellar';
+    src: url('../fonts/PPStellar-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.navbar-brand {
+    font-family: 'Iceland', sans-serif;
+    font-size: 40px;
+}
+
+.custom-font-navbar {
+    font-family: 'PPStellar', sans-serif;
+    color: white;
+    font-size: 20px;
+}
+
+.custom-font-dropdown {
+    font-family: 'PPStellar', sans-serif;
+    color: black;
+    font-size: 20px;
+}
