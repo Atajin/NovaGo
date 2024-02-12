@@ -5,28 +5,45 @@
                 <form>
                     <div class="row mb-3">
                         <div class="col">
-                            <input type="text" name="origine" class="form-control" placeholder="Origine">
+                            <input type="text" name="origine" id="origine" class="form-control" placeholder="Origine">
                         </div>
                         <div class="col">
-                            <input type="date" name="dates" class="form-control" placeholder="Dates">
+                            <div class="row">
+                                <div class="col" id="date-aller-col">
+                                    <input type="date" id="date-aller" name="date-aller" class="form-control"
+                                        placeholder="Date aller">
+                                </div>
+                                <div class="col" id="date-retour-col" style="display: none;">
+                                    <input type="date" id="date-retour" name="date-retour" class="form-control"
+                                        placeholder="Date retour">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <input type="text" name="destination" class="form-control" placeholder="Destination">
+                            <input type="text" name="destination" id="destination" class="form-control"
+                                placeholder="Destination">
                         </div>
                         <div class="col">
-                            <input type="number" name="personnes" class="form-control"
+                            <input type="number" name="personnes" id="personnes" class="form-control"
                                 placeholder="Nombre de personnes">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col">
-                            <input type="checkbox" name="destination" class="form-control" placeholder="Destination">
+                        <div class="col text-center">
+                            <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
+                                <label for="aller-simple" class="form-label custom-font-labels-radio">Aller
+                                    simple</label>
+                                <input type="radio" id="aller-simple" value="aller-simple" name="type-billet">
+                            </div>
                         </div>
-                        <div class="col">
-                            <input type="checkbox" name="personnes" class="form-control"
-                                placeholder="Nombre de personnes">
+                        <div class="col text-center">
+                            <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
+                                <label for="aller-retour"
+                                    class="form-label custom-font-labels-radio">Aller-retour</label>
+                                <input type="radio" id="aller-retour" value="aller-retour" name="type-billet">
+                            </div>
                         </div>
                     </div>
                     <div class="text-center">

@@ -34,11 +34,13 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    height: 100vh; /* or adjust to the desired height */
+    height: 100vh;
+    /* or adjust to the desired height */
     width: 100%;
     position: absolute;
     top: 0;
-    z-index: -1; /* Ensures it stays behind all other content */
+    z-index: -1;
+    /* Ensures it stays behind all other content */
 }
 
 .custom-font-titles {
@@ -46,8 +48,20 @@
     color: white;
     font-size: 30px;
 }
+
 .custom-font-labels {
     font-family: 'PPStellar', sans-serif;
     color: rgb(196, 196, 196);
     font-size: 20px;
+}
+
+.custom-font-labels-radio {
+    font-family: 'PPStellar', sans-serif;
+    color: rgb(196, 196, 196);
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.custom-font-labels-bg {
+    background: rgba(0, 0, 0, 0.60);
 }
