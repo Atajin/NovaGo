@@ -60,3 +60,10 @@ app.get('/inscription', (req, res) => {
         // variables
     });
 });
+
+app.get('/principal', (req, res) => {
+    res.render('pages/principal', {
+        // variables
+    });
+});
+
