@@ -44,8 +44,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    //res.render('pages/index', {
-        res.render('pages/principal', {
+    res.render('pages/index', {
         // variables
     });
 });
