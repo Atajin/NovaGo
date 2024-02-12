@@ -48,3 +48,15 @@ app.get('/', (req, res) => {
         // variables
     });
 });
+
+app.get('/connexion', (req, res) => {
+    res.render('pages/connexion', {
+        // variables
+    });
+});
+
+app.get('/inscription', (req, res) => {
+    res.render('pages/inscription', {
+        // variables
+    });
+});
