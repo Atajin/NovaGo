@@ -51,3 +51,15 @@
     color: rgb(196, 196, 196);
     font-size: 20px;
 }
+
+.custom-font-planet-t {
+    font-family: 'Iceland', sans-serif;
+    color: white;
+    font-size: 475%;
+}
+
+.custom-font-planet-p {
+    font-family: 'PPStellar', sans-serif;
+    color: white;
+    font-size: 125%;
+}
