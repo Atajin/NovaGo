@@ -62,6 +62,12 @@ app.get('/inscription', (req, res) => {
     });
 });
 
+app.get('/reservation', (req, res) => {
+    res.render('pages/reservation', {
+        // variables
+    });
+});
+
 app.get('/principal', (req, res) => {
     res.render('pages/principal', {
         // variables
