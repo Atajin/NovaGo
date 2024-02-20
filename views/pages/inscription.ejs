@@ -1,59 +1,45 @@
 <%- include ("../partials/header.ejs") %>
-<div class="custom-background">
-</div>
-    <div class="container-fluid"> <!--À mettre dans header-->
+    <div class="container-fluid" style="margin-top: 5%;">
         <div class="row">
-            <div class="col"></div>
+            <div class="col-1"></div>
 
             <div class="col">
-                <h1 class="custom-font-titles">Créer un compte</h1>
                 
                 <form>
-                    <div class="row">
-                        <div class="col">
+                    <div class="row justify-content-center">
+                        <h1 class="custom-font-titles text-center">Créer un compte</h1>
+                        <div class="col-md-auto">
                             <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label> <br>
-                            <input type="text" name="prenom" class="form-control" placeholder="Prénom">
-                        </div>
-                        <div class="col">
+                            <input type="text" name="prenom" class="form-control" placeholder="Prénom" required>
+
                             <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label> <br>
-                            <input type="text" name="nom" class="form-control" placeholder="Nom">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
+                            <input type="text" name="nom" class="form-control" placeholder="Nom" required>
+
                             <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label> <br>
-                            <input type="email" name="email" class="form-control" placeholder="Courriel">
-                        </div>
-                        <div class="col">
+                            <input type="email" name="email" class="form-control" placeholder="Courriel" required>
+                            
                             <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de téléphone</label> <br>
                             <input type="text" name="telephone" class="form-control" placeholder="Téléphone">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <label for="planete" class="form-label custom-font-labels">Entrez votre objet céleste courrant</label> <br>
-                            <input type="text" name="planete" class="form-control" placeholder="Planète / lune / autre">
-                        </div>
-                        <div class="col">
+                        <div class="col-md-auto">
+                            <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label> <br>
+                            <input type="password" name="mdp" class="form-control" placeholder="Mot de passe" required>
+
+                            <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de passe</label> <br>
+                            <input type="password" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
+                            
                             <label for="adresse" class="form-label custom-font-labels">Entrez votre adresse</label> <br>
                             <input type="text" name="adresse" class="form-control" placeholder="Adresse">
+                            
+                            <label for="planete" class="form-label custom-font-labels">Entrez votre objet céleste courant</label> <br>
+                            <input type="text" name="planete" class="form-control" placeholder="Planète / lune / autre">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label> <br>
-                            <input type="password" name="mdp" class="form-control" placeholder="Mot de passe">
-                        </div>
-                        <div class="col">
-                            <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de passe</label> <br>
-                            <input type="password" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe">
-                        </div>
-                    </div>
-                    <submit class="btn btn-primary">Connexion au compte</submit>
+                    <submit class="btn btn-primary mt-2 position-relative top-0 start-50 translate-middle-x">Connexion au compte</submit>
                 </form>
             </div>
             
-            <div class="col"></div>
+            <div class="col-1"></div>
         </div>
-    </div> <!--À mettre dans footer-->
+    </div>
 <%- include ("../partials/footer.ejs") %>

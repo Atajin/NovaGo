@@ -1,0 +1,36 @@
+<%- include ("../partials/header.ejs") %>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col"></div>
+
+            <div class="col-md-auto">
+                <form>
+                    <div class="row-md-auto">
+                        <label for="depart" class="form-label custom-font-labels">Départ</label>
+                        <input type="text" name="depart" id="depart" class="form-control" placeholder="Depart">
+                    </div>
+                    <div class="mb-3">
+                        <label for="destination" class="form-label custom-font-labels">Destination</label>
+                        <input type="text" name="destination" id="destination" class="form-control"
+                            placeholder="Destination">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date-aller" class="form-label custom-font-labels">Date de départ</label>
+                        <input type="date" name="date" id="date" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="passagers" class="form-label custom-font-labels">Nombre de passagers</label>
+                        <input type="number" name="passagers" id="passagers" class="form-control"
+                            placeholder="Nombre de passagers">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Réserver</button>
+                </form>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+
+    <%- include ("../partials/footer.ejs") %>
