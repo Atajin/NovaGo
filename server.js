@@ -36,6 +36,7 @@ app.set("view engine", "ejs");
 */
 app.use("/js", express.static(__dirname + "/node_modules/bootstrap/dist/js"));
 app.use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"));
+app.use(express.static(__dirname + "/static/images"));
 
 /*
     Permettre l'utilisation de body lors des POST request
@@ -60,3 +61,16 @@ app.get('/inscription', (req, res) => {
         // variables
     });
 });
+
+app.get('/reservation', (req, res) => {
+    res.render('pages/reservation', {
+        // variables
+    });
+});
+
+app.get('/principal', (req, res) => {
+    res.render('pages/principal', {
+        // variables
+    });
+});
+
