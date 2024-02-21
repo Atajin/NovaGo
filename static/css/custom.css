@@ -12,6 +12,10 @@
     font-style: normal;
 }
 
+body {
+    height: 100hz;
+}
+
 .navbar-brand {
     font-family: 'Iceland', sans-serif;
     font-size: 40px;
@@ -33,7 +37,7 @@
     background-image: url('../images/spacebg.jpg');
     background-size: cover;
     background-position: center center;
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     height: 100vh;
     /* or adjust to the desired height */
     width: 100%;
@@ -51,7 +55,7 @@
 
 .custom-font-labels {
     font-family: 'PPStellar', sans-serif;
-    color: rgb(196, 196, 196);
+    color: white;
     font-size: 20px;
 }
 
