@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/connexion', (req, res) => {
+app.get('/connexion', body('email').notEmpty(), (req, res) => {
     res.render('pages/connexion', {
         // variables
     });
