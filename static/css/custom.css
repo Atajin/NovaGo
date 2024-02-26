@@ -60,6 +60,7 @@ body {
 }
 
 .custom-font-planet-t {
+    text-align: left;
     font-family: 'Iceland', sans-serif;
     color: white;
     font-size: 475%;
