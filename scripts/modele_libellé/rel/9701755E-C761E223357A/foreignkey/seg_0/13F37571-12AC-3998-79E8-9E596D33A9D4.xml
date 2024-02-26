@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="13F37571-12AC-3998-79E8-9E596D33A9D4" containerWithKeyObject="558BEF9D-2303-0F48-EFCB-BC229E4F5B76" localFKIndex="ABAC919B-9871-6052-1BED-8E472447BAA0" name="voyage_rabais_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>193859BB-F10C-7159-AA38-395B0608A07A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<referredTableLongName>rabais</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>6793AEEB-875E-3C63-BE98-4C9B7FDC2703</referredTableID>
+<keyObject>135B0A2D-C144-8512-C979-A06EEA13053B</keyObject>
+<referredKeyID>135B0A2D-C144-8512-C979-A06EEA13053B</referredKeyID>
+<mandatory>false</mandatory>
+<refColNames>id_rabais</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

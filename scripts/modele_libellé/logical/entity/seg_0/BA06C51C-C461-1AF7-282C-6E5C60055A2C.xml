@@ -1,0 +1,75 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="BA06C51C-C461-1AF7-282C-6E5C60055A2C" name="wishlist">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<importedID>AA641912-87BC-40A1-D4DC-7E2E4DA14480</importedID>
+<engineerTo>
+<item key="9701755E-F7EF-47EA-3495-C761E223357A" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id_wishlist" id="3D83740C-6A96-FC65-707D-44A66A843EA5">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<importedID>40405495-5B27-DF45-2EA2-49DC7740AF94</importedID>
+<engineerTo>
+<item key="9701755E-F7EF-47EA-3495-C761E223357A" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="date_ajout" id="7C2CD42C-9D61-E01E-0F4A-4B2C62965383">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<importedID>131FB472-86EE-2754-A6B1-3D3BA2E4FE09</importedID>
+<engineerTo>
+<item key="9701755E-F7EF-47EA-3495-C761E223357A" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_utilisateur" id="FA2D9DC9-719D-5E93-B20D-0F7D477CE7EF">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:39:15 UTC</createdTime>
+<generatorID>F50EDE03-293A-6571-E3BA-72627B0A4D5A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<engineerTo>
+<item key="9701755E-F7EF-47EA-3495-C761E223357A" value="true"/>
+</engineerTo>
+<referedAttribute>4E475465-9C63-2665-2095-45A9DA73FD49</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="7D9D5C4F-8AF3-6B73-8AE1-2BDBD716323E" name="wishlist PK">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<importedID>D0D0D6F9-223B-388C-66B7-DDEA70638472</importedID>
+<engineerTo>
+<item key="9701755E-F7EF-47EA-3495-C761E223357A" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>3D83740C-6A96-FC65-707D-44A66A843EA5</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>
