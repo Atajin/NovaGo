@@ -1,0 +1,32 @@
+Dans command prompt:
+
+docker pull gvenzl/oracle-xe
+
+docker run -d -p 1521:1521 --name oracle-xe -e ORACLE_PASSWORD=oracle gvenzl/oracle-xe:21
+
+docker cp /chemin/vers/nom_script_creation.ddl oracle-xe:/home/nom_script_creation.ddl
+
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_creation_novago_7.0_21c.ddl oracle-xe:/home/script_creation_novago_7.0_21c.ddl
+
+docker cp /chemin/vers/nom_script_insertion.ddl oracle-xe:/home/nom_script_insertion.ddl
+
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago.ddl oracle-xe:/home/script_insertion_novago.ddl
+
+
+Dans docker exec:
+
+sqlplus sys/oracle as sysdba
+
+CREATE USER novago IDENTIFIED BY oracle DEFAULT TABLESPACE users QUOTA UNLIMITED ON users;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER TO novago;
+
+GRANT dba to novago;
+
+EXIT;
+
+sqlplus novago/oracle
+
+@/home/script_creation_novago_7.0_21c.ddl
+
+@/home/script_insertion_novago.ddl

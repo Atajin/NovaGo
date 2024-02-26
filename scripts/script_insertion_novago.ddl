@@ -74,6 +74,18 @@ INSERT INTO voyage (id_voyage, origine, destination, date_depart, nb_heures, pri
 INSERT INTO voyage (id_voyage, origine, destination, date_depart, nb_heures, prix_econo, vaisseau_id_vaisseau, planete_id_planete, planete_id_planete2, rabais_id_rabais, prix_business) VALUES (9, 'Elysium', 'Mercure', TIMESTAMP '2024-12-10 11:30:00', 50, 600.00, 9, 9, 16, NULL, 900.00);
 INSERT INTO voyage (id_voyage, origine, destination, date_depart, nb_heures, prix_econo, vaisseau_id_vaisseau, planete_id_planete, planete_id_planete2, rabais_id_rabais, prix_business) VALUES (10, 'Terra Nova', 'Pluton', TIMESTAMP '2025-01-22 15:45:00', 140, 1100.00, 10, 11, 19, 5, 1650.00);
 
+-- Table transaction
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (1, TIMESTAMP '2024-04-14 12:00:00', 500.00, 1);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (2, TIMESTAMP '2024-05-19 12:00:00', 675.00, 2);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (3, TIMESTAMP '2024-06-09 12:00:00', 800.00, 3);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (4, TIMESTAMP '2024-07-04 12:00:00', 825.00, 4);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (5, TIMESTAMP '2024-08-14 12:00:00', 950.00, 5);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (6, TIMESTAMP '2024-09-24 12:00:00', 1050.00, 6);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (7, TIMESTAMP '2024-10-29 12:00:00', 850.00, 7);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (8, TIMESTAMP '2024-11-18 12:00:00', 1500.00, 8);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (9, TIMESTAMP '2024-12-09 12:00:00', 600.00, 9);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (10, TIMESTAMP '2025-01-21 12:00:00', 1650.00, 10);
+
 -- Table billet
 INSERT INTO billet (id_billet, classe, siege, transaction_id_transaction, voyage_id_voyage, prix, utilisateur_id_utilisateur) VALUES (1, 'Économique', '12F', 1, 1, 500.00, 1);
 INSERT INTO billet (id_billet, classe, siege, transaction_id_transaction, voyage_id_voyage, prix, utilisateur_id_utilisateur) VALUES (2, 'Business', '1B', 2, 2, 675.00, 2);
@@ -86,22 +98,10 @@ INSERT INTO billet (id_billet, classe, siege, transaction_id_transaction, voyage
 INSERT INTO billet (id_billet, classe, siege, transaction_id_transaction, voyage_id_voyage, prix, utilisateur_id_utilisateur) VALUES (9, 'Économique', '20J', 9, 9, 600.00, 9);
 INSERT INTO billet (id_billet, classe, siege, transaction_id_transaction, voyage_id_voyage, prix, utilisateur_id_utilisateur) VALUES (10, 'Business', '1C', 10, 10, 1650.00, 10);
 
--- Table transaction
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (1, TIMESTAMP '2024-04-14 12:00:00', 500.00, 1);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (2, TIMESTAMP '2024-05-19 12:00:00', 675.00, 2);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (3, TIMESTAMP '2024-06-09 12:00:00', 800.00, 3);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (4, TIMESTAMP '2024-07-04 12:00:00', 825.00, 4);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (5, TIMESTAMP '2024-08-14 12:00:00', 950.00, 5);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (6, TIMESTAMP '2024-09-24 12:00:00', 1050.00, 6);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (7, TIMESTAMP '2024-10-29 12:00:00', 850.00, 7);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (8, TIMESTAMP '2024-11-18 12:00:00', 1500.00, 8);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (9, TIMESTAMP '2024-12-09 12:00:00', 600.00, 9);
-INSERT INTO transaction (id_transaction, date, prix_total, billet_id_billet) VALUES (10, TIMESTAMP '2025-01-21 12:00:00', 1650.00, 10);
-
 -- Table session_util
 INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (1, 'elQD7eAaqEc0Ujrf6FQjxiqt6TRhlVOAK94TicI0H8EKLD4XmOeXmV3Ek5PP3hPL', TIMESTAMP '2023-10-01 10:00:00', TIMESTAMP '2023-10-01 11:00:00', 1);
 INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (2, 'u8dlFtEerEDSsHDrjgFdl6v2QWogq73kSTThYYXTzcL8Geo4OFuCV7FsXeSYR30j', TIMESTAMP '2023-10-02 10:00:00', TIMESTAMP '2023-10-02 11:00:00', 2);
-INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (3, 'u8dlFtEerEDSsHDrjgFdl6v2QWogq73kSTThYYXTzcL8Geo4OFuCV7FsXeSYR30j', TIMESTAMP '2023-10-03 10:00:00', TIMESTAMP '2023-10-03 11:00:00', 3);
+INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (3, 'C3OSJso3lok7EPVqoxhhVFJYcLDOSHAszYBqlPpJLD4dyY8cDHPLdM49Vf43r04V', TIMESTAMP '2023-10-03 10:00:00', TIMESTAMP '2023-10-03 11:00:00', 3);
 INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (4, 'rMtvWfb4A12gvhE3FuPbO9fjlI69hBJmyymqsB0pJxjkethwLpJV7bOJBm7ZOw5g', TIMESTAMP '2023-10-04 10:00:00', TIMESTAMP '2023-10-04 11:00:00', 4);
 INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (5, 'X07wGrcYkVKTrYWHkelo1ibamz1jHzKiu60RLmvJaotzWBdjMDescrhp807a3aa1', TIMESTAMP '2023-10-05 10:00:00', TIMESTAMP '2023-10-05 11:00:00', 5);
 INSERT INTO session_util (id_session_util, token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES (6, '4sBV3F5dUCPO0WbeFMkjUGWmFuQ5ZOXSzopOhCkE48voSJkjobqRXZpcVUcyYT3Y', TIMESTAMP '2023-10-06 10:00:00', TIMESTAMP '2023-10-06 11:00:00', 6);
