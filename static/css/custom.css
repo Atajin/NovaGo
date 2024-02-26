@@ -71,6 +71,13 @@ body {
     color: white;
     font-size: 125%;
 }
+
+.custom-font-recu-black {
+    font-family: 'PPStellar', sans-serif;
+    color: black;
+    font-size: 125%;
+}
+
 .custom-font-labels-radio {
     font-family: 'PPStellar', sans-serif;
     color: rgb(196, 196, 196);

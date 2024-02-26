@@ -75,3 +75,8 @@ app.get('/principal', (req, res) => {
     });
 });
 
+app.get('/recu-billet', (req, res) => {
+    res.render('pages/recu-billet', {
+        // variables
+    });
+});
