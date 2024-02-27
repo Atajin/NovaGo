@@ -30,3 +30,14 @@ sqlplus novago/oracle
 @/home/script_creation_novago_7.0_21c.ddl
 
 @/home/script_insertion_novago.ddl
+
+Pour effacer la table en cas de probleme:
+
+BEGIN
+    FOR r IN (SELECT table_name FROM user_tables) LOOP
+        EXECUTE IMMEDIATE 'DROP TABLE "' || r.table_name || '" CASCADE CONSTRAINTS';
+    END LOOP;
+END;
+/
+
+Si jamais les tables ne s'affichent pas bien dans la console de docker, ajuster la taille de la page avec SET PAGESIZE (exemple: SET PAGESIZE 50)
