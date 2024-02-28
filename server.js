@@ -5,7 +5,7 @@ import express from "express";
 import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
-import mysql from "mysql";
+import oracledb from "oracledb";
 import { body, check, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 
@@ -13,12 +13,24 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/*
-    Connection au serveur
-*/
-const server = app.listen(4000, function () {
-    console.log("serveur fonctionne sur 4000... ! ");
-});
+async function initialiserBaseDeDonnees() {
+    try {
+        const pool = await oracledb.createPool({
+            user: "novago",
+            password: "oracle",
+            connectString: "localhost:1521/xe"
+        });
+
+        const connection = await pool.getConnection();
+        console.log("Connexion à la base de données Oracle réussie !");
+
+        await connection.close();
+    } catch (err) {
+        console.error("Impossible de se connecter à la base de données Oracle:", err);
+    }
+}
+
+initialiserBaseDeDonnees();
 
 /*
     Configuration des fichiers statiques
