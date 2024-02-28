@@ -6,7 +6,7 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 import mysql from "mysql";
-import { body, validationResult } from "express-validator";
+import { body, check, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 
 const app = express();
@@ -56,8 +56,48 @@ app.get('/connexion', (req, res) => {
     });
 });
 
+app.post('/connexion', [
+    check('mdp')
+    .isLength({min:8})
+    .withMessage('Le mot de passe doit être au moins 8 charactères.'),
+], (req, res) => {
+   const errors = validationResult(req);
+   if(!errors.isEmpty()) {
+        console.log(errors);
+   }
+   const {email, mdp} = req.body;
+});
 app.get('/inscription', (req, res) => {
     res.render('pages/inscription', {
+        // variables
+    });
+});
+app.post('/inscription', [
+    check('prenom')
+    .isLength({min:2})
+    .withMessage('Votre prénom doit être au moins 2 charactères.'),
+    check('nom')
+    .isLength({min:2})
+    .withMessage('Votre nom doit être au moins 2 charactères.'),
+    check('email')
+    .isLength({min:8})
+    .withMessage('Votre courriel doit être au moins 8 charactères.'),
+    check('mdp')
+    .isLength({min:8})
+    .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
+    check('confirmation')
+    .equals('mdp')
+    .withMessage('Le mot de passe doit être recopié correctement.'),
+], (req, res) => {
+   const errors = validationResult(req);
+   if(!errors.isEmpty()) {
+        console.log(errors);
+   }
+   const {prenom, nom, email, mdp, planete} = req.body;
+});
+
+app.get('/reservation', (req, res) => {
+    res.render('pages/reservation', {
         // variables
     });
 });
