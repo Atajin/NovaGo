@@ -31,11 +31,11 @@
                                     <%= item.DESCRIPTION %>
                                 </h5>
                             </div>
-                            <a href="/" class="btn btn-outline-light btn-lg custom-font-planet-p">Chercher un voyage</a>
+                            <a href="/<%= item.ID_PLANET %>" class="btn btn-outline-light btn-lg custom-font-planet-p">Chercher un voyage</a>
                         </div>
                         <div class="col">
                             <div class="text-center">
-                                <img src="/images/ESA_Hubble_Jupiter_and_Europa.jpg" class="image-fluid m-2"
+                                <img src="/images/<%= item.IMAGE %>" class="image-fluid m-2"
                                     style="border-radius: 48%; width: 550px; height: 455px;" alt="Jupiter">
                             </div>
                         </div>

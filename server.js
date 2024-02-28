@@ -86,6 +86,7 @@ async function demarrerServeur() {
         }
         const { email, mdp } = req.body;
     });
+    
     app.get('/inscription', (req, res) => {
         res.render('pages/inscription', {
             // variables
@@ -122,8 +123,11 @@ async function demarrerServeur() {
     });
 
     app.get('/exploration', (req, res) => {
-        res.render('pages/exploration', {
-            // variables
+        getPool().query("SELECT * FROM PLANETE", function (err, result) {
+            if (err) throw err;
+            res.render('pages/exploration', {
+                items: result
+            });
         });
     });
 
