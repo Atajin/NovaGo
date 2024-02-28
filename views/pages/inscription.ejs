@@ -10,21 +10,25 @@
             <div class="col-1"></div>
 
             <div class="col">
-
                 <form>
                     <div class="row justify-content-center">
                         <h1 class="custom-font-titles text-center">Créer un compte</h1>
                         <div class="col-md-auto">
                             <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label> <br>
-                            <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom"
-                                required>
+                            <!--*affiche encore une erreur lorsque le champ est rempli-->
+                            <input type="text" id="prenom" name="prenom" class="form-control is-invalid"
+                                placeholder="Prénom" required>
+                            <div class="invalid-feedback">Veuillez écrire votre prénom.</div>
 
                             <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label> <br>
-                            <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom" required>
+                            <input type="text" id="nom" name="nom" class="form-control is-invalid" placeholder="Nom"
+                                required>
+                            <div class="invalid-feedback">Veuillez écrire votre nom.</div>
 
                             <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label> <br>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Courriel"
-                                required>
+                            <input type="email" id="email" name="email" class="form-control is-invalid"
+                                placeholder="Courriel" required>
+                            <div class="invalid-feedback">Veuillez écrire votre adresse courriel.</div>
 
                             <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de
                                 téléphone</label> <br>
@@ -34,12 +38,13 @@
                         <div class="col-md-auto">
                             <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
                             <br>
-                            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe"
-                                required>
+                            <input type="password" id="mdp" name="mdp" class="form-control is-invalid"
+                                placeholder="Mot de passe" required>
+                            <div class="invalid-feedback">Veuillez écrire votre mot de passe.</div>
 
                             <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de
                                 passe</label> <br>
-                            <input type="password" id="confirmation" name="confirmation" class="form-control"
+                            <input type="password" id="confirmation" name="confirmation" class="form-control is-invalid"
                                 placeholder="Confirmer le mot de passe" required>
 
                             <label for="adresse" class="form-label custom-font-labels">Entrez votre adresse</label> <br>
@@ -51,9 +56,9 @@
                                 placeholder="Planète / lune / autre" required>
                         </div>
                     </div>
-                    <submit
+                    <button type="submit"
                         class="btn btn-dark bg-dark.bg-gradient mt-2 position-relative top-0 start-50 translate-middle-x">
-                        Connexion au compte</submit>
+                        Connexion au compte</button>
                 </form>
             </div>
 
