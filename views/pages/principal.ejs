@@ -2,6 +2,7 @@
 
     <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner">
+            <% items.forEach(function(item){ %>
             <div class="carousel-item active w-100">
                 <div class="container-fluid text-center" style="margin-top: 20px;">
                     <br>
@@ -43,6 +44,7 @@
                     <br>
                 </div>
             </div>
+            <%}); %>
 
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev"
                 style="margin-top: 420px;">

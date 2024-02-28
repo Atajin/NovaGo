@@ -72,6 +72,7 @@ app.get('/inscription', (req, res) => {
         // variables
     });
 });
+
 app.post('/inscription', [
     check('prenom')
     .isLength({min:2})
