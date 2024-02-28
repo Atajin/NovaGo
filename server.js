@@ -102,9 +102,21 @@ app.get('/reservation', (req, res) => {
     });
 });
 
+
+app.get('/reservation', (req, res) => {
+    res.render('pages/reservation', {
+        // variables
+    });
+});
+
 app.get('/principal', (req, res) => {
     res.render('pages/principal', {
         // variables
     });
 });
 
+app.get('/recu-billet', (req, res) => {
+    res.render('pages/recu-billet', {
+        // variables
+    });
+});
