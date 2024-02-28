@@ -101,7 +101,14 @@ async function demarrerServeur() {
             .withMessage('Votre nom doit être au moins 2 charactères.'),
         check('email')
             .isLength({ min: 8 })
-            .withMessage('Votre courriel doit être au moins 8 charactères.'),
+            .withMessage('Votre courriel doit être au moins 8 charactères.')
+            .isEmail()
+            .custom(async value => {
+                const emailUtilise = await utilisateurs.findByEmail(value);
+                if (emailUtilise) {
+                  throw new Error('Cette adresse courrielle est déjà utilisée');
+                }
+              }),
         check('mdp')
             .isLength({ min: 8 })
             .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
