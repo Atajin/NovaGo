@@ -6,7 +6,7 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 import mysql from "mysql";
-import { body, check, validationResult } from "express-validator";
+import { body, check, matchedData, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 
 const app = express();
@@ -81,7 +81,9 @@ app.post('/inscription', [
         .withMessage('Votre nom doit être au moins 2 charactères.'),
     check('email')
         .isLength({ min: 8 })
-        .withMessage('Votre courriel doit être au moins 8 charactères.'),
+        .withMessage('Votre courriel doit être au moins 8 charactères.')
+        .isEmail()
+        .withMessage(`Ceci n'est pas un email valide`),
     check('mdp')
         .isLength({ min: 8 })
         .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
@@ -89,11 +91,13 @@ app.post('/inscription', [
         .equals('mdp')
         .withMessage('Le mot de passe doit être recopié correctement.'),
 ], (req, res) => {
-    const errors = validationResult(req);
+    const data = matchedData(req);
+    const result = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors);
-    }
-    const { prenom, nom, email, mdp, planete } = req.body;
+        console.log(`Errors: ${result}`);
+        return res.send(`Errors: ${result}`);
+    } else console.log(`Data: ${data}`);
+    return res.send(`Data: ${data}`);
 });
 
 app.get('/reservation', (req, res) => {
