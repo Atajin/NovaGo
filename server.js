@@ -86,6 +86,7 @@ async function demarrerServeur() {
         }
         const { email, mdp } = req.body;
     });
+
     app.get('/inscription', (req, res) => {
         res.render('pages/inscription', {
             // variables
