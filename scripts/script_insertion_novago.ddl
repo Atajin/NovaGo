@@ -75,16 +75,16 @@ INSERT INTO voyage (id_voyage, origine, destination, date_depart, nb_heures, pri
 INSERT INTO voyage (id_voyage, origine, destination, date_depart, nb_heures, prix_econo, vaisseau_id_vaisseau, planete_id_planete, planete_id_planete2, rabais_id_rabais, prix_business) VALUES (10, 'Terra Nova', 'Pluton', TIMESTAMP '2025-01-22 15:45:00', 140, 1100.00, 10, 11, 19, 5, 1650.00);
 
 -- Table transaction
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (1, TIMESTAMP '2024-04-14 12:00:00', 500.00, 1);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (2, TIMESTAMP '2024-05-19 12:00:00', 675.00, 2);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (3, TIMESTAMP '2024-06-09 12:00:00', 800.00, 3);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (4, TIMESTAMP '2024-07-04 12:00:00', 825.00, 4);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (5, TIMESTAMP '2024-08-14 12:00:00', 950.00, 5);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (6, TIMESTAMP '2024-09-24 12:00:00', 1050.00, 6);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (7, TIMESTAMP '2024-10-29 12:00:00', 850.00, 7);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (8, TIMESTAMP '2024-11-18 12:00:00', 1500.00, 8);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (9, TIMESTAMP '2024-12-09 12:00:00', 600.00, 9);
-INSERT INTO transaction (id_transaction, date_transaction, prix_total, billet_id_billet) VALUES (10, TIMESTAMP '2025-01-21 12:00:00', 1650.00, 10);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (1, TIMESTAMP '2024-04-14 12:00:00', 500.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (2, TIMESTAMP '2024-05-19 12:00:00', 675.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (3, TIMESTAMP '2024-06-09 12:00:00', 800.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (4, TIMESTAMP '2024-07-04 12:00:00', 825.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (5, TIMESTAMP '2024-08-14 12:00:00', 950.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (6, TIMESTAMP '2024-09-24 12:00:00', 1050.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (7, TIMESTAMP '2024-10-29 12:00:00', 850.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (8, TIMESTAMP '2024-11-18 12:00:00', 1500.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (9, TIMESTAMP '2024-12-09 12:00:00', 600.00);
+INSERT INTO transaction (id_transaction, date_transaction, prix_total) VALUES (10, TIMESTAMP '2025-01-21 12:00:00', 1650.00);
 
 -- Table billet
 INSERT INTO billet (id_billet, classe, siege, transaction_id_transaction, voyage_id_voyage, prix, utilisateur_id_utilisateur) VALUES (1, 'Économique', '12F', 1, 1, 500.00, 1);

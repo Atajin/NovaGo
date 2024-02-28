@@ -1,0 +1,85 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="713C5158-BC64-F7B4-9A01-38622789ABC0" name="planete">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>D8FAD98F-9CE8-03EE-0CD7-AF1CA6763574</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id_planete" id="C66C011E-D3A0-6899-08DF-D406DAFA19F6">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>97268986-473A-9CA3-237E-5F3779A9FD0A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="nom" id="A920ABD0-0996-7CDF-BD26-8AEC3FA29A7F">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>79964F13-817E-49FF-BEF2-7097450EDF7A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128</dataTypeSize>
+<ownDataTypeParameters>128,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="type" id="50FACE05-B2C0-66D0-3819-E24E1C178C66">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>92490994-FF34-B040-10FB-D64FA775EE93</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128</dataTypeSize>
+<ownDataTypeParameters>128,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="gravite" id="9F24B4AB-4042-45BD-FA2E-930B42AE005E">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>8055F63A-84BF-18DE-5893-28E9E1A1886F</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="description" id="515D3AC4-9041-0794-7A41-B3AD5D8BD231">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>F16B18D6-8152-1F85-B95B-F1C8615DE1FB</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1024</dataTypeSize>
+<ownDataTypeParameters>1024,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="6E6A9E04-D52B-8A23-2C77-2AA85A47F1BA" name="planete_PK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>204D3179-49BD-0B63-BDFD-A56475250A52</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C66C011E-D3A0-6899-08DF-D406DAFA19F6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
