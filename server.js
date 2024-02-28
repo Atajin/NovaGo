@@ -101,7 +101,7 @@ async function demarrerServeur() {
 
             if (result.rows.length > 0) {
                 // L'utilisateur existe
-                res.redirect('/'); // Rediriger vers la page index
+                res.redirect('/');
             } else {
                 // L'utilisateur n'existe pas ou le mot de passe est incorrect
                 res.status(401).send('Email ou mot de passe incorrect');
