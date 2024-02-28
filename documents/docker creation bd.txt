@@ -1,4 +1,4 @@
-Dans command prompt:
+Dans command prompt (en tant qu'admin):
 
 Pull l'image oracle:
 docker pull gvenzl/oracle-xe
@@ -28,7 +28,6 @@ CREATE USER novago IDENTIFIED BY oracle DEFAULT TABLESPACE users QUOTA UNLIMITED
 
 Lui donner les droits necessaires:
 GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER TO novago;
-
 GRANT dba to novago;
 
 EXIT;
