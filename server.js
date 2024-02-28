@@ -67,6 +67,7 @@ app.post('/connexion', [
     }
     const { email, mdp } = req.body;
 });
+
 app.get('/inscription', (req, res) => {
     res.render('pages/inscription', {
         // variables
@@ -103,16 +104,12 @@ app.get('/reservation', (req, res) => {
     });
 });
 
-
-app.get('/reservation', (req, res) => {
-    res.render('pages/reservation', {
-        // variables
-    });
-});
-
 app.get('/exploration', (req, res) => {
-    res.render('pages/exploration', {
-        // variables
+    con.query("SELECT * FROM PLANETE", function (err, result) {
+        if (err) throw err;
+        res.render("pages/exploration", {
+          items: result
+        });
     });
 });
 
