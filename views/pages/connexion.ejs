@@ -1,23 +1,27 @@
 <%- include ("../partials/header.ejs") %>
-<div class="container-fluid" style="margin-top: 10%;">
-    <div class="row">
-        <div class="col"></div>
+    <div class="container-fluid" style="margin-top: 10%;">
+        <div class="row">
+            <div class="col"></div>
 
-        <div class="col-md-auto">
-            <h1 class="custom-font-titles text-center">Connexion</h1>
-            <form>
-                <div class="row-md-auto">
-                    <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label> <br>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
-                </div>
-                <div class="mb-3">
-                    <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label> <br>
-                    <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe" required>
-                </div>
-                <button type="submit" class="btn btn-primary position-relative top-0 start-50 translate-middle-x">Connexion au compte</button>
-            </form>
+            <div class="col-md-auto">
+                <h1 class="custom-font-titles text-center">Connexion</h1>
+                <form>
+                    <div class="row-md-auto">
+                        <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label> <br>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Courriel"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label> <br>
+                        <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe"
+                            required>
+                    </div>
+                    <button type="submit"
+                        class="btn btn-primary position-relative top-0 start-50 translate-middle-x">Connexion au
+                        compte</button>
+                </form>
+            </div>
+            <div class="col"></div>
         </div>
-        <div class="col"></div>
     </div>
-</div>
-<%- include ("../partials/footer.ejs") %>
+    <%- include ("../partials/footer.ejs") %>
