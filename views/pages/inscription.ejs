@@ -1,45 +1,63 @@
 <%- include ("../partials/header.ejs") %>
+
+    <script>
+        var nomPage = " | Créer un compte";
+        document.title += nomPage;
+    </script>
+
     <div class="container-fluid" style="margin-top: 5%;">
         <div class="row">
             <div class="col-1"></div>
 
             <div class="col">
-                
+
                 <form>
                     <div class="row justify-content-center">
                         <h1 class="custom-font-titles text-center">Créer un compte</h1>
                         <div class="col-md-auto">
                             <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label> <br>
-                            <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom" required>
+                            <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom"
+                                required>
 
                             <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label> <br>
                             <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom" required>
 
                             <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label> <br>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
-                            
-                            <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de téléphone</label> <br>
-                            <input type="text" id="telephone" name="telephone" class="form-control" placeholder="Téléphone">
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Courriel"
+                                required>
+
+                            <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de
+                                téléphone</label> <br>
+                            <input type="text" id="telephone" name="telephone" class="form-control"
+                                placeholder="Téléphone">
                         </div>
                         <div class="col-md-auto">
-                            <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label> <br>
-                            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe" required>
+                            <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
+                            <br>
+                            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe"
+                                required>
 
-                            <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de passe</label> <br>
-                            <input type="password" id="confirmation" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
-                            
+                            <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de
+                                passe</label> <br>
+                            <input type="password" id="confirmation" name="confirmation" class="form-control"
+                                placeholder="Confirmer le mot de passe" required>
+
                             <label for="adresse" class="form-label custom-font-labels">Entrez votre adresse</label> <br>
                             <input type="text" id="adresse" name="adresse" class="form-control" placeholder="Adresse">
-                            
-                            <label for="planete" class="form-label custom-font-labels">Entrez votre objet céleste courant</label> <br>
-                            <input type="text" id="planete" name="planete" class="form-control" placeholder="Planète / lune / autre" required>
+
+                            <label for="planete" class="form-label custom-font-labels">Entrez votre objet céleste
+                                courant</label> <br>
+                            <input type="text" id="planete" name="planete" class="form-control"
+                                placeholder="Planète / lune / autre" required>
                         </div>
                     </div>
-                    <submit class="btn btn-dark bg-dark.bg-gradient mt-2 position-relative top-0 start-50 translate-middle-x">Connexion au compte</submit>
+                    <submit
+                        class="btn btn-dark bg-dark.bg-gradient mt-2 position-relative top-0 start-50 translate-middle-x">
+                        Connexion au compte</submit>
                 </form>
             </div>
-            
+
             <div class="col-1"></div>
         </div>
     </div>
-<%- include ("../partials/footer.ejs") %>
+    <%- include ("../partials/footer.ejs") %>

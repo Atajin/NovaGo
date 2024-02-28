@@ -1,5 +1,10 @@
 <%- include ("../partials/header.ejs") %>
 
+    <script>
+        var nomPage = " | Explorer";
+        document.title += nomPage;
+    </script>
+
     <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner">
             <% items.forEach(function(item){ %>
