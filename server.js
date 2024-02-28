@@ -109,11 +109,13 @@ async function demarrerServeur() {
             .equals('mdp')
             .withMessage('Le mot de passe doit être recopié correctement.'),
     ], (req, res) => {
+        const data = matchedData(req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            console.log(errors);
+            return res.send(`Errors: ${errors}!`);
         }
-        const { prenom, nom, email, mdp, planete } = req.body;
+        console.log("hi");
+        return res.send(`Data: ${data}!`);
     });
 
     app.get('/reservation', (req, res) => {
