@@ -117,6 +117,7 @@ async function demarrerServeur() {
             // variables
         });
     });
+    
     app.post('/inscription', [
         check('prenom')
             .isLength({ min: 2 })
