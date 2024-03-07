@@ -117,7 +117,7 @@ async function demarrerServeur() {
             // variables
         });
     });
-    
+
     app.post('/inscription', [
         check('prenom')
             .isLength({ min: 2 })
@@ -132,9 +132,9 @@ async function demarrerServeur() {
             .custom(async value => {
                 const emailUtilise = await utilisateurs.findByEmail(value);
                 if (emailUtilise) {
-                  throw new Error('Cette adresse courrielle est déjà utilisée');
+                    throw new Error('Cette adresse courrielle est déjà utilisée');
                 }
-              }),
+            }),
         check('mdp')
             .isLength({ min: 8 })
             .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
@@ -157,7 +157,7 @@ async function demarrerServeur() {
     app.get('/exploration', async (req, res) => {
         try {
             const connection = await getPool().getConnection();
-            const result = await connection.execute("SELECT * FROM PLANETE");
+            let result = await connection.execute("SELECT * FROM PLANETE");
             await connection.close();
 
             console.log(result.rows); // Ajoutez ce log pour vérifier les données récupérées
