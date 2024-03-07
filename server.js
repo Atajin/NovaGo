@@ -112,6 +112,42 @@ async function demarrerServeur() {
         }
     });
 
+    app.get('/inscription', (req, res) => {
+        res.render('pages/inscription', {
+            // variables
+        });
+    });
+    
+    app.post('/inscription', [
+        check('prenom')
+            .isLength({ min: 2 })
+            .withMessage('Votre prénom doit être au moins 2 charactères.'),
+        check('nom')
+            .isLength({ min: 2 })
+            .withMessage('Votre nom doit être au moins 2 charactères.'),
+        check('email')
+            .isLength({ min: 8 })
+            .withMessage('Votre courriel doit être au moins 8 charactères.')
+            .isEmail()
+            .custom(async value => {
+                const emailUtilise = await utilisateurs.findByEmail(value);
+                if (emailUtilise) {
+                  throw new Error('Cette adresse courrielle est déjà utilisée');
+                }
+              }),
+        check('mdp')
+            .isLength({ min: 8 })
+            .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
+        check('confirmation')
+            .equals('mdp')
+            .withMessage('Le mot de passe doit être recopié correctement.'),
+    ], (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            console.log(errors);
+        }
+    });
+
     app.get('/reservation', (req, res) => {
         res.render('pages/reservation', {
             // variables
