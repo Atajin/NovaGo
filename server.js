@@ -181,6 +181,8 @@ async function demarrerServeur() {
     const server = app.listen(4000, function () {
         console.log("serveur fonctionne sur 4000... !");
     });
+
+    
 }
 
 demarrerServeur().catch(err => console.error("Erreur lors du démarrage du serveur:", err));
