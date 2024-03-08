@@ -112,37 +112,73 @@ async function demarrerServeur() {
 
     app.get('/inscription', async (req, res) => {
         const planetes = "";
-        res.render('pages/inscription', {planetes: planetes});
+        const erreur = "";
+        res.render('pages/inscription', { erreur: erreur, planetes: planetes });
     });
 
+    const validationMdpEgal = (value, { req }) => {
+        if (value !== req.body.confirmation) {
+            throw new Error('Le mot de passe doit être recopié correctement.');
+        }
+        return true;
+    };
+    
     app.post('/inscription', [
         check('prenom')
             .isLength({ min: 2 })
             .withMessage('Votre prénom doit être au moins 2 charactères.'),
+        check('prenom')
+            .isLength({ max: 50 })
+            .withMessage('Votre prénom doit être au plus 50 charactères.'),
         check('nom')
             .isLength({ min: 2 })
             .withMessage('Votre nom doit être au moins 2 charactères.'),
+        check('nom')
+            .isLength({ max: 50 })
+            .withMessage('Votre nom doit être au plus 50 charactères.'),
         check('email')
-            .isLength({ min: 8 })
-            .withMessage('Votre courriel doit être au moins 8 charactères.')
             .isEmail()
-            .custom(async value => {
-                const emailUtilise = await utilisateurs.findByEmail(value);
-                if (emailUtilise) {
-                    throw new Error('Cette adresse courrielle est déjà utilisée');
-                }
-            }),
+            .withMessage("L'adresse courriel saisie est invalide."),
         check('mdp')
             .isLength({ min: 8 })
             .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
-        check('confirmation')
-            .equals('mdp')
-            .withMessage('Le mot de passe doit être recopié correctement.'),
-    ], (req, res) => {
-        const data = matchedData(req);
+        check('mdp')
+            .isLength({ max: 30 })
+           .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
+        check('mdp')
+            .custom(validationMdpEgal),
+        check('planete')
+            .isLength({ min: 3 })
+            .withMessage('Le nom de la planète doit être au moins 3 charactères.'),
+    ], async (req, res) => {
         const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.send(`Errors: ${errors}!`);
+        if (!errors.isEmpty()){
+            return res.render('pages/inscription', { erreur: errors.array().map(error => error.msg).join(' ') });
+        }
+        const { prenom, nom, email, mdp } = req.body;
+        try {
+            // Obtention d'une connexion à partir du pool
+            const connection = await getPool().getConnection();
+
+            // Exécution de la requête pour vérifier si l'email est utilisé
+            const result = await connection.execute(
+                `SELECT * FROM utilisateur WHERE email = :email`,
+                { email: email},
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+
+            await connection.close();
+
+            if (result.rows.length > 0) {
+                // L'utilisateur existe
+                return res.render('pages/inscription', { erreur: 'Cette adresse courriel est déjà utilisée.' });
+            } else {
+                // L'utilisateur n'existe pas
+                return res.render('pages/', { connexion: 'Compte créé avec succès!' });
+            }
+        } catch (err) {
+            console.error(err);
+            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données' });
         }
     });
 
