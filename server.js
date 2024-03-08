@@ -70,9 +70,8 @@ async function demarrerServeur() {
     });
 
     app.get('/connexion', (req, res) => {
-        res.render('pages/connexion', {
-            // variables
-        });
+        const erreur = "";
+        res.render('pages/connexion', { erreur: erreur });
     });
 
     app.post('/connexion', async (req, res) => {
@@ -92,13 +91,13 @@ async function demarrerServeur() {
             if (verifEmail.rows.length === 0) {
                 // L'utilisateur n'existe pas
                 await connection.close();
-                res.render('pages/connexion', { erreur: 'Email non existant ou incorrect' });
+                return res.render('pages/connexion', { erreur: 'Email non existant ou incorrect' });
             }
 
             // Vérification si le mot de passe est inférieur à 8 caractères
             if (mdp.length < 8) {
                 await connection.close();
-                res.render('pages/connexion', { erreur: 'Mot de passe doit être au moins 8 caractères' });
+                return res.render('pages/connexion', { erreur: 'Mot de passe doit être au moins 8 caractères' });
             }
 
             // Exécution de la requête pour vérifier l'email et le mot de passe
