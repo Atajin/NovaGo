@@ -75,20 +75,31 @@ async function demarrerServeur() {
         });
     });
 
-    app.post('/connexion', [
-        check('email').isEmail().withMessage('Veuillez entrer un email valide.'),
-        check('mdp').isLength({ min: 8 }).withMessage('Le mot de passe doit être au moins 8 caractères.'),
-    ], async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
+    app.post('/connexion', async (req, res) => {
         const { email, mdp } = req.body;
 
         try {
             // Obtention d'une connexion à partir du pool
             const connection = await getPool().getConnection();
+
+            // Vérification si l'utilisateur existe en fonction de l'email
+            const verifEmail = await connection.execute(
+                `SELECT * FROM utilisateur WHERE email = :email`,
+                { email: email },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+
+            if (verifEmail.rows.length === 0) {
+                // L'utilisateur n'existe pas
+                await connection.close();
+                res.render('pages/connexion', { erreur: 'Email non existant ou incorrect' });
+            }
+
+            // Vérification si le mot de passe est inférieur à 8 caractères
+            if (mdp.length < 8) {
+                await connection.close();
+                res.render('pages/connexion', { erreur: 'Mot de passe doit être au moins 8 caractères' });
+            }
 
             // Exécution de la requête pour vérifier l'email et le mot de passe
             const result = await connection.execute(
@@ -100,11 +111,11 @@ async function demarrerServeur() {
             await connection.close();
 
             if (result.rows.length > 0) {
-                // L'utilisateur existe
+                // L'utilisateur existe et le mot de passe est correct
                 res.redirect('/');
             } else {
-                // L'utilisateur n'existe pas ou le mot de passe est incorrect
-                res.status(401).send('Email ou mot de passe incorrect');
+                // Le mot de passe est incorrect
+                res.render('pages/connexion', { erreur: 'Mot de passe incorrect' });
             }
         } catch (err) {
             console.error(err);
