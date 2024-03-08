@@ -3,6 +3,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <form action="/" method="POST">
+                    <% if (connexion) { %>
+                        <div class="alert alert-success" role="alert">
+                            <%= connexion %>
+                          </div>
+                        <% } %>
                     <div class="row mb-3">
                         <div class="col">
                             <input type="text" name="origine" id="origine" class="form-control" placeholder="Origine"

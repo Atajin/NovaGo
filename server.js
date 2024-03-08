@@ -64,9 +64,8 @@ async function demarrerServeur() {
     await initialiserBaseDeDonnees();
 
     app.get('/', (req, res) => {
-        res.render('pages/index', {
-            // variables
-        });
+        const connexion = "";
+        res.render('pages/index', { connexion: connexion });
     });
 
     app.get('/connexion', (req, res) => {
@@ -100,7 +99,7 @@ async function demarrerServeur() {
 
             if (result.rows.length > 0) {
                 // L'utilisateur existe
-                res.redirect('/');
+                return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!' });
             } else {
                 // L'utilisateur n'existe pas ou le mot de passe est incorrect
                 return res.render('pages/connexion', { erreur: 'Courriel ou mot de passe incorrect' });
