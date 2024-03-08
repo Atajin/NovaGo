@@ -81,7 +81,7 @@ async function demarrerServeur() {
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            //return res.status(400).json({ errors: errors.array() });
         }
 
         const { email, mdp } = req.body;
@@ -104,7 +104,7 @@ async function demarrerServeur() {
                 res.redirect('/');
             } else {
                 // L'utilisateur n'existe pas ou le mot de passe est incorrect
-                res.status(401).send('Email ou mot de passe incorrect');
+                //res.status(401).send('Courriel ou mot de passe incorrect');
             }
         } catch (err) {
             console.error(err);

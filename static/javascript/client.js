@@ -12,3 +12,8 @@ if (document.getElementById('aller-simple') && document.getElementById('aller-re
         document.getElementById('date-aller-col').classList.add('col-6');
     });
 }
+if (document.getElementById('boutton-submit')){
+document.getElementById('boutton-submit').addEventListener('onClick', function () {
+    document.getElementById('champ-erreurs').value = 'Erreur';
+    });
+};

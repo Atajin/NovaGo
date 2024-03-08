@@ -59,6 +59,12 @@ body {
     font-size: 20px;
 }
 
+.custom-font-errors {
+    font-family: 'PPStellar', sans-serif;
+    color: red;
+    font-size: 20px;
+}
+
 .custom-font-planet-t {
     text-align: left;
     font-family: 'Iceland', sans-serif;
