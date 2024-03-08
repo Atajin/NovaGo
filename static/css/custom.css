@@ -1,96 +1,98 @@
-@font-face {
-    font-family: 'Iceland';
-    src: url('../fonts/Iceland-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+    @font-face {
+        font-family: 'Iceland';
+        src: url('../fonts/Iceland-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
 
-@font-face {
-    font-family: 'PPStellar';
-    src: url('../fonts/PPStellar-Light.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+    @font-face {
+        font-family: 'PPStellar';
+        src: url('../fonts/PPStellar-Light.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
 
-body {
-    height: 100hz;
-}
+    body {
+        height: 100vh;
+    }
 
-.navbar-brand {
-    font-family: 'Iceland', sans-serif;
-    font-size: 40px;
-}
+    .navbar-brand {
+        font-family: 'Iceland', sans-serif;
+        font-size: 40px;
+    }
 
-.custom-font-navbar {
-    font-family: 'PPStellar', sans-serif;
-    color: white;
-    font-size: 20px;
-}
+    .custom-font-navbar {
+        font-family: 'PPStellar', sans-serif;
+        color: white;
+        font-size: 20px;
+    }
 
-.custom-font-dropdown {
-    font-family: 'PPStellar', sans-serif;
-    color: black;
-    font-size: 20px;
-}
+    .custom-font-dropdown {
+        font-family: 'PPStellar', sans-serif;
+        color: black;
+        font-size: 20px;
+    }
 
-.custom-background {
-    background-image: url('../images/spacebg.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: repeat-y;
-    height: 100vh;
-    /* or adjust to the desired height */
-    width: 100%;
-    position: absolute;
-    top: 0;
-    z-index: -1;
-    /* Ensures it stays behind all other content */
-}
+    .custom-background {
+        background-image: url('../images/spacebg.jpg');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
 
-.custom-font-titles {
-    font-family: 'PPStellar', sans-serif;
-    color: white;
-    font-size: 30px;
-}
+    .custom-font-titles {
+        font-family: 'PPStellar', sans-serif;
+        color: white;
+        font-size: 30px;
+    }
 
-.custom-font-labels {
-    font-family: 'PPStellar', sans-serif;
-    color: white;
-    font-size: 20px;
-}
+    .custom-font-labels {
+        font-family: 'PPStellar', sans-serif;
+        color: white;
+        font-size: 20px;
+    }
+    .custom-font-errors {
+        font-family: 'PPStellar', sans-serif;
+        color: red;
+        font-size: 20px;
+    }
+    .custom-font-planet-t {
+        text-align: left;
+        font-family: 'Iceland', sans-serif;
+        color: white;
+        font-size: 400%;
+        margin-top: 10px;
+    }
 
-.custom-font-errors {
-    font-family: 'PPStellar', sans-serif;
-    color: red;
-    font-size: 20px;
-}
+    .petit-titre {
+        font-size: 3.2rem;
+    }
 
-.custom-font-planet-t {
-    text-align: left;
-    font-family: 'Iceland', sans-serif;
-    color: white;
-    font-size: 475%;
-}
+    .custom-font-planet-p {
+        font-family: 'PPStellar', sans-serif;
+        color: white;
+        font-size: 125%;
+    }
 
-.custom-font-planet-p {
-    font-family: 'PPStellar', sans-serif;
-    color: white;
-    font-size: 125%;
-}
+    .custom-font-recu-black {
+        font-family: 'PPStellar', sans-serif;
+        color: black;
+        font-size: 125%;
+    }
 
-.custom-font-recu-black {
-    font-family: 'PPStellar', sans-serif;
-    color: black;
-    font-size: 125%;
-}
+    .custom-font-labels-radio {
+        font-family: 'PPStellar', sans-serif;
+        color: rgb(196, 196, 196);
+        font-size: 20px;
+        vertical-align: middle;
+    }
 
-.custom-font-labels-radio {
-    font-family: 'PPStellar', sans-serif;
-    color: rgb(196, 196, 196);
-    font-size: 20px;
-    vertical-align: middle;
-}
-
-.custom-font-labels-bg {
-    background: rgba(0, 0, 0, 0.60);
-}
+    .custom-font-labels-bg {
+        background: rgba(0, 0, 0, 0.60);
+    }

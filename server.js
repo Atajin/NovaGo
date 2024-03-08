@@ -70,9 +70,8 @@ async function demarrerServeur() {
     });
 
     app.get('/connexion', (req, res) => {
-        res.render('pages/connexion', {
-            // variables
-        });
+        const erreur = "";
+        res.render('pages/connexion', { erreur: erreur });
     });
 
     app.post('/connexion', [
@@ -90,6 +89,25 @@ async function demarrerServeur() {
             // Obtention d'une connexion à partir du pool
             const connection = await getPool().getConnection();
 
+            // Vérification si l'utilisateur existe en fonction de l'email
+            const verifEmail = await connection.execute(
+                `SELECT * FROM utilisateur WHERE email = :email`,
+                { email: email },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+
+            if (verifEmail.rows.length === 0) {
+                // L'utilisateur n'existe pas
+                await connection.close();
+                return res.render('pages/connexion', { erreur: 'Email non existant ou incorrect' });
+            }
+
+            // Vérification si le mot de passe est inférieur à 8 caractères
+            if (mdp.length < 8) {
+                await connection.close();
+                return res.render('pages/connexion', { erreur: 'Mot de passe doit être au moins 8 caractères' });
+            }
+
             // Exécution de la requête pour vérifier l'email et le mot de passe
             const result = await connection.execute(
                 `SELECT * FROM utilisateur WHERE email = :email AND mot_de_passe = :mdp`,
@@ -100,7 +118,7 @@ async function demarrerServeur() {
             await connection.close();
 
             if (result.rows.length > 0) {
-                // L'utilisateur existe
+                // L'utilisateur existe et le mot de passe est correct
                 res.redirect('/');
             } else {
                 // L'utilisateur n'existe pas ou le mot de passe est incorrect
@@ -117,7 +135,7 @@ async function demarrerServeur() {
             // variables
         });
     });
-    
+
     app.post('/inscription', [
         check('prenom')
             .isLength({ min: 2 })
@@ -129,13 +147,12 @@ async function demarrerServeur() {
             .isLength({ min: 8 })
             .withMessage('Votre courriel doit être au moins 8 charactères.')
             .isEmail()
-            //.custom(async value => {
-            //    const emailUtilise = await utilisateurs.findByEmail(value);
-            //    if (emailUtilise) {
-            //      throw new Error('Cette adresse courrielle est déjà utilisée');
-            //    }
-            //  })
-            ,
+            .custom(async value => {
+                const emailUtilise = await utilisateurs.findByEmail(value);
+                if (emailUtilise) {
+                    throw new Error('Cette adresse courrielle est déjà utilisée');
+                }
+            }),
         check('mdp')
             .isLength({ min: 8 })
             .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
@@ -148,8 +165,6 @@ async function demarrerServeur() {
         if (!errors.isEmpty()) {
             return res.send(`Errors: ${errors}!`);
         }
-        console.log("hi");
-        return res.send(`Data: ${data}!`);
     });
 
     app.get('/reservation', (req, res) => {
@@ -158,10 +173,19 @@ async function demarrerServeur() {
         });
     });
 
-    app.get('/exploration', (req, res) => {
-        res.render('pages/exploration', {
-            // variables
-        });
+    app.get('/exploration', async (req, res) => {
+        try {
+            const connection = await getPool().getConnection();
+            const result = await connection.execute("SELECT * FROM PLANETE");
+            await connection.close();
+
+            res.render('pages/exploration', {
+                items: result.rows
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Erreur lors de la récupération des données');
+        }
     });
 
     app.get('/recu-billet', (req, res) => {
