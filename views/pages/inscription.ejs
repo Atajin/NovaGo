@@ -45,13 +45,19 @@
 
                             <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet céleste
                                 courant</label> <br>
-                            <input type="text" id="planete" name="planete" class="form-control"
+                            <input type="text" id="planete" list="planetes" name="planete" class="form-control"
                                 placeholder="Planète / lune / autre" required>
+                            <!--<datalist id="planetes">
+                                <//% planetes.forEach((planetes, index)=>{%>
+                            <option id=<//%= planetes.id_planete%>>
+                                <//%= planetes.nom%></option>
+                                <//%})%>
+                            </datalist>-->
                         </div>
                     </div>
                     <button type="submit"
                         class="btn btn-dark bg-dark.bg-gradient mt-2 position-relative top-0 start-50 translate-middle-x">
-                        Connexion au compte</button>
+                        Créer le compte</button>
                 </form>
             </div>
 

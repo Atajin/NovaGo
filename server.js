@@ -110,10 +110,9 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/inscription', (req, res) => {
-        res.render('pages/inscription', {
-            // variables
-        });
+    app.get('/inscription', async (req, res) => {
+        const planetes = "";
+        res.render('pages/inscription', {planetes: planetes});
     });
 
     app.post('/inscription', [
