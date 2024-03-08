@@ -66,10 +66,10 @@ async function demarrerServeur() {
     app.get('/', async (req, res) => {
         try {
             // Passer les données obtenues au moteur de rendu
-            res.render('pages/index', { connexion: "", nomPlanete: "" });
+            res.render('pages/index', { connexion: "", origine: "", destination: "" });
         } catch (err) {
             console.error(err);
-            res.render('pages/error', { error: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+            res.render('pages/index', { error: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
     });
 
@@ -106,7 +106,7 @@ async function demarrerServeur() {
                         { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
-                    return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', nomPlanete: nomPlaneteResult.rows[0].NOM });
+                    return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
                 }
             } else {
                 // L'utilisateur n'existe pas ou le mot de passe est incorrect
@@ -117,7 +117,6 @@ async function demarrerServeur() {
             return res.render('pages/connexion', { erreur: 'Erreur lors de la connexion à la base de données' });
         }
     });
-
 
     app.get('/inscription', (req, res) => {
         res.render('pages/inscription', {
