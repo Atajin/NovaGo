@@ -157,10 +157,8 @@ async function demarrerServeur() {
     app.get('/exploration', async (req, res) => {
         try {
             const connection = await getPool().getConnection();
-            let result = await connection.execute("SELECT * FROM PLANETE");
+            const result = await connection.execute("SELECT * FROM PLANETE");
             await connection.close();
-
-            console.log(result.rows); // Ajoutez ce log pour vérifier les données récupérées
 
             res.render('pages/exploration', {
                 items: result.rows
@@ -181,8 +179,6 @@ async function demarrerServeur() {
     const server = app.listen(4000, function () {
         console.log("serveur fonctionne sur 4000... !");
     });
-
-    
 }
 
 demarrerServeur().catch(err => console.error("Erreur lors du démarrage du serveur:", err));
