@@ -69,7 +69,7 @@ async function demarrerServeur() {
             res.render('pages/index', { connexion: "", origine: "", destination: "" });
         } catch (err) {
             console.error(err);
-            res.render('pages/index', { error: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+            res.render('pages/index', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
     });
 
