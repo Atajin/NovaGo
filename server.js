@@ -174,7 +174,7 @@ async function demarrerServeur() {
                 { email: email},
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-
+            
             await connection.close();
 
             if (result.rows.length > 0) {
@@ -185,13 +185,12 @@ async function demarrerServeur() {
                 try {
                     // Obtention d'une connexion à partir du pool
                     const connection = await getPool().getConnection();
-        
+                    
                     // Exécution de l'insertion de données dans la BD
                     const result = await connection.execute(
-                        `INSERT INTO utilisateur (id_utilisateur, email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
-                        VALUES (:id_utilisateur, :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
+                        `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
+                        VALUES ( :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
                         {
-                            id_utilisateur: 11,
                             email: email,
                             mot_de_passe: mdp,
                             nom: nom,
@@ -201,7 +200,7 @@ async function demarrerServeur() {
                             planete_id_planete: 1
                         }
                     );
-        
+                    await connection.commit();
                     await connection.close();
 
                     return res.render('pages/', { connexion: 'Compte créé avec succès!', origine: "", destination: ""});
