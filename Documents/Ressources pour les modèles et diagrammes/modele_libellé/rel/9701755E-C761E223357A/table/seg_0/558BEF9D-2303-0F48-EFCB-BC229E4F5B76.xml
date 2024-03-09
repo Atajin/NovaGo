@@ -1,0 +1,212 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="558BEF9D-2303-0F48-EFCB-BC229E4F5B76" name="voyage">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>DD6848EB-897B-5B2D-059F-921A3B06408E</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id_voyage" id="707AAAC0-79D4-18D7-A71E-1D9EAE0E8E0A">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>D7FC60A3-D819-E660-B6C8-76C54E597EF7</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="origine" id="1A5C67CE-14FD-64BE-877D-A194845119B0">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>B3FAA6E8-7568-7596-5D24-78768ADB479C</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="destination" id="1428ACF8-ECA5-3348-1BD5-60BFC3F7A7C5">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>3ED3375E-6236-AB10-9B50-FF58505B679E</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="date_depart" id="810F7685-7758-1C44-E0FE-C10BF0524246">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>7D0EB7B7-7D68-EFB2-5439-838AAC8D27F3</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="nb_heures" id="B5827157-9A21-124A-1E2B-E6E8A6FA33F0">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>59F42D38-BD5E-76A8-9F31-3B54995C062C</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="prix_econo" id="CF8A4518-5EF0-1E75-099B-FED0CFCE1FB0">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>A7398014-4D7D-0CAD-91CB-4F0A5BB1612D</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeScale>2</dataTypeScale>
+<ownDataTypeParameters>,,2</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="vaisseau_id_vaisseau" id="2753030E-4CDC-A083-0A15-E0EFC3EF87F6">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>CB3FB762-99F7-A56E-DED2-54AFDE53B549</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="05543799-10D9-034E-7330-290B0B3A5894" referredColumn="A9536985-D839-BE25-EC9D-60149BA5E3AB"/>
+</associations>
+</Column>
+<Column name="planete_id_planete2" id="59AF1C38-3B37-53A5-842E-C7EB03904142">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>656131A5-5EEA-0886-A0F3-BCD78BFDE349</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="DB8D6515-9449-3317-5DC2-19815C66DA25" referredColumn="C66C011E-D3A0-6899-08DF-D406DAFA19F6"/>
+</associations>
+</Column>
+<Column name="planete_id_planete" id="64DBC056-DB3C-B798-13EA-643B10E3A8AA">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>8C08B3CC-A1C3-455D-AAB4-338381CEDCDE</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="CFB688F3-BA53-82CA-D961-AB8A55BA0E7F" referredColumn="C66C011E-D3A0-6899-08DF-D406DAFA19F6"/>
+</associations>
+</Column>
+<Column name="rabais_id_rabais" id="85574BB3-CF6C-4A35-BFB3-014E82474BC6">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>FE378A5F-16F5-7593-A268-B8C8F65E3A11</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="13F37571-12AC-3998-79E8-9E596D33A9D4" referredColumn="3399AC8F-7C33-5B28-F070-4AA20608F8C6"/>
+</associations>
+</Column>
+<Column name="prix_business" id="0A09B55C-03A1-339A-71C3-DB2D5C473192">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>F8A7B043-AA21-018C-33A9-C98626352AAF</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeScale>2</dataTypeScale>
+<ownDataTypeParameters>,,2</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="619889CE-F7E7-8954-E022-87C9C8E4305F" name="voyage_PK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>76CCCFD9-FD66-2E2C-6B7B-821DCD23247E</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="707AAAC0-79D4-18D7-A71E-1D9EAE0E8E0A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2AC120E8-9C83-EDC8-9E90-E87DA4AEB258" name="voyage_planete_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>8208E7DF-AFC1-FC7A-3585-7ACB0D665A91</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="64DBC056-DB3C-B798-13EA-643B10E3A8AA"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A7252E2C-1C07-F8A7-3364-C4E28207D6B7" name="voyage_planete_FKv2">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>9D858582-28E4-B30F-8B8C-241D46F1AAB4</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="59AF1C38-3B37-53A5-842E-C7EB03904142"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="ABAC919B-9871-6052-1BED-8E472447BAA0" name="voyage_rabais_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>193859BB-F10C-7159-AA38-395B0608A07A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="85574BB3-CF6C-4A35-BFB3-014E82474BC6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="889D8A6A-388A-0947-00BF-95468F897F58" name="voyage_vaisseau_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>0FE5429D-3229-4966-06E2-E4AAB4BE94EE</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2753030E-4CDC-A083-0A15-E0EFC3EF87F6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
