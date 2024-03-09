@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="utilisateur_wishlist" directorySegmentName="seg_0" id="F50EDE03-293A-6571-E3BA-72627B0A4D5A">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<importedID>6F123DDA-89CB-BD91-5977-2A57C6EADB25</importedID>
+<engineerTo>
+<item key="9701755E-F7EF-47EA-3495-C761E223357A" value="true"/>
+</engineerTo>
+<sourcePk>4A875BA3-3018-6508-EB95-857006098F0A</sourcePk>
+<identifying>false</identifying>
+<nameOnSource>posséder</nameOnSource>
+<nameOnTarget>appartenir</nameOnTarget>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>CCE98592-8A3A-9727-864F-27AAB2B3B6E9</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>BA06C51C-C461-1AF7-282C-6E5C60055A2C</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

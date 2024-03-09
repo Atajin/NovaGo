@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="A62AC220-29D5-F1C9-F0D0-DB92ACB31523" name="vaisseau">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>30B0EB3A-6164-71B0-9B97-E47929DA8CF8</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id_vaisseau" id="A9536985-D839-BE25-EC9D-60149BA5E3AB">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>403A7B2E-E45C-AFE4-7756-F728CB31E559</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="nom" id="93899037-3A24-EBA2-F3D5-BC0DC02DD035">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>042F1B99-E3C3-BFE0-F838-96E8E432DC0A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="type_de_propulsion" id="F6ED507C-E6ED-9054-AE67-30064DEA1628">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>9F2E11C7-F087-6AE9-5D53-F86BD9BEA443</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="capacite" id="C4517C1E-8C84-D893-DF8A-9D2F71309157">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>3C5B915F-2ED6-EAD6-BD98-DFA3BD928835</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="8903E5A5-2FBA-BC94-C4E7-C8257E9ED129" name="vaisseau_PK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>419F3CC2-91DC-D731-1A95-FC5ED1799016</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A9536985-D839-BE25-EC9D-60149BA5E3AB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

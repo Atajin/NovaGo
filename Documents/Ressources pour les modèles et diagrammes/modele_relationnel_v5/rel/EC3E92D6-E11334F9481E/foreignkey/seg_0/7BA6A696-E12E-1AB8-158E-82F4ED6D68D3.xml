@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="7BA6A696-E12E-1AB8-158E-82F4ED6D68D3" containerWithKeyObject="CF985D92-2BA6-7660-032B-CA15CD3AC62F" localFKIndex="4ECAD2F0-862C-33BA-61DE-8423279A9506" name="wishlist_voyage_wishlist_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>5C5C5904-E6C3-86B1-60EE-AEA22A000A8C</generatorID>
+<ownerDesignName>modele_relationnel_v5</ownerDesignName>
+<referredTableLongName>wishlist</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>7D397146-B419-1D44-76B1-732561AD43C8</referredTableID>
+<keyObject>A3CB06C1-7D3D-8074-45CF-6BB30AB737A2</keyObject>
+<referredKeyID>A3CB06C1-7D3D-8074-45CF-6BB30AB737A2</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id_wishlist</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

@@ -1,7 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="EB397CDE-12E2-7FDE-C1F6-4632E94D7D8E" mainViewID="0D53BBB8-7226-107D-5FE0-DA9B851DD605">
-<createdBy>Kian</createdBy>
-<createdTime>2024-02-21 02:58:03 UTC</createdTime>
-<ownerDesignName>modele novago 2.5</ownerDesignName>
-<shouldBeOpen>false</shouldBeOpen>
-</LogicalDesign>
