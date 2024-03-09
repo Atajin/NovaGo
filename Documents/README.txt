@@ -66,3 +66,12 @@ END;
 /
 
 Si jamais les tables ne s'affichent pas bien dans la console de docker, ajuster la taille de la page avec SET PAGESIZE (exemple: SET PAGESIZE 50)
+
+Pour initialiser un serveur dans Visual Studio Code en utilisant nodemon :
+
+1. Ouvrir Visual Studio Code
+2. Ouvrir le projet dans Visual Studio Code en utilisant Fichier > Ouvrir un dossier
+3. Ouvrir le fichier server.js est présent dans le dossier 
+4. Ouvrir le terminal intégré dans Visual Studio Code en utilisant Affichage > Terminal
+6. Si "nodemon" n'est pas installé, installe-le : Executer dans le terminal : npm install -g nodemon
+5. Executer dans le terminal : npx nodemon server.js
