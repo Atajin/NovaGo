@@ -42,10 +42,14 @@ Lancer le script de creation:
 Lancer le script d'insertion:
 @/home/script_insertion_novago_2.0.ddl
 
+EXIT;
+
 Normalement, c'est bon!
 
 
 Pour effacer les tables en cas de probleme:
+
+Se connecter en tant que novago (sqlplus novago/oracle)
 
 BEGIN
     -- Suppression des tables
