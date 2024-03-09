@@ -12,8 +12,8 @@
                     <div class="container-fluid text-center" style="margin-top: 20px;">
                         <br>
                         <div class="row">
-                            <div class="col">
-                                <div class="row" style="margin: 4% 9% 4% 9%;">
+                            <div class="col" style="margin: 4% 0% 5% 9%;">
+                                <div class="row">
                                     <div class="col-sm-6">
                                         <% if (item[1].length < 10) { %>
                                             <h2 class="custom-font-planet-t">
@@ -33,18 +33,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="bg-black d-flex p-2 " style="margin: 4% 9% 5% 9%;">
+                                <div class="bg-black d-flex p-2 ">
                                     <h5 class="custom-font-planet-p" style="text-align: justify;">
                                         <%= item[4] %>
                                     </h5>
                                 </div>
-                                <a href="/<%= item[0] %>"
-                                    class="btn btn-outline-light btn-lg custom-font-planet-p">Chercher un voyage</a>
+                                <div class="m-4">
+                                    <a href="/<%= item[0] %>"
+                                        class="btn btn-outline-light btn-lg custom-font-planet-p">Chercher un voyage</a>
+                                </div>
                             </div>
                             <div class="col">
-                                <div class="text-center">
+                                <div class="text-center" style="width: 400px; height: 330px;">
                                     <img src="/images/<%= item[5] %>" class="image-fluid m-2"
-                                        style="border-radius: 48%; width: 550px; height: 455px;" alt="<%= item[1] %>">
+                                        style="border-radius: 48%; width: auto; height: 100%; color: white;"
+                                        alt="<%= item[1] %>">
                                 </div>
                             </div>
                         </div>
