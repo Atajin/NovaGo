@@ -9,13 +9,13 @@ docker run -d -p 1521:1521 --name oracle-xe -e ORACLE_PASSWORD=oracle gvenzl/ora
 Copier le script de creation dans le container docker:
 docker cp /chemin/vers/nom_script_creation.ddl oracle-xe:/home/nom_script_creation.ddl
 
-Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_creation_novago_7.0_21c.ddl oracle-xe:/home/script_creation_novago_7.0_21c.ddl
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_creation_novago_8.0_21c.ddl oracle-xe:/home/script_creation_novago_8.0_21c.ddl
 
 
 Copier le script d'insertion dans le container docker:
 docker cp /chemin/vers/nom_script_insertion.ddl oracle-xe:/home/nom_script_insertion.ddl
 
-Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago.ddl oracle-xe:/home/script_insertion_novago.ddl
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_2.0.ddl oracle-xe:/home/script_insertion_novago_2.0.ddl
 
 
 Dans docker exec:
@@ -37,10 +37,10 @@ Se connecter en tant que le nouvel utilisateur (novago):
 sqlplus novago/oracle
 
 Lancer le script de creation:
-@/home/script_creation_novago_7.0_21c.ddl
+@/home/script_creation_novago_8.0_21c.ddl
 
 Lancer le script d'insertion:
-@/home/script_insertion_novago.ddl
+@/home/script_insertion_novago_2.0.ddl
 
 Normalement, c'est bon!
 
@@ -48,8 +48,19 @@ Normalement, c'est bon!
 Pour effacer les tables en cas de probleme:
 
 BEGIN
+    -- Suppression des tables
     FOR r IN (SELECT table_name FROM user_tables) LOOP
         EXECUTE IMMEDIATE 'DROP TABLE "' || r.table_name || '" CASCADE CONSTRAINTS';
+    END LOOP;
+    
+    -- Suppression des déclencheurs
+    FOR r IN (SELECT trigger_name FROM user_triggers) LOOP
+        EXECUTE IMMEDIATE 'DROP TRIGGER "' || r.trigger_name || '"';
+    END LOOP;
+    
+    -- Suppression des séquences
+    FOR r IN (SELECT sequence_name FROM user_sequences) LOOP
+        EXECUTE IMMEDIATE 'DROP SEQUENCE "' || r.sequence_name || '"';
     END LOOP;
 END;
 /
