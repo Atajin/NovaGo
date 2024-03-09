@@ -66,10 +66,10 @@ async function demarrerServeur() {
     app.get('/', async (req, res) => {
         try {
             // Passer les données obtenues au moteur de rendu
-            res.render('pages/index', { connexion: "", origine: "", destination: "" });
+            res.render('pages/', { connexion: "", origine: "", destination: "" });
         } catch (err) {
             console.error(err);
-            res.render('pages/index', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+            res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
     });
 
@@ -163,7 +163,7 @@ async function demarrerServeur() {
         if (!errors.isEmpty()){
             return res.render('pages/inscription', { erreur: errors.array().map(error => error.msg).join(' ') });
         }
-        const { prenom, nom, email, mdp } = req.body;
+        const { prenom, nom, email, mdp, planete, adresse, telephone } = req.body;
         try {
             // Obtention d'une connexion à partir du pool
             const connection = await getPool().getConnection();
@@ -182,7 +182,35 @@ async function demarrerServeur() {
                 return res.render('pages/inscription', { erreur: 'Cette adresse courriel est déjà utilisée.' });
             } else {
                 // L'utilisateur n'existe pas
-                return res.render('pages/', { connexion: 'Compte créé avec succès!' });
+                try {
+                    // Obtention d'une connexion à partir du pool
+                    const connection = await getPool().getConnection();
+        
+                    // Exécution de l'insertion de données dans la BD
+                    const result = await connection.execute(
+                        `INSERT INTO utilisateur (id_utilisateur, email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
+                        VALUES (:id_utilisateur, :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
+                        {
+                            id_utilisateur: 11,
+                            email: email,
+                            mot_de_passe: mdp,
+                            nom: nom,
+                            prenom: prenom,
+                            adresse: adresse,
+                            telephone: telephone,
+                            planete_id_planete: 1
+                        }
+                    );
+        
+                    await connection.close();
+
+                    return res.render('pages/', { connexion: 'Compte créé avec succès!', origine: "", destination: ""});
+
+                } catch (err) {
+                    console.error(err);
+                    return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données' });
+                }
+                
             }
         } catch (err) {
             console.error(err);
