@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="CFB688F3-BA53-82CA-D961-AB8A55BA0E7F" containerWithKeyObject="558BEF9D-2303-0F48-EFCB-BC229E4F5B76" localFKIndex="2AC120E8-9C83-EDC8-9E90-E87DA4AEB258" name="voyage_planete_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>8208E7DF-AFC1-FC7A-3585-7ACB0D665A91</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<referredTableLongName>planete</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>713C5158-BC64-F7B4-9A01-38622789ABC0</referredTableID>
+<keyObject>6E6A9E04-D52B-8A23-2C77-2AA85A47F1BA</keyObject>
+<referredKeyID>6E6A9E04-D52B-8A23-2C77-2AA85A47F1BA</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id_planete</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

@@ -1,0 +1,136 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="9DF06384-23B9-004F-A830-1A5F345E10DD" name="utilisateur">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>CCE98592-8A3A-9727-864F-27AAB2B3B6E9</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id_utilisateur" id="5B8382A6-3F38-11FA-57D7-3247D4BD1B91">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>4E475465-9C63-2665-2095-45A9DA73FD49</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="email" id="F219D4B7-68EC-8E4C-9856-D22490CF49B7">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>4728EF47-888E-178C-EF63-E9E7F472D5BB</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="mot_de_passe" id="0217CA69-1A65-7236-AF3C-3500D42EAC3F">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>653ECD93-A549-30CF-572E-FEDDEEACF7C4</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="nom" id="39F15100-C72E-14F8-CB5D-D8F3B7A2A950">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>0A63C352-8551-8E1C-4FE8-AC2721822F72</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>64 CHAR</dataTypeSize>
+<ownDataTypeParameters>64 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="prenom" id="7C18846A-40DC-44D0-975A-A4BD406277F4">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>85107AB5-BCA5-9CEB-3268-05476BF36B3A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>64 CHAR</dataTypeSize>
+<ownDataTypeParameters>64 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="adresse" id="C14FC3A3-E4FB-C815-A042-2364E233E10D">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>0338AC16-04F5-5675-A8CE-B445007F11D4</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128</dataTypeSize>
+<ownDataTypeParameters>128,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="telephone" id="5FE5EB4D-C2EF-EEF9-8D6C-A6AC94717F4D">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>B1C3616A-1587-66A2-238A-2CAF5F6B0330</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="planete_id_planete" id="3B5A695D-2FC7-CD0F-C5E7-D26D0334A1B6">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>2F6DE086-1490-1DDD-A7B9-2E17BCDE66C1</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="3C5E16CA-98B0-7C9F-6197-1BE24E35B5ED" referredColumn="C66C011E-D3A0-6899-08DF-D406DAFA19F6"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="4D01F555-D504-15B1-CCF1-08A770506C9B" name="utilisateur_PK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>4A875BA3-3018-6508-EB95-857006098F0A</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5B8382A6-3F38-11FA-57D7-3247D4BD1B91"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="EF8CC068-CD5A-E4A6-2FA8-E4AB7C7EB0BB" name="utilisateur_planete_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-23 21:28:22 UTC</createdTime>
+<generatorID>188E1B28-3BC3-5CA1-6374-5676FC5DA618</generatorID>
+<ownerDesignName>modele_libellé</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="3B5A695D-2FC7-CD0F-C5E7-D26D0334A1B6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
