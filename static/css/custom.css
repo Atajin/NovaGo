@@ -57,11 +57,13 @@
         color: white;
         font-size: 20px;
     }
+
     .custom-font-errors {
         font-family: 'PPStellar', sans-serif;
         color: red;
         font-size: 20px;
     }
+
     .custom-font-planet-t {
         text-align: left;
         font-family: 'Iceland', sans-serif;
@@ -95,4 +97,18 @@
 
     .custom-font-labels-bg {
         background: rgba(0, 0, 0, 0.60);
+    }
+
+    .btn-outline-light {
+        background-color: rgba(0, 0, 0, 0.50);
+    }
+
+    .btn-outline-light:hover,
+    .btn-outline-light:focus,
+    .btn-outline-light:active,
+    .btn-outline-light.active,
+    .open>.dropdown-toggle.btn-outline-light {
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.90);
+        border-color: #fff;
     }
