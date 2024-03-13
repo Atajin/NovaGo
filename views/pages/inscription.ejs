@@ -4,42 +4,91 @@
             <div class="col-1"></div>
 
             <div class="col">
-                
+                <% if (erreur) { %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= erreur %>
+                      </div>
+                    <% } %>
                 <form action="/inscription" method="POST">
                     <div class="row justify-content-center">
                         <h1 class="custom-font-titles text-center">Créer un compte</h1>
                         <div class="col-md-auto">
                             <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label> <br>
-                            <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom" required>
+                            <!--*affiche encore une erreur lorsque le champ est rempli-->
+                            <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom"
+                                required>
+                            <div class="invalid-feedback">Veuillez écrire votre prénom.</div>
 
                             <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label> <br>
                             <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom" required>
+                            <div class="invalid-feedback">Veuillez écrire votre nom.</div>
 
                             <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label> <br>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
-                            
-                            <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de téléphone</label> <br>
-                            <input type="text" id="telephone" name="telephone" class="form-control" placeholder="Téléphone">
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Courriel"
+                                required>
+                            <div class="invalid-feedback">Veuillez écrire votre adresse courriel.</div>
+
+                            <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de
+                                téléphone</label> <br>
+                            <input type="text" id="telephone" name="telephone" class="form-control"
+                                placeholder="Téléphone">
                         </div>
                         <div class="col-md-auto">
-                            <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label> <br>
-                            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe" required>
+                            <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
+                            <br>
+                            <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe"
+                                required>
+                            <div class="invalid-feedback">Veuillez écrire votre mot de passe.</div>
 
-                            <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de passe</label> <br>
-                            <input type="password" id="confirmation" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
-                            
+                            <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de
+                                passe</label> <br>
+                            <input type="password" id="confirmation" name="confirmation" class="form-control"
+                                placeholder="Confirmer le mot de passe" required>
+
                             <label for="adresse" class="form-label custom-font-labels">Entrez votre adresse</label> <br>
                             <input type="text" id="adresse" name="adresse" class="form-control" placeholder="Adresse">
-                            
-                            <label for="planete" class="form-label custom-font-labels">Entrez votre objet céleste courant</label> <br>
-                            <input type="text" id="planete" name="planete" class="form-control" placeholder="Planète / lune / autre" required>
+
+                            <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet céleste
+                                courant</label> <br>
+                            <input type="text" id="planete" list="planetes" name="planete" class="form-control"
+                                placeholder="Planète / lune / autre" required>
+                            <!--<datalist id="planetes">
+                                <//% planetes.forEach((planetes, index)=>{%>
+                            <option id=<//%= planetes.id_planete%>>
+                                <//%= planetes.nom%></option>
+                                <//%})%>
+                            </datalist>-->
                         </div>
                     </div>
-                    <submit class="btn btn-primary mt-2 position-relative top-0 start-50 translate-middle-x">Connexion au compte</submit>
+                    <button type="submit"
+                        class="btn btn-dark bg-dark.bg-gradient mt-2 position-relative top-0 start-50 translate-middle-x">
+                        Créer le compte</button>
                 </form>
             </div>
-            
+
             <div class="col-1"></div>
         </div>
     </div>
-<%- include ("../partials/footer.ejs") %>
+    <!-- tentative de faire apparaitre le message d'erreur qu'une fois que l'utilisateur a tenté de se connecter
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var form = document.querySelector('form');
+
+            form.addEventListener('submit', function (event) {
+                var entrees = form.querySelectorAll('.form-control');
+
+                entrees.forEach(function (input) {
+                    if (!input.checkValidity()) {
+                        input.classList.add('is-invalid');
+                    } else {
+                        input.classList.remove('is-invalid');
+                    }
+                });
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>-->
+    <%- include ("../partials/footer.ejs") %>
