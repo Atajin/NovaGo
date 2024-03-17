@@ -72,6 +72,11 @@
         margin-top: 10px;
     }
 
+    .custom-font-rvt {
+        font-family: 'PPStellar', sans-serif;
+        font-size: 17px;
+    }
+
     .petit-titre {
         font-size: 3.2rem;
     }
