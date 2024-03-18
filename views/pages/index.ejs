@@ -2,9 +2,11 @@
     <div class="container-fluid" style="margin-top: 10%;">
         <div class="row justify-content-center">
             <div class="col-md-8">
+
+                <!--Action complétée lors du submit de ce formulaire-->
                 <form action="/" method="POST">
 
-                    <!--Gestion de l'affichage lorsque l'utilisateur est connecté-->
+                    <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
                     <% if (connexion) { %>
                         <div class="alert alert-success" role="alert">
                             <%= connexion %>
@@ -82,6 +84,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!--Boutton submit pour rechercher un voyage-->
                             <div class="text-center">
                                 <button type="submit" class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
                             </div>

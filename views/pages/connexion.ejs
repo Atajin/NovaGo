@@ -1,5 +1,6 @@
 <%- include ("../partials/header.ejs") %>
 
+    <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | Se connecter";
         document.title += nomPage;
@@ -11,31 +12,39 @@
             <div class="col"></div>
 
             <div class="col-md-auto">
+
+                <!--Titre de la page-->
                 <h1 class="custom-font-titles text-center">Connexion</h1>
 
+                <!--Champ d'affichage des erreurs lors de connexion-->
                 <% if (erreur) { %>
                     <div class="alert alert-danger" role="alert">
                         <%= erreur %>
                     </div>
                     <% } %>
-                    
+
+                        <!--Action complétée lors du submit de ce formulaire-->
                         <form method="POST" action="/connexion">
+
+                            <!--Champ d'entrée du courriel de l'utilisateur-->
                             <div class="row-md-auto">
                                 <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
                                 <br>
                                 <input type="email" id="email" name="email" class="form-control" placeholder="Courriel"
                                     required>
                             </div>
+
+                            <!--Champ d'entrée du mot de passe de l'utilisateur-->
                             <div class="mb-3">
                                 <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
                                 <br>
                                 <input type="password" id="mdp" name="mdp" class="form-control"
                                     placeholder="Mot de passe" required>
                             </div>
+
+                            <!--Boutton submit pour se connecter à un compte-->
                             <button type="submit"
-                                class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">Connexion
-                                au
-                                compte</button>
+                                class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">Connexion au compte</button>
                         </form>
             </div>
             <div class="col"></div>

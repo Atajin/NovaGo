@@ -1,18 +1,23 @@
 <%- include ("../partials/header.ejs") %>
-
+    <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | Explorer";
         document.title += nomPage;
     </script>
 
+    <!--Champ d'affichage des erreurs lors de la connexion à la BD-->
     <% if (!items || items.length===0) { %>
         <div class="alert alert-danger" role="alert" style="margin: 20px;">
             <%= erreur %>
         </div>
+
         <% } else { %>
+
+            <!--Caroussel de toutes les planètes-->
             <div id="carousel" class="carousel slide">
                 <div class="carousel-inner">
                     <% items.forEach(function(item) { %>
+                        <!--Affichage d'une planète-->
                         <div class="carousel-item <%= item[0] === 1 ? 'active' : '' %> w-100">
                             <div class="container-fluid text-center" style="margin-top: 20px;">
                                 <br>
@@ -23,18 +28,17 @@
                                                 <% if (item[1].length < 10) { %>
                                                     <h2 class="custom-font-planet-t">
                                                         <% } else { %>
-                                                            <h2 class="custom-font-planet-t petit-titre">
+                                                            <h1 class="custom-font-planet-t petit-titre">
                                                                 <% } %>
                                                                     <%= item[1] %>
-                                                            </h2>
+                                                            </h1>
                                             </div>
                                             <div class="col-sm-6 mt-4 custom-font-planet-p" style="text-align: right;">
                                                 <div class="row-sm-4">
-                                                    <h6>Type d'objet céleste : <%= item[2] %>
-                                                    </h6>
+                                                    <h1 class="form-label custom-font-labels">Type d'objet céleste : <%= item[2] %></h1>
                                                 </div>
                                                 <div class="row-sm-4">
-                                                    <h6>Gravité : <%= item[3] %> m/s²</h6>
+                                                    <h1 class="form-label custom-font-labels">Gravité : <%= item[3] %> m/s²</h1>
                                                 </div>
                                             </div>
                                         </div>

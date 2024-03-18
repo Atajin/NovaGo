@@ -1,5 +1,5 @@
 <%- include ("../partials/header.ejs") %>
-
+<!--Affichage du nom de la page dans le titre du navigateur web-->
 <script>
     var nomPage = " | S'inscrire";
     document.title += nomPage;
@@ -12,60 +12,87 @@
 
             <div class="col">
 
+                <!--Champ d'affichage des erreurs lors d'inscription-->
                 <% if (erreur) { %>
                     <div class="alert alert-danger" role="alert">
                         <%= erreur %>
                     </div>
                     <% } %>
-                    
+
+                        <!--Action complétée lors du submit de ce formulaire-->
                         <form action="/inscription" method="POST">
+
                             <div class="row justify-content-center">
+
+                                <!--Titre de la page-->
                                 <h1 class="custom-font-titles text-center">Créer un compte</h1>
+
                                 <div class="col-md-auto">
-                                    <label for="prenom" class="form-label custom-font-labels">Entrez votre
-                                        prénom</label> <br>
-                                    <!--*affiche encore une erreur lorsque le champ est rempli-->
-                                    <input type="text" id="prenom" name="prenom" class="form-control"
-                                        placeholder="Prénom" required>
+
+
+                                    <!--Champ d'entrée du prénom de l'utilisateur-->
+                                    <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label>
+                                    <br>
+                                    <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom" required>
+
+                                    <!--Affichage d'erreur lors d'une entrée dans le champs prénom-->
                                     <div class="invalid-feedback">Veuillez écrire votre prénom.</div>
 
-                                    <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label> <br>
-                                    <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom"
-                                        required>
+
+                                    <!--Champ d'entrée du nom de l'utilisateur-->
+                                    <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label>
+                                    <br>
+                                    <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom" required>
+
+                                    <!--Affichage d'erreur lors d'une entrée dans le champs nom-->
                                     <div class="invalid-feedback">Veuillez écrire votre nom.</div>
 
-                                    <label for="email" class="form-label custom-font-labels">Entrez votre
-                                        courriel</label> <br>
-                                    <input type="email" id="email" name="email" class="form-control"
-                                        placeholder="Courriel" required>
+
+                                    <!--Champ d'entrée du courriel de l'utilisateur-->
+                                    <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
+                                    <br>
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
+
+                                    <!--Affichage d'erreur lors d'une entrée dans le champs courriel-->
                                     <div class="invalid-feedback">Veuillez écrire votre adresse courriel.</div>
 
-                                    <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de
-                                        téléphone</label> <br>
-                                    <input type="text" id="telephone" name="telephone" class="form-control"
-                                        placeholder="Téléphone">
+
+                                    <!--Champ d'entrée du numéro de téléphone de l'utilisateur-->
+                                    <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de téléphone</label>
+                                    <br>
+                                    <input type="text" id="telephone" name="telephone" class="form-control" placeholder="Téléphone">
+
+
                                 </div>
                                 <div class="col-md-auto">
-                                    <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de
-                                        passe</label>
+
+
+                                    <!--Champ d'entrée du mot de passe de l'utilisateur-->
+                                    <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
                                     <br>
-                                    <input type="password" id="mdp" name="mdp" class="form-control"
-                                        placeholder="Mot de passe" required>
+                                    <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe" required>
+
+                                    <!--Affichage d'erreur lors d'une entrée dans le champs mot de passe-->
                                     <div class="invalid-feedback">Veuillez écrire votre mot de passe.</div>
 
-                                    <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot
-                                        de
-                                        passe</label> <br>
-                                    <input type="password" id="confirmation" name="confirmation" class="form-control"
-                                        placeholder="Confirmer le mot de passe" required>
 
-                                    <label for="adresse" class="form-label custom-font-labels">Entrez votre
-                                        adresse</label> <br>
-                                    <input type="text" id="adresse" name="adresse" class="form-control"
-                                        placeholder="Adresse">
+                                    <!--Deuxième champ d'entrée du mot de passe de l'utilisateur-->
+                                    <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de passe</label>
+                                    <br>
+                                    <input type="password" id="confirmation" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
+                                    
+                                    <!--Affichage d'erreur lors d'une entrée dans le champs mot de passe-->
+                                    <div class="invalid-feedback">Veuillez confirmer votre mot de passe.</div>
 
-                                    <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet
-                                        céleste courant</label> <br>
+
+                                    <!--Champ d'entrée de l'adresse de l'utilisateur-->
+                                    <label for="adresse" class="form-label custom-font-labels">Entrez votre adresse</label>
+                                    <br>
+                                    <input type="text" id="adresse" name="adresse" class="form-control" placeholder="Adresse">
+
+                                    <!--Champ d'entrée de l'astre d'origine de l'utilisateur-->
+                                    <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet céleste courant</label>
+                                    <br>
                                     <select id="planete" name="planete" class="form-control" <% if (!planetes ||
                                         planetes.length===0) { %> disabled <% } %> required>
                                             <% if (planetes && planetes.length> 0) { %>
@@ -80,6 +107,8 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <!--Boutton submit pour se connecter à un compte-->
                             <button type="submit"
                                 class="btn btn-outline-light btn-lg custom-font-planet-p mt-2 position-relative top-0 start-50 translate-middle-x">
                                 Créer le compte</button>
