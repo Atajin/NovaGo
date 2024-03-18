@@ -118,10 +118,16 @@
         border-color: #fff;
     }
 
-    .voyage-btn:hover {
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    .custom-btn-add:hover {
+        box-shadow: 0 0 5px rgba(104, 241, 70, 0.3);
+        color: rgba(63, 223, 23, 0.603);
     }
-    
-    .voyage-btn:active {
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+
+    .custom-btn-x:hover {
+        color: rgb(223, 112, 112);
+        box-shadow: 0 0 5px rgba(253, 67, 67, 0.3);
+    }
+
+    .custom-bg-rvt {
+        background: rgba(66, 66, 66, 0.6);
     }
