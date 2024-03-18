@@ -3,6 +3,7 @@
 */
 import express from "express";
 import session from "express-session";
+const store = new session.MemoryStore();
 import path from "path";
 import { fileURLToPath } from "url";
 import oracledb from "oracledb";
@@ -40,6 +41,25 @@ function getPool() {
     Configuration des fichiers statiques
 */
 app.use(express.static('static'));
+
+app.use(session({
+    secret: 'secret',
+    cookie: {maxAge: 3600000},
+    //VVV à modifier
+    resave: true,
+    saveUninitialized: false,
+    store
+}));
+
+
+/* validation de session 
+function validerSession(req,res,next) {
+    const {sessions} = req;
+    if (sessionID in sessions){
+        console.log('Compte connecté');
+    }
+    next();
+}*/
 
 /*
     Configuration de EJS
