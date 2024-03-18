@@ -119,10 +119,11 @@ async function demarrerServeur() {
     });
 
     app.get('/inscription', async (req, res) => {
+        let result = "";
         try {
             const erreur = "";
             const connection = await getPool().getConnection();
-            const result = await connection.execute("SELECT * FROM PLANETE");
+            result = await connection.execute("SELECT * FROM PLANETE");
             await connection.close();
 
             res.render('pages/inscription', {
@@ -131,7 +132,7 @@ async function demarrerServeur() {
             });
         } catch (err) {
             console.error(err);
-            res.status(500).send('Erreur lors de la récupération des données');
+            res.render('pages/inscription', { planetes: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
     });
 
@@ -141,7 +142,7 @@ async function demarrerServeur() {
         }
         return true;
     };
-    
+
     app.post('/inscription', [
         check('prenom')
             .isLength({ min: 2 })
@@ -163,7 +164,7 @@ async function demarrerServeur() {
             .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
         check('mdp')
             .isLength({ max: 30 })
-           .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
+            .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
         check('mdp')
             .custom(validationMdpEgal),
     ], async (req, res) => {
@@ -175,11 +176,11 @@ async function demarrerServeur() {
             planetes = result.rows;
         } catch (err) {
             console.error(err);
-            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données' });
+            return res.render('pages/inscription', { planetes: result.rows, erreur: 'Erreur lors de la connexion à la base de données' });
         }
 
         const errors = validationResult(req);
-        if (!errors.isEmpty()){
+        if (!errors.isEmpty()) {
             return res.render('pages/inscription', { erreur: errors.array().map(error => error.msg).join(' '), planetes: planetes });
         }
         const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
@@ -190,10 +191,10 @@ async function demarrerServeur() {
             // Exécution de la requête pour vérifier si l'email est utilisé
             const result = await connection.execute(
                 `SELECT * FROM utilisateur WHERE email = :email`,
-                { email: email},
+                { email: email },
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            
+
             await connection.close();
 
             if (result.rows.length > 0) {
@@ -204,7 +205,7 @@ async function demarrerServeur() {
                 try {
                     // Obtention d'une connexion à partir du pool
                     const connection = await getPool().getConnection();
-                    
+
                     // Exécution de l'insertion de données dans la BD
                     const result = await connection.execute(
                         `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
@@ -222,13 +223,13 @@ async function demarrerServeur() {
                     await connection.commit();
                     await connection.close();
 
-                    return res.render('pages/', { connexion: 'Compte créé avec succès!', origine: "", destination: ""});
+                    return res.render('pages/', { connexion: 'Compte créé avec succès!', origine: "", destination: "" });
 
                 } catch (err) {
                     console.error(err);
                     return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes });
                 }
-                
+
             }
         } catch (err) {
             console.error(err);
@@ -243,17 +244,19 @@ async function demarrerServeur() {
     });
 
     app.get('/exploration', async (req, res) => {
+        let result = "";
         try {
             const connection = await getPool().getConnection();
-            const result = await connection.execute("SELECT * FROM PLANETE");
+            result = await connection.execute("SELECT * FROM PLANETE");
             await connection.close();
 
             res.render('pages/exploration', {
-                items: result.rows
+                items: result.rows,
+                erreur: ""
             });
         } catch (err) {
             console.error(err);
-            res.status(500).send('Erreur lors de la récupération des données');
+            res.render('pages/exploration', { items: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
     });
 

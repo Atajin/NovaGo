@@ -57,12 +57,17 @@
 
                                     <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet
                                         céleste courant</label> <br>
-                                    <select id="planete" name="planete" class="form-control" required>
-                                        <% planetes.forEach(function(planete) { %>
-                                            <option value="<%= planete[0] %>">
-                                                <%= planete[1] %>
-                                            </option>
-                                            <% }); %>
+                                    <select id="planete" name="planete" class="form-control" <% if (!planetes ||
+                                        planetes.length===0) { %> disabled <% } %> required>
+                                            <% if (planetes && planetes.length> 0) { %>
+                                                <% planetes.forEach(function(planete) { %>
+                                                    <option value="<%= planete[0] %>">
+                                                        <%= planete[1] %>
+                                                    </option>
+                                                    <% }); %>
+                                                        <% } else { %>
+                                                            <option disabled selected>Aucune planète disponible</option>
+                                                            <% } %>
                                     </select>
                                 </div>
                             </div>
