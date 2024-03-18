@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import oracledb from "oracledb";
 import { body, check, validationResult } from "express-validator";
 import dateFormat from "dateformat";
+import bcrypt from "bcrypt";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -44,7 +45,7 @@ app.use(express.static('static'));
 
 app.use(session({
     secret: 'secret',
-    cookie: {maxAge: 3600000},
+    cookie: { maxAge: 3600000 },
     //VVV à modifier
     resave: true,
     saveUninitialized: false,
