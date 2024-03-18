@@ -3,42 +3,71 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <form action="/" method="POST">
+
+                    <!--Gestion de l'affichage lorsque l'utilisateur est connecté-->
                     <% if (connexion) { %>
                         <div class="alert alert-success" role="alert">
                             <%= connexion %>
                         </div>
                         <% } %>
+
                             <div class="row mb-3">
-                                <div class="col">
+                                
+                                <!--Champ de texte pour l'origine du voyage-->
+                                <div class="col">    
+                                    <label for="origine" class="form-label custom-font-labels">Entrez l'astre d'origine</label>
+                                    <br>
                                     <input type="text" name="origine" id="origine" class="form-control"
                                         placeholder="Origine" value="<%= origine %>" required>
                                 </div>
+
                                 <div class="col">
                                     <div class="row">
+
+                                        <!--Champ de texte pour la date du début du voyage-->
                                         <div class="col" id="date-aller-col">
+                                            <label for="date-aller" class="form-label custom-font-labels">Entrez la date de départ</label>
+                                            <br>
                                             <input type="date" id="date-aller" name="date-aller" class="form-control"
                                                 placeholder="Date aller" required>
                                         </div>
+                                        
+                                        <!--Champ de texte pour la date de fin du voyage-->
                                         <div class="col" id="date-retour-col" style="display: none;">
+                                            <label for="date-retour" class="form-label custom-font-labels">Entrez la date de retour</label>
+                                            <br>
                                             <input type="date" id="date-retour" name="date-retour" class="form-control"
                                                 placeholder="Date retour" required>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                             <div class="row mb-3">
+
+                                <!--Champ de texte pour la destination du voyage-->
                                 <div class="col">
+                                    <label for="destination" class="form-label custom-font-labels">Entrez l'astre de destination</label>
+                                    <br>
                                     <input type="text" name="destination" id="destination" class="form-control"
                                         placeholder="Destination" required>
                                 </div>
+
+                                <!--Champ de texte pour le nombre de billets dans le voyage-->
                                 <div class=" col">
+                                    <label for="personnes" class="form-label custom-font-labels">Entrez le nombre de passagers</label>
+                                    <br>
                                     <input type="number" name="personnes" id="personnes" class="form-control"
                                         placeholder="Nombre de personnes" required min="0">
                                 </div>
+
                             </div>
                             <div class="row mb-3">
+
+                                <!--Champ de sélection entre "aller simple" et "aller retour"-->
                                 <div class="col text-center">
                                     <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
+                                        <!--Aller simple-->
                                         <label for="aller-simple" class="form-label custom-font-labels-radio">Aller
                                             simple</label>
                                         <input type="radio" id="aller-simple" value="aller-simple" name="type-billet" checked>
@@ -46,6 +75,7 @@
                                 </div>
                                 <div class="col text-center">
                                     <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
+                                        <!--Aller simple-->
                                         <label for="aller-retour"
                                             class="form-label custom-font-labels-radio">Aller-retour</label>
                                         <input type="radio" id="aller-retour" value="aller-retour" name="type-billet">

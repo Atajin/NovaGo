@@ -44,8 +44,8 @@ app.use(express.static('static'));
 
 app.use(session({
     secret: 'secret',
-    cookie: {maxAge: 3600000},
-    //VVV à modifier
+    cookie: {maxAge: 30000},
+    //VVV à vérifier
     resave: true,
     saveUninitialized: false,
     store

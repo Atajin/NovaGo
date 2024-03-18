@@ -6,16 +6,19 @@
     </script>
 
     <div class="container-fluid" style="margin-top: 10%;">
+
         <div class="row">
             <div class="col"></div>
 
             <div class="col-md-auto">
                 <h1 class="custom-font-titles text-center">Connexion</h1>
+
                 <% if (erreur) { %>
                     <div class="alert alert-danger" role="alert">
                         <%= erreur %>
                     </div>
                     <% } %>
+                    
                         <form method="POST" action="/connexion">
                             <div class="row-md-auto">
                                 <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
