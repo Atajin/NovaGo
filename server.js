@@ -3,6 +3,7 @@
 */
 import express from "express";
 import session from "express-session";
+const store = new session.MemoryStore();
 import path from "path";
 import { fileURLToPath } from "url";
 import oracledb from "oracledb";
@@ -40,6 +41,25 @@ function getPool() {
     Configuration des fichiers statiques
 */
 app.use(express.static('static'));
+
+app.use(session({
+    secret: 'secret',
+    cookie: {maxAge: 30000},
+    //VVV à vérifier
+    resave: true,
+    saveUninitialized: false,
+    store
+}));
+
+
+/* validation de session 
+function validerSession(req,res,next) {
+    const {sessions} = req;
+    if (sessionID in sessions){
+        console.log('Compte connecté');
+    }
+    next();
+}*/
 
 /*
     Configuration de EJS
@@ -119,9 +139,21 @@ async function demarrerServeur() {
     });
 
     app.get('/inscription', async (req, res) => {
-        const planetes = "";
-        const erreur = "";
-        res.render('pages/inscription', { erreur: erreur, planetes: planetes });
+        let result = "";
+        try {
+            const erreur = "";
+            const connection = await getPool().getConnection();
+            result = await connection.execute("SELECT * FROM PLANETE");
+            await connection.close();
+
+            res.render('pages/inscription', {
+                planetes: result.rows,
+                erreur: erreur
+            });
+        } catch (err) {
+            console.error(err);
+            res.render('pages/inscription', { planetes: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+        }
     });
 
     const validationMdpEgal = (value, { req }) => {
@@ -130,7 +162,7 @@ async function demarrerServeur() {
         }
         return true;
     };
-    
+
     app.post('/inscription', [
         check('prenom')
             .isLength({ min: 2 })
@@ -152,18 +184,26 @@ async function demarrerServeur() {
             .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
         check('mdp')
             .isLength({ max: 30 })
-           .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
+            .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
         check('mdp')
             .custom(validationMdpEgal),
-        check('planete')
-            .isLength({ min: 3 })
-            .withMessage('Le nom de la planète doit être au moins 3 charactères.'),
     ], async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()){
-            return res.render('pages/inscription', { erreur: errors.array().map(error => error.msg).join(' ') });
+        let planetes;
+        try {
+            const connection = await getPool().getConnection();
+            const result = await connection.execute("SELECT * FROM PLANETE");
+            await connection.close();
+            planetes = result.rows;
+        } catch (err) {
+            console.error(err);
+            return res.render('pages/inscription', { planetes: result.rows, erreur: 'Erreur lors de la connexion à la base de données' });
         }
-        const { prenom, nom, email, mdp, planete, adresse, telephone } = req.body;
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('pages/inscription', { erreur: errors.array().map(error => error.msg).join(' '), planetes: planetes });
+        }
+        const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
         try {
             // Obtention d'une connexion à partir du pool
             const connection = await getPool().getConnection();
@@ -171,21 +211,21 @@ async function demarrerServeur() {
             // Exécution de la requête pour vérifier si l'email est utilisé
             const result = await connection.execute(
                 `SELECT * FROM utilisateur WHERE email = :email`,
-                { email: email},
+                { email: email },
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            
+
             await connection.close();
 
             if (result.rows.length > 0) {
                 // L'utilisateur existe
-                return res.render('pages/inscription', { erreur: 'Cette adresse courriel est déjà utilisée.' });
+                return res.render('pages/inscription', { erreur: 'Cette adresse courriel est déjà utilisée.', planetes: planetes });
             } else {
                 // L'utilisateur n'existe pas
                 try {
                     // Obtention d'une connexion à partir du pool
                     const connection = await getPool().getConnection();
-                    
+
                     // Exécution de l'insertion de données dans la BD
                     const result = await connection.execute(
                         `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
@@ -197,23 +237,23 @@ async function demarrerServeur() {
                             prenom: prenom,
                             adresse: adresse,
                             telephone: telephone,
-                            planete_id_planete: 1
+                            planete_id_planete: planete
                         }
                     );
                     await connection.commit();
                     await connection.close();
 
-                    return res.render('pages/', { connexion: 'Compte créé avec succès!', origine: "", destination: ""});
+                    return res.render('pages/', { connexion: 'Compte créé avec succès!', origine: "", destination: "" });
 
                 } catch (err) {
                     console.error(err);
-                    return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données' });
+                    return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes });
                 }
-                
+
             }
         } catch (err) {
             console.error(err);
-            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données' });
+            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes });
         }
     });
 
@@ -224,17 +264,19 @@ async function demarrerServeur() {
     });
 
     app.get('/exploration', async (req, res) => {
+        let result = "";
         try {
             const connection = await getPool().getConnection();
-            const result = await connection.execute("SELECT * FROM PLANETE");
+            result = await connection.execute("SELECT * FROM PLANETE");
             await connection.close();
 
             res.render('pages/exploration', {
-                items: result.rows
+                items: result.rows,
+                erreur: ""
             });
         } catch (err) {
             console.error(err);
-            res.status(500).send('Erreur lors de la récupération des données');
+            res.render('pages/exploration', { items: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
     });
 

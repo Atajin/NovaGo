@@ -57,17 +57,24 @@
         color: white;
         font-size: 20px;
     }
+
     .custom-font-errors {
         font-family: 'PPStellar', sans-serif;
         color: red;
         font-size: 20px;
     }
+
     .custom-font-planet-t {
         text-align: left;
         font-family: 'Iceland', sans-serif;
         color: white;
         font-size: 400%;
         margin-top: 10px;
+    }
+
+    .custom-font-rvt {
+        font-family: 'PPStellar', sans-serif;
+        font-size: 17px;
     }
 
     .petit-titre {
@@ -95,4 +102,32 @@
 
     .custom-font-labels-bg {
         background: rgba(0, 0, 0, 0.60);
+    }
+
+    .btn-outline-light {
+        background-color: rgba(0, 0, 0, 0.50);
+    }
+
+    .btn-outline-light:hover,
+    .btn-outline-light:focus,
+    .btn-outline-light:active,
+    .btn-outline-light.active,
+    .open>.dropdown-toggle.btn-outline-light {
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.90);
+        border-color: #fff;
+    }
+
+    .custom-btn-add:hover {
+        box-shadow: 0 0 5px rgba(104, 241, 70, 0.3);
+        color: rgba(63, 223, 23, 0.603);
+    }
+
+    .custom-btn-x:hover {
+        color: rgb(223, 112, 112);
+        box-shadow: 0 0 5px rgba(253, 67, 67, 0.3);
+    }
+
+    .custom-bg-rvt {
+        background: rgba(66, 66, 66, 0.6);
     }
