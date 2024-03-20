@@ -86,9 +86,8 @@ async function demarrerServeur() {
 
     app.get('/logout', (req, res) => {
         if (req.session) {
-            console.log(req.session);
             req.session.destroy();
-            console.log(req.session);
+            console.log("no more session :" + req.session);
 
             res.render('pages/', { connexion: "Déconnexion réussie!", origine: "", destination: "" });
         }
@@ -127,7 +126,10 @@ async function demarrerServeur() {
                         { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
-                    req.session.save();
+                    console.log(req.session);
+                    req.session.email = email;
+                    req.session.mdp = mdp;
+                    console.log(req.session);
                     return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
                 }
             } else {
@@ -260,9 +262,10 @@ async function demarrerServeur() {
     });
 
     app.get('/reservation', (req, res) => {
-        res.render('pages/reservation', {
-            // variables
-        });
+        if (req.session.email){
+            console.log(req.session.email);
+            res.render('pages/reservation', {});
+        } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
     });
 
     app.get('/exploration', async (req, res) => {
