@@ -15,7 +15,7 @@ Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_creation_n
 Copier le script d'insertion dans le container docker:
 docker cp /chemin/vers/nom_script_insertion.ddl oracle-xe:/home/nom_script_insertion.ddl
 
-Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_2.0.ddl oracle-xe:/home/script_insertion_novago_2.0.ddl
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_3.0.ddl oracle-xe:/home/script_insertion_novago_3.0.ddl
 
 
 Dans docker exec:
@@ -40,7 +40,7 @@ Lancer le script de creation:
 @/home/script_creation_novago_8.0_21c.ddl
 
 Lancer le script d'insertion:
-@/home/script_insertion_novago_2.0.ddl
+@/home/script_insertion_novago_3.0.ddl
 
 EXIT; (pour s'assurer que les changements soient commit)
 

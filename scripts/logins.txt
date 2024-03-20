@@ -1,0 +1,11 @@
+logins:
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('zara.lumina@espace.com', 'LumiereStellaire21$', 'Lumina', 'Zara', 'Paris, France', 0742382392, 1);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('jax.tar@espace.com', 'RoverRouge82#', 'Tar', 'Jax', 'Vallée Rouge', 1234567891, 2);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('leo.stardust@espace.com', 'Venussien2024!', 'Stardust', 'Leo', 'Nuages Acides', 1234567892, 3);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('nova.skywalker@espace.com', 'JupiterJumper88*', 'Skywalker', 'Nova', 'Grandes Bandes', 1234567893, 4);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('orion.nebula@espace.com', 'SaturneRingz4$', 'Nebula', 'Orion', 'Anneaux Lumineux', 1234567894, 5);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('kira.cosmos@espace.com', 'AquaExplorer7%', 'Cosmos', 'Kira', 'Îles Flottantes', 1234567895, 6);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('rhea.galactic@espace.com', 'CrystalMountain22&', 'Galactic', 'Rhea', 'Montagnes de Cristal', 1234567896, 7);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('sirius.darkmatter@espace.com', 'ElectroStorm99@', 'Darkmatter', 'Sirius', 'Tempête Électromagnétique', 1234567897, 8);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('lyra.constellation@espace.com', 'ElysiumDream33$', 'Constellation', 'Lyra', 'Forêts Harmonieuses', 1234567898, 9);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('phoenix.starfire@espace.com', 'VortexVisionary5*', 'Starfire', 'Phoenix', 'Centre Vortex', 1234567899, 10);

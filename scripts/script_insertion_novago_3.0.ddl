@@ -33,16 +33,16 @@ INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (25, TO_DATE
 INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (5, TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2024-02-28', 'YYYY-MM-DD'), 'HIVER5');
 
 -- Table utilisateur
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('zara.lumina@espace.com', 'LumiereStellaire21$', 'Lumina', 'Zara', 'Paris, France', 0742382392, 1);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('jax.tar@espace.com', 'RoverRouge82#', 'Tar', 'Jax', 'Vallée Rouge', 1234567891, 2);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('leo.stardust@espace.com', 'Venussien2024!', 'Stardust', 'Leo', 'Nuages Acides', 1234567892, 3);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('nova.skywalker@espace.com', 'JupiterJumper88*', 'Skywalker', 'Nova', 'Grandes Bandes', 1234567893, 4);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('orion.nebula@espace.com', 'SaturneRingz4$', 'Nebula', 'Orion', 'Anneaux Lumineux', 1234567894, 5);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('kira.cosmos@espace.com', 'AquaExplorer7%', 'Cosmos', 'Kira', 'Îles Flottantes', 1234567895, 6);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('rhea.galactic@espace.com', 'CrystalMountain22&', 'Galactic', 'Rhea', 'Montagnes de Cristal', 1234567896, 7);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('sirius.darkmatter@espace.com', 'ElectroStorm99@', 'Darkmatter', 'Sirius', 'Tempête Électromagnétique', 1234567897, 8);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('lyra.constellation@espace.com', 'ElysiumDream33$', 'Constellation', 'Lyra', 'Forêts Harmonieuses', 1234567898, 9);
-INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('phoenix.starfire@espace.com', 'VortexVisionary5*', 'Starfire', 'Phoenix', 'Centre Vortex', 1234567899, 10);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('zara.lumina@espace.com', '$2b$10$wnnLvPjGl69qiT.7.Jklne2YjKOJCAIPmVkHP4zKJcCzfBa/siaES', 'Lumina', 'Zara', 'Paris, France', 0742382392, 1);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('jax.tar@espace.com', '$2b$10$RVrxgl/1lcA6v6eb8Q8c/.WAwLucKUUmZawuC1uHPMoDMfaYpPE9O', 'Tar', 'Jax', 'Vallée Rouge', 1234567891, 2);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('leo.stardust@espace.com', '$2b$10$8nXocc4Ar2HxndEzZkM8rOt6IaQhEGhfkjKSPh7k558sRT6LiJaRe', 'Stardust', 'Leo', 'Nuages Acides', 1234567892, 3);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('nova.skywalker@espace.com', '$2b$10$acKOwkBgaNY/m7.9aNu4MOB5RmYoTthsgP819xKWsD0dvOk4BphGS', 'Skywalker', 'Nova', 'Grandes Bandes', 1234567893, 4);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('orion.nebula@espace.com', '$2b$10$gc1g1KMrn./g5VysQIxgAO8BCi601m45B26vecQDkyHLyNrJlUSq6', 'Nebula', 'Orion', 'Anneaux Lumineux', 1234567894, 5);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('kira.cosmos@espace.com', '$2b$10$v3DjMC0jZY/wqwLLH.030uNNNeA2yzTtSNGhSWl5Eclpal.A8swsu', 'Cosmos', 'Kira', 'Îles Flottantes', 1234567895, 6);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('rhea.galactic@espace.com', '$2b$10$c7ubuhOVOwnU3GmbFRW/NeS/furtOCw7ngVhmMr5yNL88hdrOY42C', 'Galactic', 'Rhea', 'Montagnes de Cristal', 1234567896, 7);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('sirius.darkmatter@espace.com', '$2b$10$yqu7qxBJhr/hnwGNiJI2QusyGzafnjSKqwEHF0ynG1Ynfm3s/ZFe6', 'Darkmatter', 'Sirius', 'Tempête Électromagnétique', 1234567897, 8);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('lyra.constellation@espace.com', '$2b$10$S0VX2L/b4S8KZ8p9ZCt/jum880L05u36B63feyIO/6J3GLY.VYLk2', 'Constellation', 'Lyra', 'Forêts Harmonieuses', 1234567898, 9);
+INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('phoenix.starfire@espace.com', '$2b$10$QsV0wRXq..6XKYREVqLkmOTKQva8IDwdzqzm3lOn0A1WLvloiVcRC', 'Starfire', 'Phoenix', 'Centre Vortex', 1234567899, 10);
 
 
 -- Table administrateur

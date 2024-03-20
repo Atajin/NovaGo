@@ -14,6 +14,7 @@ import bcrypt from "bcrypt";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const saltRounds = 10
 
 let pool;
 
@@ -38,6 +39,16 @@ function getPool() {
     return pool;
 }
 
+async function hashMotDePasse(mdp, saltRounds) {
+    try {
+        const hash = await bcrypt.hash(mdp, saltRounds);
+        return hash;
+    } catch (err) {
+        console.error(err);
+        return null; // Or handle error as you prefer
+    }
+}
+
 /*
     Configuration des fichiers statiques
 */
@@ -51,7 +62,7 @@ app.use(session({
     cookie: {maxAge: 300000},
     resave: false,
     saveUninitialized: false,
-    rolling : true,
+    rolling: true,
     store
 }));
 
@@ -141,38 +152,42 @@ async function demarrerServeur() {
             // Obtention d'une connexion à partir du pool
             const connection = await getPool().getConnection();
 
-            // Exécution de la requête pour vérifier l'email et le mot de passe
+            // Exécution de la requête pour vérifier l'email
             const result = await connection.execute(
-                `SELECT * FROM UTILISATEUR WHERE EMAIL = :email AND MOT_DE_PASSE = :mdp`,
-                { email: email, mdp: mdp },
+                `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
+                { email: email },
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
 
             if (result.rows.length > 0) {
-                // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
-                const planetResult = await connection.execute(
-                    `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
-                    { utilID: result.rows[0].ID_UTILISATEUR },
-                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                );
-
-                if (planetResult.rows.length > 0) {
-                    // Exécution de la requête pour récupérer le nom de la planète
-                    const nomPlaneteResult = await connection.execute(
-                        `SELECT nom FROM planete WHERE id_planete = :planeteID`,
-                        { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
+                console.log(mdp);
+                console.log(result.rows[0].MOT_DE_PASSE);
+                const mdp_valide = await bcrypt.compare(mdp, result.rows[0].MOT_DE_PASSE);
+                if (mdp_valide) {
+                    // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
+                    const planetResult = await connection.execute(
+                        `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
+                        { utilID: result.rows[0].ID_UTILISATEUR },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
-                    //
-                    ajouterSession(req);
-                    return res.render('pages/', {
-                        connexion: 'Connexion au compte effectuée avec succès!',
-                        origine: nomPlaneteResult.rows[0].NOM
-                    });
+
+                    if (planetResult.rows.length > 0) {
+                        // Exécution de la requête pour récupérer le nom de la planète
+                        const nomPlaneteResult = await connection.execute(
+                            `SELECT nom FROM planete WHERE id_planete = :planeteID`,
+                            { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
+                            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                        );
+                        ajouterSession(req);
+                        return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
+                    }
+                } else {
+                    // Le mot de passe est incorrect
+                    return res.render('pages/connexion', { erreur: 'Mot de passe incorrect' });
                 }
             } else {
-                // L'utilisateur n'existe pas ou le mot de passe est incorrect
-                return res.render('pages/connexion', { erreur: 'Courriel ou mot de passe incorrect' });
+                // L'utilisateur n'existe pas
+                return res.render('pages/connexion', { erreur: "L'utilisateur n'existe pas" });
             }
         } catch (err) {
             console.error(err);
@@ -275,13 +290,15 @@ async function demarrerServeur() {
                     // Obtention d'une connexion à partir du pool
                     const connection = await getPool().getConnection();
 
+                    let hashedMdp = await hashMotDePasse(mdp, saltRounds);
+
                     // Exécution de l'insertion de données dans la BD
                     const result = await connection.execute(
                         `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
                         VALUES ( :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
                         {
                             email: email,
-                            mot_de_passe: mdp,
+                            mot_de_passe: hashedMdp,
                             nom: nom,
                             prenom: prenom,
                             adresse: adresse,
