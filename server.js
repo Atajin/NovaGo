@@ -87,12 +87,11 @@ async function demarrerServeur() {
     });
 
     app.get('/logout', (req, res) => {
-        if (req.session) {
+        if (req.session.email) {
             req.session.destroy();
-            console.log("no more session :" + req.session);
 
             res.render('pages/', { connexion: "Déconnexion réussie!", origine: "", destination: "" });
-        }
+        } else res.render('pages/', { connexion: "", origine: "", destination: "" });
     });
 
     app.get('/connexion', (req, res) => {
@@ -262,17 +261,25 @@ async function demarrerServeur() {
     });
 
     app.get('/reservation', async (req, res) => {
-        if (req.session.email && req.session.mdp){
-            const result = await connection.execute(
-                `SELECT * FROM UTILISATEUR WHERE EMAIL = :email AND MOT_DE_PASSE = :mdp`,
-                { email: email, mdp: mdp },
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
+        try{
+            if (req.session.email && req.session.mdp){
+                const connection = await getPool().getConnection();
+
+                // Exécution de la requête pour vérifier l'email et le mot de passe
+                const result = await connection.execute(
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email AND MOT_DE_PASSE = :mdp`,
+                    { email: req.session.email, mdp: req.session.mdp },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
 
             if (result.rows.length > 0) {
-            }
-            res.render('pages/reservation', {});
-        } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
+                    res.render('pages/reservation', {});
+                }
+            } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
+        } catch (err) {
+            console.error(err);
+            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes });
+        }
     });
 
     app.get('/exploration', async (req, res) => {
