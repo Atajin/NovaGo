@@ -54,9 +54,12 @@ async function hashMotDePasse(mdp, saltRounds) {
 */
 app.use(express.static('static'));
 
+/*
+    Configuration des sessions utilisateur
+*/
 app.use(session({
-    secret: 'secret',
-    cookie: { maxAge: 300000 },
+    secret: 'wuy*&3u1hiur&wj/?8o71jhiohj5)iu',
+    cookie: {maxAge: 300000},
     resave: false,
     saveUninitialized: false,
     rolling: true,
@@ -82,9 +85,16 @@ app.use(express.static(__dirname + "/static/images"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+/*
+    Démarrage du serveur et du routage
+*/
 async function demarrerServeur() {
     await initialiserBaseDeDonnees();
 
+    /*
+        Affichage de la page d'accueil
+        paramètres : connexion, origine, destination
+    */
     app.get('/', async (req, res) => {
         try {
             // Passer les données obtenues au moteur de rendu
@@ -95,19 +105,42 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/logout', (req, res) => {
-        if (req.session) {
+    /*
+        Accès à la page de déconnexion
+        paramètres : -
+    */
+    app.get('/deconnexion', (req, res) => {
+        if (req.session.email) {
             req.session.destroy();
-            console.log("no more session :" + req.session);
 
-            res.render('pages/', { connexion: "Déconnexion réussie!", origine: "", destination: "" });
+            //Affichage à l'utilisateur de
+            res.render('pages/', {
+                connexion: "Déconnexion réussie!",
+                origine: "", destination: ""
+            });
+        } else {
+            try {
+                // Passer les données obtenues au moteur de rendu
+                res.render('pages/', { connexion: "", origine: "", destination: "" });
+            } catch (err) {
+                console.error(err);
+                res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+            }
         }
     });
 
+    /*
+        Affichage de la page de connexion
+        paramètres : -
+    */
     app.get('/connexion', (req, res) => {
         res.render('pages/connexion', { erreur: "" });
     });
 
+    /*
+        POST du formulaire de la page de connexion
+        paramètres : -
+    */
     app.post('/connexion', async (req, res) => {
         try {
             const { email, mdp } = req.body;
@@ -123,8 +156,6 @@ async function demarrerServeur() {
             );
 
             if (result.rows.length > 0) {
-                console.log(mdp);
-                console.log(result.rows[0].MOT_DE_PASSE);
                 const mdp_valide = await bcrypt.compare(mdp, result.rows[0].MOT_DE_PASSE);
                 if (mdp_valide) {
                     // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
@@ -141,10 +172,11 @@ async function demarrerServeur() {
                             { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                             { outFormat: oracledb.OUT_FORMAT_OBJECT }
                         );
-                        console.log(req.session);
+                        
+                        //Ajout des informations nécessaires à la session
                         req.session.email = email;
-                        req.session.mdp = mdp;
-                        console.log(req.session);
+                        req.session.mdp = result.rows[0].MOT_DE_PASSE;
+
                         return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
                     }
                 } else {
@@ -161,6 +193,10 @@ async function demarrerServeur() {
         }
     });
 
+    /*
+        Affichage de la page d'inscription
+        paramètres : planetes, erreur
+    */
     app.get('/inscription', async (req, res) => {
         let result = "";
         try {
@@ -175,7 +211,10 @@ async function demarrerServeur() {
             });
         } catch (err) {
             console.error(err);
-            res.render('pages/inscription', { planetes: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+            res.render('pages/inscription', {
+                planetes: result.rows,
+                erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données'
+            });
         }
     });
 
@@ -282,11 +321,26 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/reservation', (req, res) => {
-        if (req.session.email) {
-            console.log(req.session.email);
-            res.render('pages/reservation', {});
-        } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
+    app.get('/reservation', async (req, res) => {
+        try{
+            if (req.session.email && req.session.mdp){
+                const connection = await getPool().getConnection();
+
+                // Exécution de la requête pour vérifier l'email et le mot de passe
+                const result = await connection.execute(
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email AND MOT_DE_PASSE = :mdp`,
+                    { email: req.session.email, mdp: req.session.mdp },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+
+            if (result.rows.length > 0) {
+                    res.render('pages/reservation', {});
+                }
+            } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
+        } catch (err) {
+            console.error(err);
+            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes });
+        }
     });
 
     app.get('/exploration', async (req, res) => {
