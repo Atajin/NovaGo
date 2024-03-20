@@ -1,12 +1,12 @@
-<%- include ("../partials/header.ejs") %>
-<!--Affichage du nom de la page dans le titre du navigateur web-->
-<script>
-    var nomPage = " | S'inscrire";
-    document.title += nomPage;
-</script>
+<%- include ("../partials/header.ejs", {estConnecte: estConnecte}) %>
+    <!--Affichage du nom de la page dans le titre du navigateur web-->
+    <script>
+        var nomPage = " | S'inscrire";
+        document.title += nomPage;
+    </script>
 
     <div class="container-fluid" style="margin-top: 5%;">
-        
+
         <div class="row">
             <div class="col-1"></div>
 
@@ -31,9 +31,11 @@
 
 
                                     <!--Champ d'entrée du prénom de l'utilisateur-->
-                                    <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label>
+                                    <label for="prenom" class="form-label custom-font-labels">Entrez votre
+                                        prénom</label>
                                     <br>
-                                    <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom" required>
+                                    <input type="text" id="prenom" name="prenom" class="form-control"
+                                        placeholder="Prénom" required>
 
                                     <!--Affichage d'erreur lors d'une entrée dans le champs prénom-->
                                     <div class="invalid-feedback">Veuillez écrire votre prénom.</div>
@@ -42,25 +44,30 @@
                                     <!--Champ d'entrée du nom de l'utilisateur-->
                                     <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label>
                                     <br>
-                                    <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom" required>
+                                    <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom"
+                                        required>
 
                                     <!--Affichage d'erreur lors d'une entrée dans le champs nom-->
                                     <div class="invalid-feedback">Veuillez écrire votre nom.</div>
 
 
                                     <!--Champ d'entrée du courriel de l'utilisateur-->
-                                    <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
+                                    <label for="email" class="form-label custom-font-labels">Entrez votre
+                                        courriel</label>
                                     <br>
-                                    <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                        placeholder="Courriel" required>
 
                                     <!--Affichage d'erreur lors d'une entrée dans le champs courriel-->
                                     <div class="invalid-feedback">Veuillez écrire votre adresse courriel.</div>
 
 
                                     <!--Champ d'entrée du numéro de téléphone de l'utilisateur-->
-                                    <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de téléphone</label>
+                                    <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de
+                                        téléphone</label>
                                     <br>
-                                    <input type="text" id="telephone" name="telephone" class="form-control" placeholder="Téléphone">
+                                    <input type="text" id="telephone" name="telephone" class="form-control"
+                                        placeholder="Téléphone">
 
 
                                 </div>
@@ -68,30 +75,37 @@
 
 
                                     <!--Champ d'entrée du mot de passe de l'utilisateur-->
-                                    <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
+                                    <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de
+                                        passe</label>
                                     <br>
-                                    <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe" required>
+                                    <input type="password" id="mdp" name="mdp" class="form-control"
+                                        placeholder="Mot de passe" required>
 
                                     <!--Affichage d'erreur lors d'une entrée dans le champs mot de passe-->
                                     <div class="invalid-feedback">Veuillez écrire votre mot de passe.</div>
 
 
                                     <!--Deuxième champ d'entrée du mot de passe de l'utilisateur-->
-                                    <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot de passe</label>
+                                    <label for="confirmation" class="form-label custom-font-labels">Confirmez votre mot
+                                        de passe</label>
                                     <br>
-                                    <input type="password" id="confirmation" name="confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
-                                    
+                                    <input type="password" id="confirmation" name="confirmation" class="form-control"
+                                        placeholder="Confirmer le mot de passe" required>
+
                                     <!--Affichage d'erreur lors d'une entrée dans le champs mot de passe-->
                                     <div class="invalid-feedback">Veuillez confirmer votre mot de passe.</div>
 
 
                                     <!--Champ d'entrée de l'adresse de l'utilisateur-->
-                                    <label for="adresse" class="form-label custom-font-labels">Entrez votre adresse</label>
+                                    <label for="adresse" class="form-label custom-font-labels">Entrez votre
+                                        adresse</label>
                                     <br>
-                                    <input type="text" id="adresse" name="adresse" class="form-control" placeholder="Adresse">
+                                    <input type="text" id="adresse" name="adresse" class="form-control"
+                                        placeholder="Adresse">
 
                                     <!--Champ d'entrée de l'astre d'origine de l'utilisateur-->
-                                    <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet céleste courant</label>
+                                    <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet
+                                        céleste courant</label>
                                     <br>
                                     <select id="planete" name="planete" class="form-control" <% if (!planetes ||
                                         planetes.length===0) { %> disabled <% } %> required>
