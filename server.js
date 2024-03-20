@@ -407,14 +407,7 @@ async function demarrerServeur() {
                 origine: "", destination: ""
             });
         } else {
-            //trouver comment mieux faire vvvvvvvvvvvvvvvvvv
-            try {
-                // Passer les données obtenues au moteur de rendu
-                res.render('pages/', { connexion: "", origine: "", destination: "" });
-            } catch (err) {
-                console.error(err);
-                res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
-            }
+            res.redirect('/');
         }
     });
 }
