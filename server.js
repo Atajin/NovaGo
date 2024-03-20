@@ -12,12 +12,21 @@ import dateFormat from "dateformat";
 import bcrypt from "bcrypt";
 
 const app = express();
+const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const saltRounds = 10
 
 let pool;
 let estConnecte;
+
+//Permet de comparer deux champs différents d'express-validator
+const validationMdpEgal = (value, { req }) => {
+    if (value !== req.body.confirmation) {
+        throw new Error('Le mot de passe doit être recopié correctement.');
+    }
+    return true;
+};
 
 async function initialiserBaseDeDonnees() {
     try {
@@ -93,10 +102,14 @@ async function demarrerServeur() {
     await initialiserBaseDeDonnees();
 
     /*
-        Affichage de la page d'accueil
-        paramètres : connexion, origine, destination
+        Page d'accueil du site, contient un formulaire pour rechercher un voyage
     */
-    app.get('/', async (req, res) => {
+    app.route('/')
+    /*
+        Affichage de la page d'accueil
+        paramètres du render : connexion, origine, destination
+    */
+    .get(async (req, res) => {
         try {
             estConnecte = req.session.email && req.session.mdp;
             // Passer les données obtenues au moteur de rendu
@@ -105,48 +118,25 @@ async function demarrerServeur() {
             console.error(err);
             res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
         }
-    });
+    });    
 
     /*
-        Accès à la page de déconnexion
-        paramètres : -
+        Page de connexion au compte utilisateur,
+        contient un formulaire pour soumettre un courriel et mot de passe utilisateur
     */
-    app.get('/deconnexion', (req, res) => {
-        if (req.session.email) {
-            req.session.destroy();
-            estConnecte = false;
-
-            res.render('pages/', {
-                connexion: "Déconnexion réussie!",
-                origine: "", destination: "",
-                estConnecte: estConnecte
-            });
-        } else {
-            try {
-                estConnecte = req.session.email && req.session.mdp;
-                // Passer les données obtenues au moteur de rendu
-                res.render('pages/', { connexion: "", origine: "", destination: "", estConnecte: estConnecte });
-            } catch (err) {
-                console.error(err);
-                res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données', estConnecte: estConnecte });
-            }
-        }
-    });
-
+    app.route('/connexion')
     /*
         Affichage de la page de connexion
-        paramètres : -
+        paramètres du render : erreur, estConnecte
     */
-    app.get('/connexion', (req, res) => {
+    .get((req, res) => {
         estConnecte = req.session.email && req.session.mdp;
         res.render('pages/connexion', { erreur: "", estConnecte: estConnecte });
-    });
-
+    })
     /*
         POST du formulaire de la page de connexion
-        paramètres : -
     */
-    app.post('/connexion', async (req, res) => {
+    .post(async (req, res) => {
         try {
             estConnecte = req.session.email && req.session.mdp;
             const { email, mdp } = req.body;
@@ -199,11 +189,17 @@ async function demarrerServeur() {
         }
     });
 
+    
+    /*
+        Affichage de la page de création de compte utilisateur,
+        contient le formulaire de soumission de l'information du nouveau compte
+    */
+    app.route('/inscription')
     /*
         Affichage de la page d'inscription
-        paramètres : planetes, erreur
+        paramètres de render : planetes, erreur, estConnecte
     */
-    app.get('/inscription', async (req, res) => {
+    .get(async (req, res) => {
         let result = "";
         try {
             estConnecte = req.session.email && req.session.mdp;
@@ -225,16 +221,11 @@ async function demarrerServeur() {
                 estConnecte: estConnecte
             });
         }
-    });
-
-    const validationMdpEgal = (value, { req }) => {
-        if (value !== req.body.confirmation) {
-            throw new Error('Le mot de passe doit être recopié correctement.');
-        }
-        return true;
-    };
-
-    app.post('/inscription', [
+    })
+    /*
+        POST du formulaire de la page d'inscription
+    */
+    .post([
         check('prenom')
             .isLength({ min: 2 })
             .withMessage('Votre prénom doit être au moins 2 charactères.'),
@@ -335,59 +326,90 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/reservation', async (req, res) => {
-        try {
-            estConnecte = req.session.email && req.session.mdp;
-            if (estConnecte) {
-                const connection = await getPool().getConnection();
+    app.route('/reservation')
+        .get(async (req, res) => {
+            try {
+                estConnecte = req.session.email && req.session.mdp;
+                if (estConnecte) {
+                    const connection = await getPool().getConnection();
 
-                // Exécution de la requête pour vérifier l'email et le mot de passe
-                const result = await connection.execute(
-                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email AND MOT_DE_PASSE = :mdp`,
-                    { email: req.session.email, mdp: req.session.mdp },
-                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                );
+                    // Exécution de la requête pour vérifier l'email
+                    const result = await connection.execute(
+                        `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
+                        { email: email },
+                        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                    );
 
-                if (result.rows.length > 0) {
-                    res.render('pages/reservation', { estConnecte: estConnecte });
-                }
-            } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage', estConnecte: estConnecte });
-        } catch (err) {
-            console.error(err);
-            return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes, estConnecte: estConnecte });
-        }
-    });
-
-    app.get('/exploration', async (req, res) => {
-        let result = "";
-        try {
-            estConnecte = req.session.email && req.session.mdp;
-            const connection = await getPool().getConnection();
-            result = await connection.execute("SELECT * FROM PLANETE");
-            await connection.close();
-
-            res.render('pages/exploration', {
-                items: result.rows,
-                erreur: "",
-                estConnecte: estConnecte
-            });
-        } catch (err) {
-            console.error(err);
-            res.render('pages/exploration', { items: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données', estConnecte: estConnecte });
-        }
-    });
-
-    app.get('/recu-billet', (req, res) => {
-        estConnecte = req.session.email && req.session.mdp;
-        res.render('pages/recu-billet', {
-            estConnecte: estConnecte
+                    if (result.rows.length > 0) {
+                        res.render('pages/reservation', { estConnecte: estConnecte });
+                    }
+                } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage', estConnecte: estConnecte });
+            } catch (err) {
+                console.error(err);
+                return res.render('pages/inscription', { erreur: 'Erreur lors de la connexion à la base de données', planetes: planetes, estConnecte: estConnecte });
+            }
         });
-    });
+
+    app.route('/exploration')
+        .get(async (req, res) => {
+            let result = "";
+            try {
+                estConnecte = req.session.email && req.session.mdp;
+                const connection = await getPool().getConnection();
+                result = await connection.execute("SELECT * FROM PLANETE");
+                await connection.close();
+
+                res.render('pages/exploration', {
+                    items: result.rows,
+                    erreur: "",
+                    estConnecte: estConnecte
+                });
+            } catch (err) {
+                console.error(err);
+                res.render('pages/exploration', { items: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données', estConnecte: estConnecte });
+            }
+        })
+        .post((req, res) => {
+            res.send();
+        });
+
+    app.route('/recu-billet')
+        .get((req, res) => {
+            estConnecte = req.session.email && req.session.mdp;
+            res.render('pages/recu-billet', {
+                estConnecte: estConnecte
+            })
+        });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {
         console.log("serveur fonctionne sur 4000... !");
     });
-}
 
+    /*
+        Accès à la page de déconnexion
+        paramètres : -
+    */
+    app.get('/deconnexion', (req, res) => {
+        if (req.session.email) {
+            req.session.destroy();
+            estConnecte = false;
+
+            res.render('pages/', {
+                connexion: "Déconnexion réussie!",
+                origine: "", destination: "",
+                estConnecte: estConnecte
+            });
+        } else {
+            try {
+                estConnecte = req.session.email && req.session.mdp;
+                // Passer les données obtenues au moteur de rendu
+                res.render('pages/', { connexion: "", origine: "", destination: "", estConnecte: estConnecte });
+            } catch (err) {
+                console.error(err);
+                res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données', estConnecte: estConnecte });
+            }
+        }
+    });
+}
 demarrerServeur().catch(err => console.error("Erreur lors du démarrage du serveur:", err));
