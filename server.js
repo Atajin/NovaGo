@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import oracledb from "oracledb";
 import { body, check, validationResult } from "express-validator";
 import dateFormat from "dateformat";
+import bcrypt from "bcrypt";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
