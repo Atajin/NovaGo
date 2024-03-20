@@ -5,7 +5,7 @@
         document.title += nomPage;
     </script>
 
-    <div class="container-fluid" style="margin-top: 1%;">
+    <div class="container-fluid mt-2">
         <div class="container">
             <div class="row text-white">
                 <div class="col-sm-3 m-1">
@@ -20,8 +20,8 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <div class="rounded custom-bg-rvt mt-1 px-2">
-                                        <h2 class="custom-font-labels m-0">Planète</h2>
                                         <div class="row">
+                                            <h2 class="custom-font-labels mt-1 m-0">Planète</h2>
                                             <div class="col-5">
                                                 <p class="custom-font-rvt m-0">Nom</p>
                                             </div>
@@ -49,8 +49,8 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <div class="rounded custom-bg-rvt mt-1 px-2">
-                                        <h2 class="custom-font-labels m-0">Vaisseau</h2>
                                         <div class="row">
+                                            <h2 class="custom-font-labels mt-1 m-0">Vaisseau</h2>
                                             <div class="col-5">
                                                 <p class="custom-font-rvt m-0">Nom</p>
                                             </div>
@@ -81,8 +81,9 @@
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <div class="rounded custom-bg-rvt">
+                        <div class="rounded custom-bg-rvt ">
                             <div class="row">
+                                <h2 class="custom-font-labels mt-1 m-0">Recherche</h2>
                                 <div class="col-5">
                                     <p class="custom-font-rvt m-0">Origine</p>
                                 </div>
@@ -128,16 +129,32 @@
                 <div class="col-sm-6 m-1">
                     <div class="row">
                         <h1 class="custom-font-titles text-center">Voyage</h1>
-                        <div>
-
+                    </div>
+                    <div class="row custom-font-planet-p mt-1">
+                        <div class="p-0" style="display: flex;">
+                            <div style="margin-right: 4px;">
+                                <input type="radio" class="btn-check" name="options-outlined" id="oui"
+                                    autocomplete="off" checked>
+                                <label class="btn btn-outline-light" for="oui">Économique</label>
+                            </div>
+                            <div style="margin-right: 4px;">
+                                <input type="radio" class="btn-check" name="options-outlined" id="non"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-light" for="non">Affaire</label>
+                            </div>
+                            <div class="rounded custom-bg-rvt" style="width: 100%;">
+                                <div class="m-1">
+                                    <input type="range" class="form-range" min="0" max="5" id="customRange2">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row mt-1 p-1 rounded custom-bg-rvt" style="height: 76vh;">
+                    <div class="row mt-1 p-1 rounded custom-bg-rvt" style="height: 70vh;">
                         <div class="rounded px-2 custom-bg-rvt" style="height: 50px;">
-                            <div style="height: auto; display: flex; align-items: center;">
+                            <div style="display: flex;">
                                 <h2 class="custom-font-labels m-0">Terre</h2>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-rocket" viewBox="0 0 16 16"
+                                    class="bi bi-rocket mt-1" viewBox="0 0 16 16"
                                     style="transform: rotate(90deg); margin-left: 5px;">
                                     <path d="M8 8c.828 0 1.5-.895 1.5-2S8.828 4 8 4s-1.5.895-1.5 2S7.172 8 8 8" />
                                     <path
@@ -173,7 +190,7 @@
                     <div class="row">
                         <h1 class="custom-font-titles text-center">Panier</h1>
                     </div>
-                    <div class="row" style="height: 65vh;">
+                    <div class="row" style="height: 55vh;">
                         <div class="rounded custom-bg-rvt mt-1 p-1">
                             <div class="rounded px-2 custom-bg-rvt" style="height: 50px;">
                                 <div class="row">
@@ -192,6 +209,20 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-sm-7">
+                                        <div style="display: flex;">
+                                          
+                                                <button class="text-white custom-font-rvt"
+                                                    style="border: none; background: none;">+</button>
+                                    
+                                                <input class="rounded" type="text" value="1"
+                                                    style="width: 23px; height: 20px; border: none; text-align:center; font-size: small;" />
+                                            
+                                                <button class="text-white custom-font-rvt"
+                                                    style="border: none; background: none;">-</button>
+                                           
+                                        </div>
+                                    </div>
                                     <div class="col" style="text-align: right;">
                                         <p class="custom-font-rvt m-0">2000$</p>
                                     </div>
