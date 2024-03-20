@@ -66,10 +66,6 @@ app.use(session({
     store
 }));
 
-function ajouterSession(req){
-    req.session.email = email;
-    req.session.mdp = mdp;
-}
 /*
     Configuration de EJS
 */
@@ -160,8 +156,6 @@ async function demarrerServeur() {
             );
 
             if (result.rows.length > 0) {
-                console.log(mdp);
-                console.log(result.rows[0].MOT_DE_PASSE);
                 const mdp_valide = await bcrypt.compare(mdp, result.rows[0].MOT_DE_PASSE);
                 if (mdp_valide) {
                     // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
@@ -178,7 +172,11 @@ async function demarrerServeur() {
                             { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                             { outFormat: oracledb.OUT_FORMAT_OBJECT }
                         );
-                        ajouterSession(req);
+                        
+                        //Ajout des informations nécessaires à la session
+                        req.session.email = email;
+                        req.session.mdp = result.rows[0].MOT_DE_PASSE;
+
                         return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
                     }
                 } else {
