@@ -45,22 +45,12 @@ app.use(express.static('static'));
 
 app.use(session({
     secret: 'secret',
-    cookie: {maxAge: 30000},
-    //VVV à vérifier
-    resave: true,
+    cookie: {maxAge: 300000},
+    resave: false,
     saveUninitialized: false,
+    rolling : true,
     store
 }));
-
-
-/* validation de session 
-function validerSession(req,res,next) {
-    const {sessions} = req;
-    if (sessionID in sessions){
-        console.log('Compte connecté');
-    }
-    next();
-}*/
 
 /*
     Configuration de EJS
@@ -91,6 +81,16 @@ async function demarrerServeur() {
         } catch (err) {
             console.error(err);
             res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+        }
+    });
+
+    app.get('/logout', (req, res) => {
+        if (req.session) {
+            console.log(req.session);
+            req.session.destroy();
+            console.log(req.session);
+
+            res.render('pages/', { connexion: "Déconnexion réussie!", origine: "", destination: "" });
         }
     });
 
@@ -127,6 +127,7 @@ async function demarrerServeur() {
                         { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
+                    req.session.save();
                     return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
                 }
             } else {
