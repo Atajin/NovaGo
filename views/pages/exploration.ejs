@@ -1,4 +1,4 @@
-<%- include ("../partials/header.ejs") %>
+<%- include ("../partials/header.ejs", {estConnecte: estConnecte}) %>
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | Explorer";
@@ -35,10 +35,13 @@
                                             </div>
                                             <div class="col-sm-6 mt-4 custom-font-planet-p" style="text-align: right;">
                                                 <div class="row-sm-4">
-                                                    <h1 class="form-label custom-font-labels">Type d'objet céleste : <%= item[2] %></h1>
+                                                    <h1 class="form-label custom-font-labels">Type d'objet céleste : <%=
+                                                            item[2] %>
+                                                    </h1>
                                                 </div>
                                                 <div class="row-sm-4">
-                                                    <h1 class="form-label custom-font-labels">Gravité : <%= item[3] %> m/s²</h1>
+                                                    <h1 class="form-label custom-font-labels">Gravité : <%= item[3] %>
+                                                            m/s²</h1>
                                                 </div>
                                             </div>
                                         </div>
