@@ -59,7 +59,7 @@ app.use(express.static('static'));
 */
 app.use(session({
     secret: 'wuy*&3u1hiur&wj/?8o71jhiohj5)iu',
-    cookie: {maxAge: 300000},
+    cookie: { maxAge: 300000 },
     resave: false,
     saveUninitialized: false,
     rolling: true,
@@ -172,7 +172,7 @@ async function demarrerServeur() {
                             { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                             { outFormat: oracledb.OUT_FORMAT_OBJECT }
                         );
-                        
+
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
                         req.session.mdp = result.rows[0].MOT_DE_PASSE;
@@ -322,8 +322,8 @@ async function demarrerServeur() {
     });
 
     app.get('/reservation', async (req, res) => {
-        try{
-            if (req.session.email && req.session.mdp){
+        try {
+            if (req.session.email && req.session.mdp) {
                 const connection = await getPool().getConnection();
 
                 // Exécution de la requête pour vérifier l'email et le mot de passe
@@ -333,7 +333,7 @@ async function demarrerServeur() {
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
-            if (result.rows.length > 0) {
+                if (result.rows.length > 0) {
                     res.render('pages/reservation', {});
                 }
             } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
