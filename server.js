@@ -52,6 +52,8 @@ app.use(session({
     store
 }));
 
+
+
 /*
     Configuration de EJS
 */
@@ -126,10 +128,8 @@ async function demarrerServeur() {
                         { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
-                    console.log(req.session);
                     req.session.email = email;
                     req.session.mdp = mdp;
-                    console.log(req.session);
                     return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM });
                 }
             } else {
@@ -261,9 +261,16 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/reservation', (req, res) => {
-        if (req.session.email){
-            console.log(req.session.email);
+    app.get('/reservation', async (req, res) => {
+        if (req.session.email && req.session.mdp){
+            const result = await connection.execute(
+                `SELECT * FROM UTILISATEUR WHERE EMAIL = :email AND MOT_DE_PASSE = :mdp`,
+                { email: email, mdp: mdp },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+
+            if (result.rows.length > 0) {
+            }
             res.render('pages/reservation', {});
         } else res.render('pages/connexion', { erreur: 'Connectez vous pour réserver un voyage' });
     });
