@@ -9,24 +9,45 @@
 
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto">
-				<li class="nav-item">
-					<a class="nav-link custom-font-navbar" href="/inscription">S'inscrire</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link custom-font-navbar" href="/connexion">Se connecter</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle custom-font-navbar" href="#" id="navbarDropdownMenuLink"
-						role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
-					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-						<li><a class="dropdown-item custom-font-dropdown" href="/reservation">Reservation</a></li>
-						<li><a class="dropdown-item custom-font-dropdown" href="/recu-billet">Transactions</a></li>
-						<li><a class="dropdown-item custom-font-dropdown" href="#">À propos de nous</a></li>
-					</ul>
-				</li>
+				<% if (estConnecte) { %>
+					<!-- Navbar pour les utilisateurs connectés -->
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="/deconnexion">Se déconnecter</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle custom-font-navbar" href="#" id="navbarDropdownMenuLink"
+							role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+							<li><a class="dropdown-item custom-font-dropdown" href="/reservation">Reservation</a></li>
+							<li><a class="dropdown-item custom-font-dropdown" href="/recu-billet">Transactions</a></li>
+							<li><a class="dropdown-item custom-font-dropdown" href="#">À propos de nous</a></li>
+						</ul>
+					</li>
+					<% } else { %>
+						<!-- Navbar pour les visiteurs -->
+						<a class="nav-link custom-font-navbar" href="/inscription">S'inscrire</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link custom-font-navbar" href="/connexion">Se connecter</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle custom-font-navbar" href="#" id="navbarDropdownMenuLink"
+								role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+								<li><a class="dropdown-item custom-font-dropdown" href="/reservation">Reservation</a>
+								</li>
+								<li><a class="dropdown-item custom-font-dropdown" href="/recu-billet">Transactions</a>
+								</li>
+								<li><a class="dropdown-item custom-font-dropdown" href="#">À propos de nous</a></li>
+							</ul>
+						</li>
+						<% } %>
 			</ul>
 		</div>
 	</div>
