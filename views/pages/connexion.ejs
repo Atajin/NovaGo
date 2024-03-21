@@ -1,4 +1,4 @@
-<%- include ("../partials/header.ejs") %>
+<%- include ("../partials/header.ejs", {estConnecte: estConnecte}) %>
 
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
@@ -44,7 +44,8 @@
 
                             <!--Boutton submit pour se connecter à un compte-->
                             <button type="submit"
-                                class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">Connexion au compte</button>
+                                class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">Connexion
+                                au compte</button>
                         </form>
             </div>
             <div class="col"></div>
