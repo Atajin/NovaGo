@@ -330,6 +330,7 @@ async function demarrerServeur() {
         .get(async (req, res) => {
             try {
                 estConnecte = req.session.email && req.session.mdp;
+                const email = req.session.email;
                 if (estConnecte) {
                     const connection = await getPool().getConnection();
 
