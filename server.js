@@ -55,8 +55,15 @@ async function hashMotDePasse(mdp, saltRounds) {
         return hash;
     } catch (err) {
         console.error(err);
-        return null; // Or handle error as you prefer
+        return null;
     }
+}
+
+async function recupererPlanetes(){
+    const connection = await getPool().getConnection();
+    const result = await connection.execute("SELECT * FROM PLANETE");
+    await connection.close();
+    return result;
 }
 
 /*
@@ -110,10 +117,18 @@ async function demarrerServeur() {
         paramètres du render : connexion, origine, destination
     */
     .get(async (req, res) => {
+        let result = "";
         try {
-            estConnecte = req.session.email && req.session.mdp;
+            let estConnecte = req.session.email && req.session.mdp;
+            result = await recupererPlanetes();
             // Passer les données obtenues au moteur de rendu
-            res.render('pages/', { connexion: "", origine: "", destination: "", estConnecte: estConnecte });
+            res.render('pages/', {
+                connexion: "",
+                origine: "",
+                destination: "",
+                planetes: result.rows,
+                estConnecte: estConnecte
+            });
         } catch (err) {
             console.error(err);
             res.render('pages/', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
@@ -158,22 +173,16 @@ async function demarrerServeur() {
                     const planetResult = await connection.execute(
                         `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
                         { utilID: result.rows[0].ID_UTILISATEUR },
-                        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                        //{ outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
 
                     if (planetResult.rows.length > 0) {
-                        // Exécution de la requête pour récupérer le nom de la planète
-                        const nomPlaneteResult = await connection.execute(
-                            `SELECT nom FROM planete WHERE id_planete = :planeteID`,
-                            { planeteID: planetResult.rows[0].PLANETE_ID_PLANETE },
-                            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                        );
-
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
                         req.session.mdp = result.rows[0].MOT_DE_PASSE;
                         estConnecte = req.session.email && req.session.mdp;
-                        return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: nomPlaneteResult.rows[0].NOM, estConnecte: estConnecte });
+                        console.log(planetResult.rows[0]);
+                        return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: planetResult.rows[0], estConnecte: estConnecte });
                     }
                 } else {
                     // Le mot de passe est incorrect
@@ -204,9 +213,7 @@ async function demarrerServeur() {
         try {
             estConnecte = req.session.email && req.session.mdp;
             const erreur = "";
-            const connection = await getPool().getConnection();
-            result = await connection.execute("SELECT * FROM PLANETE");
-            await connection.close();
+            result = await recupererPlanetes();
 
             res.render('pages/inscription', {
                 planetes: result.rows,

@@ -17,11 +17,20 @@
 
                                 <!--Champ de texte pour l'origine du voyage-->
                                 <div class="col">
-                                    <label for="origine" class="form-label custom-font-labels">Entrez l'astre
-                                        d'origine</label>
-                                    <br>
-                                    <input type="text" name="origine" id="origine" class="form-control"
-                                        placeholder="Origine" value="<%= origine %>" required>
+                                        <label for="origine" class="form-label custom-font-labels">Entrez l'astre d'origine</label>
+                                        <br>
+                                        <select id="origine" name="origine" class="form-control" <% if (!planetes ||
+                                            planetes.length===0) { %> disabled <% } %> required>
+                                                <% if (planetes && planetes.length> 0) { %>
+                                                    <% planetes.forEach(function(planete) { %>
+                                                        <option value="<%= planete[0] %>">
+                                                            <%= planete[1] %>
+                                                        </option>
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <option disabled selected>Aucune planète disponible</option>
+                                                                <% } %>
+                                        </select>
                                 </div>
 
                                 <div class="col">
@@ -52,11 +61,21 @@
 
                                 <!--Champ de texte pour la destination du voyage-->
                                 <div class="col">
-                                    <label for="destination" class="form-label custom-font-labels">Entrez l'astre de
-                                        destination</label>
+                                    
+                                    <label for="destination" class="form-label custom-font-labels">Entrez l'astre de destination</label>
                                     <br>
-                                    <input type="text" name="destination" id="destination" class="form-control"
-                                        placeholder="Destination" required>
+                                    <select id="destination" name="destination" class="form-control" <% if (!planetes ||
+                                        planetes.length===0) { %> disabled <% } %> required>
+                                            <% if (planetes && planetes.length> 0) { %>
+                                                <% planetes.forEach(function(planete) { %>
+                                                    <option value="<%= planete[0] %>">
+                                                        <%= planete[1] %>
+                                                    </option>
+                                                    <% }); %>
+                                                        <% } else { %>
+                                                            <option disabled selected>Aucune planète disponible</option>
+                                                            <% } %>
+                                        </select>
                                 </div>
 
                                 <!--Champ de texte pour le nombre de billets dans le voyage-->
