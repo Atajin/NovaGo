@@ -11,6 +11,4 @@ if (document.getElementById('aller-simple') && document.getElementById('aller-re
         document.getElementById('date-aller-col').classList.remove('col');
         document.getElementById('date-aller-col').classList.add('col-6');
     });
-
-    document.getElementById('origine').selectedIndex = 1;
 }

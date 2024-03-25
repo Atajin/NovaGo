@@ -22,8 +22,9 @@
                                         <select id="origine" name="origine" class="form-control" <% if (!planetes ||
                                             planetes.length===0) { %> disabled <% } %> required>
                                                 <% if (planetes && planetes.length> 0) { %>
-                                                    <% planetes.forEach(function(planete) { %>
-                                                        <option value="<%= planete[0] %>">
+                                                    <% planetes.forEach(function(planete, i) { %>
+                                                        <option value="<%= planete[0] %>" 
+                                                            <%if (i + 1 == origine) { %>selected <% } %> >
                                                             <%= planete[1] %>
                                                         </option>
                                                         <% }); %>
