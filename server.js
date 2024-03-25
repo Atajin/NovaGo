@@ -173,16 +173,16 @@ async function demarrerServeur() {
                     const planetResult = await connection.execute(
                         `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
                         { utilID: result.rows[0].ID_UTILISATEUR },
-                        //{ outFormat: oracledb.OUT_FORMAT_OBJECT }
+                        { outFormat: oracledb.OUT_FORMAT_ARRAY }
                     );
-
+                    let planeteID = 0;
                     if (planetResult.rows.length > 0) {
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
                         req.session.mdp = result.rows[0].MOT_DE_PASSE;
                         estConnecte = req.session.email && req.session.mdp;
-                        console.log(planetResult.rows[0]);
-                        return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: planetResult.rows[0], estConnecte: estConnecte });
+                        planeteID = Number(planetResult.rows[0]);
+                        return res.render('pages/', { connexion: 'Connexion au compte effectuée avec succès!', origine: planeteID, estConnecte: estConnecte });
                     }
                 } else {
                     // Le mot de passe est incorrect
