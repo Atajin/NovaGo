@@ -292,7 +292,6 @@ async function demarrerServeur() {
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
             
-            const planeteUtil = await trouverPlaneteUtil(connection, result.rows[0].ID_UTILISATEUR);
 
             await connection.close();
 
@@ -304,7 +303,6 @@ async function demarrerServeur() {
                 try {
                     // Obtention d'une connexion à partir du pool
                     const connection = await getPool().getConnection();
-
                     let hashedMdp = await hashMotDePasse(mdp, saltRounds);
 
                     // Exécution de l'insertion de données dans la BD
@@ -322,8 +320,12 @@ async function demarrerServeur() {
                         }
                     );
                     await connection.commit();
-                    await connection.close();
 
+                    const nbUtil = await connection.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
+                    const planeteUtil = await trouverPlaneteUtil(connection, id_nouvel_util);
+
+                    await connection.close();
+                    
                     req.session.email = email;
                     //req.session.mdp = result.rows[0].MOT_DE_PASSE;
                     req.session.mdp = hashedMdp;
