@@ -11,8 +11,9 @@ import { body, check, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 import bcrypt from "bcrypt";
 import { connect } from "http2";
+import Stripe from 'stripe';
 
-//const stripe = require('stripe')('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
+const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 
 const app = express();
 const router = express.Router();
