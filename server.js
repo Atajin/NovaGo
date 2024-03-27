@@ -307,6 +307,9 @@ async function demarrerServeur() {
                     const connection = await getPool().getConnection();
                     let hashedMdp = await hashMotDePasse(mdp, saltRounds);
 
+                    //la BD n'accepte que les chiffres
+                    const telephone_numerique = telephone.replace(/\D/g,"");
+
                     // Exécution de l'insertion de données dans la BD
                     await connection.execute(
                         `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
@@ -317,7 +320,7 @@ async function demarrerServeur() {
                             nom: nom,
                             prenom: prenom,
                             adresse: adresse,
-                            telephone: telephone,
+                            telephone: telephone_numerique,
                             planete_id_planete: planete
                         }
                     );
