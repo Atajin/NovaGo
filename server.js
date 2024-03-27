@@ -12,7 +12,7 @@ import dateFormat from "dateformat";
 import bcrypt from "bcrypt";
 import { connect } from "http2";
 
-const stripe = require('stripe')('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
+//const stripe = require('stripe')('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 
 const app = express();
 const router = express.Router();
