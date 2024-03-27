@@ -323,17 +323,19 @@ async function demarrerServeur() {
                     );
                     await connection.commit();
 
-                    const nbUtil = await connection.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
-                    const planeteUtil = await trouverPlaneteUtil(connection, id_nouvel_util);
+                    const nouvel_util = await connection.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
+                    const id_nouvel_util = Number(nouvel_util.rows);
+                    const planete_util = await trouverPlaneteUtil(connection, id_nouvel_util);
+
+                    const planete_id = Number(planete_util.rows[0]);
 
                     await connection.close();
                     
                     req.session.email = email;
-                    //req.session.mdp = result.rows[0].MOT_DE_PASSE;
                     req.session.mdp = hashedMdp;
                     estConnecte = req.session.email && req.session.mdp;
                     
-                    return res.render('pages/', { connexion: 'Compte créé avec succès!', planetes: planetes.rows, origine: planeteUtil, destination: "", estConnecte: estConnecte });
+                    return res.render('pages/', { connexion: 'Compte créé avec succès!', planetes: planetes.rows, origine: planete_id, destination: "", estConnecte: estConnecte });
 
                 } catch (err) {
                     console.error(err);
