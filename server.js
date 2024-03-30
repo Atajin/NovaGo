@@ -188,7 +188,7 @@ async function demarrerServeur() {
                         req.session.mdp = result.rows[0].MOT_DE_PASSE;
                         est_connecte = req.session.email && req.session.mdp;
                         planeteID = Number(planeteResult.rows[0]);
-                        return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: est_connecte });
+                        return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: est_connecte });
                     }
                 } else {
                     // Le mot de passe est incorrect
@@ -332,7 +332,7 @@ async function demarrerServeur() {
                     req.session.mdp = hashedMdp;
                     est_connecte = req.session.email && req.session.mdp;
                     
-                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, origine: planete_id, est_connecte: est_connecte });
+                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id, est_connecte: est_connecte });
 
                 } catch (err) {
                     console.error(err);
