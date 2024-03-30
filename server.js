@@ -346,7 +346,15 @@ async function demarrerServeur() {
         }
     });
 
+    /*
+        Affichage de la page de réservation de voyages,
+        contient le formulaire de soumission de l'information du voyage choisi
+    */
     app.route('/reservation')
+        /*
+            Accès à la page de réservation
+            paramètres : est_connecte
+        */
         .get(async (req, res) => {
             try {
                 est_connecte = req.session.email && req.session.mdp;
@@ -376,7 +384,12 @@ async function demarrerServeur() {
             }
         });
 
+    
     app.route('/exploration')
+        /*
+            Accès à la page d'exploration
+            paramètres : message_negatif, planetes_bd, est_connecte
+        */
         .get(async (req, res) => {
             try {
                 est_connecte = req.session.email && req.session.mdp;
@@ -393,11 +406,19 @@ async function demarrerServeur() {
                 res.render('pages/exploration', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_connecte: est_connecte });
             }
         })
+        /*
+            POST du formulaire de la page de déconnexion
+            paramètres : -
+        */
         .post((req, res) => {
             res.send();
         });
 
     app.route('/recu-billet')
+        /*
+            Accès à la page de reçu
+            paramètres : est_connecte
+        */
         .get((req, res) => {
             est_connecte = req.session.email && req.session.mdp;
             res.render('pages/recu-billet', {
@@ -412,7 +433,7 @@ async function demarrerServeur() {
 
     /*
         Accès à la page de déconnexion
-        paramètres : -
+        paramètres : message_positif, planetes_bd, est_connecte
     */
     app.get('/deconnexion', async (req, res) => {
         const connection = await getPool().getConnection();
@@ -420,7 +441,6 @@ async function demarrerServeur() {
         if (req.session.email) {
             req.session.destroy();
             est_connecte = false;
-            
 
             res.render('pages/', {
                 message_positif: "Déconnexion réussie!",
