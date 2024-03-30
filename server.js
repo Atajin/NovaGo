@@ -188,7 +188,7 @@ async function demarrerServeur() {
                         req.session.mdp = result.rows[0].MOT_DE_PASSE;
                         est_connecte = req.session.email && req.session.mdp;
                         planeteID = Number(planeteResult.rows[0]);
-                        return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', origine: planeteID, planetes: listePlanetes.rows, est_connecte: est_connecte });
+                        return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: est_connecte });
                     }
                 } else {
                     // Le mot de passe est incorrect
@@ -212,7 +212,7 @@ async function demarrerServeur() {
     app.route('/inscription')
     /*
         Affichage de la page d'inscription
-        paramètres de render : planetes, message_negatif, est_connecte
+        paramètres de render : planetes_bd, message_negatif, est_connecte
     */
     .get(async (req, res) => {
         let result = "";
@@ -222,13 +222,13 @@ async function demarrerServeur() {
             result = await recupererPlanetes(connection);
 
             res.render('pages/inscription', {
-                planetes: result.rows,
+                planetes_bd: result.rows,
                 est_connecte: est_connecte
             });
         } catch (err) {
             console.error(err);
             res.render('pages/inscription', {
-                planetes: result.rows,
+                planetes_bd: result.rows,
                 message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
                 est_connecte: est_connecte
             });
@@ -262,19 +262,19 @@ async function demarrerServeur() {
         check('mdp')
             .custom(validationMdpEgal),
     ], async (req, res) => {
-        let planetes;
+        let planetes_bd;
         est_connecte = req.session.email && req.session.mdp;
         try {
             const connection = await getPool().getConnection();
-            planetes = await recupererPlanetes(connection);
+            planetes_bd = await recupererPlanetes(connection);
         } catch (err) {
             console.error(err);
-            return res.render('pages/inscription', { planetes: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
+            return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
         }
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes: planetes.rows, est_connecte: est_connecte });
+            return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
         }
         const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
         try {
@@ -293,7 +293,7 @@ async function demarrerServeur() {
 
             if (result.rows.length > 0) {
                 // L'utilisateur existe
-                return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes: planetes.rows, est_connecte: est_connecte });
+                return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
             } else {
                 // L'utilisateur n'existe pas
                 try {
@@ -332,17 +332,17 @@ async function demarrerServeur() {
                     req.session.mdp = hashedMdp;
                     est_connecte = req.session.email && req.session.mdp;
                     
-                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes: planetes.rows, origine: planete_id, est_connecte: est_connecte });
+                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, origine: planete_id, est_connecte: est_connecte });
 
                 } catch (err) {
                     console.error(err);
-                    return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes: planetes.rows, est_connecte: est_connecte });
+                    return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
                 }
 
             }
         } catch (err) {
             console.error(err);
-            return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes: planetes.rows, est_connecte: est_connecte });
+            return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
         }
     });
 
@@ -372,7 +372,7 @@ async function demarrerServeur() {
                 });
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes: planetes, est_connecte: est_connecte });
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd, est_connecte: est_connecte });
             }
         });
 
@@ -416,7 +416,7 @@ async function demarrerServeur() {
     */
     app.get('/deconnexion', async (req, res) => {
         const connection = await getPool().getConnection();
-        const planetes = await recupererPlanetes(connection);
+        const planetes_bd = await recupererPlanetes(connection);
         if (req.session.email) {
             req.session.destroy();
             est_connecte = false;
@@ -424,12 +424,12 @@ async function demarrerServeur() {
 
             res.render('pages/', {
                 message_positif: "Déconnexion réussie!",
-                planetes: planetes.rows,
+                planetes_bd: planetes_bd.rows,
                 est_connecte: est_connecte
             });
         } else {
             try {
-                res.render('pages/', { planetes: planetes.rows });
+                res.render('pages/', { planetes_bd: planetes_bd.rows });
             } catch (err) {
                 console.error(err);
                 res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
