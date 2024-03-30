@@ -12,9 +12,9 @@
     <!--Champ d'affichage des erreurs lors de la connexion à la BD-->
     <% if (typeof planetes_bd === 'undefined' || planetes_bd.length===0) { %>
         <div class="alert alert-danger" role="alert" style="margin: 20px;">
-            <% if (typeof erreur === 'undefined') { %> Erreur
+            <% if (typeof message_negatif === 'undefined') { %> Erreur inconnue.
             <% } else { %>
-                <%= erreur %> 
+                <%= message_negatif %> 
             <% } %>
         </div>
 

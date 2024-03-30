@@ -17,9 +17,9 @@
                 <h1 class="custom-font-titles text-center">Connexion</h1>
 
                 <!--Champ d'affichage des erreurs lors de connexion-->
-                <% if (erreur) { %>
+                <% if (typeof message_negatif !== 'undefined') { %>
                     <div class="alert alert-danger" role="alert">
-                        <%= erreur %>
+                        <%= message_negatif %>
                     </div>
                     <% } %>
 

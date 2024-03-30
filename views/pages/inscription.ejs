@@ -13,9 +13,9 @@
             <div class="col">
 
                 <!--Champ d'affichage des erreurs lors d'inscription-->
-                <% if (erreur) { %>
+                <% if (typeof message_negatif !== 'undefined') { %>
                     <div class="alert alert-danger" role="alert">
-                        <%= erreur %>
+                        <%= message_negatif %>
                     </div>
                     <% } %>
 
