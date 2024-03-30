@@ -1,4 +1,4 @@
-<%- include ("../partials/header.ejs", {estConnecte: estConnecte}) %>
+<%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
     <div class="container-fluid" style="margin-top: 10%;">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -7,9 +7,9 @@
                 <form action="/" method="POST">
 
                     <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
-                    <% if (connexion) { %>
+                    <% if (typeof message_positif !== 'undefined') { %>
                         <div class="alert alert-success" role="alert">
-                            <%= connexion %>
+                            <%= message_positif %>
                         </div>
                         <% } %>
 
@@ -17,19 +17,18 @@
 
                                 <!--Champ de texte pour l'origine du voyage-->
                                 <div class="col">
-                                        <label for="origine" class="form-label custom-font-labels">Entrez l'astre d'origine</label>
+                                        <label for="planete_origine" class="form-label custom-font-labels">Entrez l'astre d'origine</label>
                                         <br>
-                                        <select id="origine" name="origine" class="form-control" <% if (!planetes ||
-                                            planetes.length===0) { %> disabled <% } %> required>
-                                                <% if (planetes && planetes.length> 0) { %>
-                                                    <% planetes.forEach(function(planete, i) { %>
+                                        <select id="planete_origine" name="planete_origine" class="form-control" required>
+                                                <% if (typeof planetes_bd !== 'undefined' && planetes_bd.length> 0) { %>
+                                                    <% planetes_bd.forEach(function(planete, i) { %>
                                                         <option value="<%= planete[0] %>" 
-                                                            <%if (i + 1 == origine) { %>selected <% } %> >
+                                                            <%if (typeof planete_origine !== 'undefined' && i + 1 == planete_origine) { %>selected <% } %> >
                                                             <%= planete[1] %>
                                                         </option>
                                                         <% }); %>
                                                             <% } else { %>
-                                                                <option disabled selected>Aucune planète disponible</option>
+                                                                <option selected>Aucune planète disponible</option>
                                                                 <% } %>
                                         </select>
                                 </div>
@@ -62,20 +61,19 @@
 
                                 <!--Champ de texte pour la destination du voyage-->
                                 <div class="col">
-                                    
-                                    <label for="destination" class="form-label custom-font-labels">Entrez l'astre de destination</label>
-                                    <br>
-                                    <select id="destination" name="destination" class="form-control" <% if (!planetes ||
-                                        planetes.length===0) { %> disabled <% } %> required>
-                                            <% if (planetes && planetes.length> 0) { %>
-                                                <% planetes.forEach(function(planete) { %>
-                                                    <option value="<%= planete[0] %>">
-                                                        <%= planete[1] %>
-                                                    </option>
-                                                    <% }); %>
-                                                        <% } else { %>
-                                                            <option disabled selected>Aucune planète disponible</option>
-                                                            <% } %>
+                                        <label for="planete_destination" class="form-label custom-font-labels">Entrez l'astre de destination</label>
+                                        <br>
+                                        <select id="planete_destination" name="planete_destination" class="form-control" required>
+                                                <% if (typeof planetes_bd !== 'undefined' && planetes_bd.length> 0) { %>
+                                                    <% planetes_bd.forEach(function(planete, i) { %>
+                                                        <option value="<%= planete[0] %>" 
+                                                            <%if (typeof planete_destination !== 'undefined' && i + 1 == planete_destination) { %>selected <% } %> >
+                                                            <%= planete[1] %>
+                                                        </option>
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <option selected>Aucune planète disponible</option>
+                                                                <% } %>
                                         </select>
                                 </div>
 
