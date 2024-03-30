@@ -377,21 +377,19 @@ async function demarrerServeur() {
 
     app.route('/exploration')
         .get(async (req, res) => {
-            let result = "";
             try {
                 est_connecte = req.session.email && req.session.mdp;
                 const connection = await getPool().getConnection();
-                result = await connection.execute("SELECT * FROM PLANETE");
+                const result = await connection.execute("SELECT * FROM PLANETE");
                 await connection.close();
 
                 res.render('pages/exploration', {
-                    items: result.rows,
-                    erreur: "",
+                    planetes_bd: result.rows,
                     est_connecte: est_connecte
                 });
             } catch (err) {
                 console.error(err);
-                res.render('pages/exploration', { items: result.rows, erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_connecte: est_connecte });
+                res.render('pages/exploration', { erreur: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_connecte: est_connecte });
             }
         })
         .post((req, res) => {

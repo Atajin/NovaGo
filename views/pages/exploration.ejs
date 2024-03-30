@@ -1,4 +1,8 @@
-<%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
+<% if (typeof est_connecte === 'undefined') { %>
+    <%- include ("../partials/header.ejs", {est_connecte: false}) %> 
+<% } else { %>
+    <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
+<% } %>
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | Explorer";
@@ -6,9 +10,12 @@
     </script>
 
     <!--Champ d'affichage des erreurs lors de la connexion à la BD-->
-    <% if (typeof items !== 'undefined'|| items.length===0) { %>
+    <% if (typeof planetes_bd === 'undefined' || planetes_bd.length===0) { %>
         <div class="alert alert-danger" role="alert" style="margin: 20px;">
-            <%= erreur %>
+            <% if (typeof erreur === 'undefined') { %> Erreur
+            <% } else { %>
+                <%= erreur %> 
+            <% } %>
         </div>
 
         <% } else { %>
@@ -16,51 +23,51 @@
             <!--Caroussel de toutes les planètes-->
             <div id="carousel" class="carousel slide">
                 <div class="carousel-inner">
-                    <% items.forEach(function(item) { %>
+                    <% planetes_bd.forEach(function(planete) { %>
                         <!--Affichage d'une planète-->
-                        <div class="carousel-item <%= item[0] === 1 ? 'active' : '' %> w-100">
+                        <div class="carousel-item <%= planete[0] === 1 ? 'active' : '' %> w-100">
                             <div class="container-fluid text-center" style="margin-top: 20px;">
                                 <br>
                                 <div class="row">
                                     <div class="col" style="margin: 4% 0% 5% 9%;">
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <% if (item[1].length < 10) { %>
+                                                <% if (planete[1].length < 10) { %>
                                                     <h2 class="custom-font-planet-t">
                                                         <% } else { %>
                                                             <h1 class="custom-font-planet-t petit-titre">
                                                                 <% } %>
-                                                                    <%= item[1] %>
+                                                                    <%= planete[1] %>
                                                             </h1>
                                             </div>
                                             <div class="col-sm-6 mt-4 custom-font-planet-p" style="text-align: right;">
                                                 <div class="row-sm-4">
                                                     <h1 class="form-label custom-font-labels">Type d'objet céleste : <%=
-                                                            item[2] %>
+                                                            planete[2] %>
                                                     </h1>
                                                 </div>
                                                 <div class="row-sm-4">
-                                                    <h1 class="form-label custom-font-labels">Gravité : <%= item[3] %>
+                                                    <h1 class="form-label custom-font-labels">Gravité : <%= planete[3] %>
                                                             m/s²</h1>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="bg-black d-flex p-2 ">
                                             <h5 class="custom-font-planet-p" style="text-align: justify;">
-                                                <%= item[4] %>
+                                                <%= planete[4] %>
                                             </h5>
                                         </div>
                                         <div class="m-4">
-                                            <a href="/<%= item[0] %>"
+                                            <a href="/<%= planete[0] %>"
                                                 class="btn btn-outline-light btn-lg custom-font-planet-p">Chercher un
                                                 voyage</a>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="text-center" style="width: 400px; height: 330px;">
-                                            <img src="/images/<%= item[5] %>" class="image-fluid m-2"
+                                            <img src="/images/<%= planete[5] %>" class="image-fluid m-2"
                                                 style="border-radius: 48%; width: auto; height: 100%; color: white;"
-                                                alt="<%= item[1] %>">
+                                                alt="<%= planete[1] %>">
                                         </div>
                                     </div>
                                 </div>

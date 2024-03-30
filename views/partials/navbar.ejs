@@ -9,7 +9,7 @@
 
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto">
-				<% if (typeof est_connecte !== 'undefined') { %>
+				<% if (est_connecte) { %>
 					<!-- Navbar pour les utilisateurs connectés -->
 					<li class="nav-item">
 						<a class="nav-link custom-font-navbar" href="/deconnexion">Se déconnecter</a>
