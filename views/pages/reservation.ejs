@@ -1,4 +1,8 @@
-<%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
+<% if (typeof est_connecte === 'undefined') { %>
+    <%- include ("../partials/header.ejs", {est_connecte: false}) %> 
+<% } else { %>
+    <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
+<% } %>
 
     <script>
         var nomPage = " | Réserver";

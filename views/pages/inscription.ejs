@@ -1,4 +1,8 @@
-<%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
+<% if (typeof est_connecte === 'undefined') { %>
+    <%- include ("../partials/header.ejs", {est_connecte: false}) %> 
+<% } else { %>
+    <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
+<% } %>
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | S'inscrire";
