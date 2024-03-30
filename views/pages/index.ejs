@@ -11,13 +11,13 @@
                 <form action="/" method="POST">
 
                     <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
-                    <% if (typeof message_positif !== 'undefined') { %>
+                    <% if (typeof message_negatif !== 'undefined') { %>
                         <div class="alert alert-danger" role="alert">
                             <%= message_negatif %>
                         </div>
                         <% } %>
                     <!--Gestion des messages d'erreur-->
-                    <% if (typeof message_negatif !== 'undefined') { %>
+                    <% if (typeof message_positif !== 'undefined') { %>
                         <div class="alert alert-success" role="alert">
                             <%= message_positif %>
                         </div>

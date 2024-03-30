@@ -154,8 +154,9 @@ async function demarrerServeur() {
         paramètres du render : message_negatif, est_connecte
     */
     .get((req, res) => {
-        est_connecte = req.session.email && req.session.mdp;
-        res.render('pages/connexion', { message_negatif: "", est_connecte: est_connecte });
+        res.render('pages/connexion', { 
+            est_connecte: req.session.email && req.session.mdp
+        });
     })
     /*
         POST du formulaire de la page de connexion
@@ -331,7 +332,7 @@ async function demarrerServeur() {
                     req.session.mdp = hashedMdp;
                     est_connecte = req.session.email && req.session.mdp;
                     
-                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes: planetes.rows, origine: planete_id, destination: "", est_connecte: est_connecte });
+                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes: planetes.rows, origine: planete_id, est_connecte: est_connecte });
 
                 } catch (err) {
                     console.error(err);
@@ -361,9 +362,14 @@ async function demarrerServeur() {
                     );
 
                     if (result.rows.length > 0) {
-                        res.render('pages/reservation', { est_connecte: est_connecte });
+                        res.render('pages/reservation', {
+                            est_connecte: est_connecte
+                        });
                     }
-                } else res.render('pages/connexion', { message_negatif: 'Connectez vous pour réserver un voyage', est_connecte: est_connecte });
+                } else res.render('pages/connexion', {
+                    message_negatif: 'Connectez vous pour réserver un voyage',
+                    est_connecte: est_connecte
+                });
             } catch (err) {
                 console.error(err);
                 return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes: planetes, est_connecte: est_connecte });
@@ -423,8 +429,6 @@ async function demarrerServeur() {
             });
         } else {
             try {
-                est_connecte = req.session.email && req.session.mdp;
-                // Passer les données obtenues au moteur de rendu
                 res.render('pages/', { planetes: planetes.rows });
             } catch (err) {
                 console.error(err);
