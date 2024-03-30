@@ -111,10 +111,10 @@
                                     <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet
                                         céleste courant</label>
                                     <br>
-                                    <select id="planete" name="planete" class="form-control" <% if (!planetes ||
-                                        planetes.length===0) { %> disabled <% } %> required>
-                                            <% if (planetes && planetes.length> 0) { %>
-                                                <% planetes.forEach(function(planete) { %>
+                                    <select id="planete" name="planete" class="form-control" <% if (typeof planetes_bd = 'undefined' ||
+                                        planetes_bd.length===0) { %> disabled <% } %> required>
+                                            <% if (planetes_bd && planetes_bd.length> 0) { %>
+                                                <% planetes_bd.forEach(function(planete) { %>
                                                     <option value="<%= planete[0] %>">
                                                         <%= planete[1] %>
                                                     </option>
