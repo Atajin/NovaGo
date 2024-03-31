@@ -407,11 +407,18 @@ async function demarrerServeur() {
             }
         })
         /*
-            POST du formulaire de la page de déconnexion
+            POST du formulaire de la page d'exploration
             paramètres : -
         */
-        .post((req, res) => {
-            res.send();
+        .post(async (req, res) => {
+            const connection = await getPool().getConnection();
+            const planetes_bd = await recupererPlanetes(connection);
+            const id_planete_max = planetes_bd.rows.length;
+            let planete_destination = 0;
+            for (let i = 0; i < id_planete_max; i++){
+                planete_destination = (id_planete_+i);
+            }
+            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: id_planete_max, est_connecte: est_connecte });
         });
 
     app.route('/recu-billet')

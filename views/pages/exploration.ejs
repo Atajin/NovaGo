@@ -20,6 +20,7 @@
 
         <% } else { %>
 
+        <form method="POST" action="/exploration">
             <!--Caroussel de toutes les planètes-->
             <div id="carousel" class="carousel slide">
                 <div class="carousel-inner">
@@ -57,10 +58,10 @@
                                                 <%= planete[4] %>
                                             </h5>
                                         </div>
-                                        <div class="m-4">
-                                            <a href="/<%= planete[0] %>"
-                                                class="btn btn-outline-light btn-lg custom-font-planet-p">Chercher un
-                                                voyage</a>
+                                        <div class="m-4"> 
+                                            <label for="id_planete_<%=planete[0]%>" class="form-label custom-font-labels">Choisir cette planète</label>
+                                            <br>
+                                            <input type="radio" id="id_planete_<%=planete[0]%>" name="id_planete_choisie">   
                                         </div>
                                     </div>
                                     <div class="col">
@@ -96,6 +97,9 @@
                     </svg>
                 </button>
             </div>
+            <button type="submit" class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
+            Chercher un voyage</button>
+        </form>
             <% } %>
 
                 <%- include ("../partials/footer.ejs") %>
