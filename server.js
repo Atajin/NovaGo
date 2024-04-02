@@ -416,7 +416,10 @@ async function demarrerServeur() {
             const id_planete_max = planetes_bd.rows.length;
             let planete_destination = 0;
             for (let i = 0; i < id_planete_max; i++){
-                planete_destination = (id_planete_+i);
+                //if (id_planete_[i].value == checked){
+                    planete_destination = i;
+                /*}
+                planete_destination = (id_planete_);*/
             }
             res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: id_planete_max, est_connecte: est_connecte });
         });
