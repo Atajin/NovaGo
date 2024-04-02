@@ -240,25 +240,25 @@ async function demarrerServeur() {
     .post([
         check('prenom')
             .isLength({ min: 2 })
-            .withMessage('Votre prénom doit être au moins 2 charactères.'),
+            .withMessage('Votre prénom doit être au moins 2 caractères.'),
         check('prenom')
             .isLength({ max: 50 })
-            .withMessage('Votre prénom doit être au plus 50 charactères.'),
+            .withMessage('Votre prénom doit être au plus 50 caractères.'),
         check('nom')
             .isLength({ min: 2 })
-            .withMessage('Votre nom doit être au moins 2 charactères.'),
+            .withMessage('Votre nom doit être au moins 2 caractères.'),
         check('nom')
             .isLength({ max: 50 })
-            .withMessage('Votre nom doit être au plus 50 charactères.'),
+            .withMessage('Votre nom doit être au plus 50 caractères.'),
         check('email')
             .isEmail()
             .withMessage("L'adresse courriel saisie est invalide."),
         check('mdp')
             .isLength({ min: 8 })
-            .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
+            .withMessage('Votre mot de passe doit être au moins 8 caractères.'),
         check('mdp')
             .isLength({ max: 30 })
-            .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
+            .withMessage('Votre mot de passe doit être au plus 30 caractères.'),
         check('mdp')
             .custom(validationMdpEgal),
     ], async (req, res) => {
