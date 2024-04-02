@@ -413,14 +413,7 @@ async function demarrerServeur() {
         .post(async (req, res) => {
             const connection = await getPool().getConnection();
             const planetes_bd = await recupererPlanetes(connection);
-            const { id_planete_choisie } = req.body;
-            console.log(req.body);
-            const planete_destination = id_planete_choisie;
-            console.log("id_choisie");
-            console.log(id_planete_choisie);
-            console.log("id_choisie.value");
-            console.log(id_planete_choisie.value);
-            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: planete_destination, est_connecte: est_connecte });
+            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: req.body.selection_planete, est_connecte: est_connecte });
         });
 
     app.route('/recu-billet')

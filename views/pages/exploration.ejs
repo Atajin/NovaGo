@@ -61,7 +61,7 @@
                                         <div class="m-4"> 
                                             <label for="<%=planete[0]%>" class="form-label custom-font-labels">Choisir cette planète</label>
                                             <br>
-                                            <input type="radio" id="<%=planete[0]%>" name="selection_planete">   
+                                            <input type="radio" id="<%=planete[0]%>" name="selection_planete" value="<%=planete[0]%>">   
                                         </div>
                                     </div>
                                     <div class="col">
@@ -97,7 +97,7 @@
                     </svg>
                 </button>
             </div>
-            <input type="hidden" id="id_planete_choisie" value="0">
+            <input type="hidden" id="id_planete_choisie" value="1">
             <button type="submit" id="bouton_submit" disabled class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
             Chercher un voyage</button>
         </form>
