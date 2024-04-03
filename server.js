@@ -69,6 +69,16 @@ async function recupererPlanetes(connection) {
     return result;
 }
 
+async function recupererVoyages(connection, rechercheData) {
+    const voyageResult = await connection.execute(
+        `SELECT * FROM voyage WHERE origine = :origine`,
+        { origine: rechercheData.planetOrigine },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    await connection.close();
+    return voyageResult;
+}
+
 async function trouverPlaneteUtil(connection, id_util) {
     // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
     const planetUtil = await connection.execute(
@@ -409,11 +419,7 @@ async function demarrerServeur() {
                     };
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
-                    const voyageResult = await connection.execute(
-                        `SELECT * FROM voyage WHERE origine = :origine AND destination = :destination`,
-                        { origine: rechercheData.planetOrigine, destination: rechercheData.planetDestination },
-                        { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                    );
+                    const voyageResult = await  recupererVoyages(connection, rechercheData);
 
                     // Afficher les données récupérées dans la console
                     console.log("Résultat de la requête de recherche de voyages :", voyageResult.rows);
@@ -436,7 +442,7 @@ async function demarrerServeur() {
                             rechercheData: rechercheData,
                             planetData: planetData,
                             vaisseuData: vaisseuData,
-                            voyages: voyageResult.rows
+                            voyages_bd: voyageResult.rows
                         });
                     }
                 } else res.render('pages/connexion', {

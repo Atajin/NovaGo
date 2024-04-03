@@ -181,8 +181,8 @@
                                             </div>
                                             <div style="margin-right: 4px;">
                                                 <input type="radio" class="btn-check" name="options-outlined"
-                                                    id="affaire" autocomplete="off">
-                                                <label class="btn btn-outline-light" for="affaire">Affaire</label>
+                                                    id="affaires" autocomplete="off">
+                                                <label class="btn btn-outline-light" for="affaires">Affaires</label>
                                             </div>
                                             <div class="rounded custom-bg-rvt" style="width: 100%;">
                                                 <div class="m-1">
@@ -192,8 +192,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mt-1 p-1 rounded custom-bg-rvt" style="height: 70vh;">
-                                        <% voyages.forEach(voyage=> { %>
+                                    <div class="mt-1 p-1 rounded custom-bg-rvt">
+                                        <% voyages_bd.forEach(voyage=> { %>
                                             <div class="rounded mt-1 px-2 custom-bg-rvt" style="height: 50px;">
                                                 <div style="display: flex;">
                                                     <h2 class="custom-font-labels m-0">
@@ -228,7 +228,7 @@
                                                         </p>
                                                     </div>
                                                     <div class="col" style="text-align: right;">
-                                                        <button class="m-0 p-0 add-btn"
+                                                        <button class="m-0 p-0" id="add_btn_<%= voyage.ID_VOYAGE %>"
                                                             style="border: none; background: none; color: white;">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                 height="16" fill="currentColor"
@@ -262,7 +262,7 @@
                                                     <p class="custom-font-rvt m-0">Voyages</p>
                                                 </div>
                                                 <div class="col" style="text-align: right;">
-                                                    <p class="custom-font-rvt m-0">1</p>
+                                                    <p class="custom-font-rvt m-0" id="nombre_voyages"></p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -270,7 +270,7 @@
                                                     <p class="custom-font-rvt m-0">Billets</p>
                                                 </div>
                                                 <div class="col" style="text-align: right;">
-                                                    <p class="custom-font-rvt m-0">2</p>
+                                                    <p class="custom-font-rvt m-0" id="nombre_billets"></p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -278,7 +278,7 @@
                                                     <p class="custom-font-rvt m-0">Total</p>
                                                 </div>
                                                 <div class="col" style="text-align: right;">
-                                                    <p class="custom-font-rvt m-0">2000$</p>
+                                                    <p class="custom-font-rvt m-0" id="nombre_argents">2000$</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -296,7 +296,9 @@
 
                     <script src="/javascript/reserv-panier.js"></script>
                     <script src="/javascript/reserv-prix.js"></script>
+                    <% if (voyages_bd) { %>
                     <script>
-                        const voyagesData = <%- JSON.stringify(voyages) %>; <!--Probleme avec EJS et JS confusion de Visual Studio-->
-                    </script>
+                        const voyagesData =  <%- JSON.stringify(voyages_bd) %>; 
+                    </script> <!--Probleme avec EJS et JS confusion de Visual Studio-->
+                    <% } %>
                     <%- include ("../partials/footer.ejs") %>

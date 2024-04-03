@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const radioEconomique = document.getElementById('economique');
-    const radioAffaire = document.getElementById('affaire');
+    const radioAffaire = document.getElementById('affaires');
 
     radioEconomique.addEventListener('change', updatePrix);
     radioAffaire.addEventListener('change', updatePrix);
