@@ -63,13 +63,13 @@ async function hashMotDePasse(mdp, saltRounds) {
     }
 }
 
-async function recupererPlanetes(connection){
+async function recupererPlanetes(connection) {
     const result = await connection.execute("SELECT * FROM PLANETE");
     await connection.close();
     return result;
 }
 
-async function trouverPlaneteUtil(connection, id_util){
+async function trouverPlaneteUtil(connection, id_util) {
     // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
     const planetUtil = await connection.execute(
         `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
@@ -125,226 +125,256 @@ async function demarrerServeur() {
         Page d'accueil du site, contient un formulaire pour rechercher un voyage
     */
     app.route('/')
+        /*
+            Affichage de la page d'accueil
+            paramètres du render : planete_origine, planete_destination, planetes_bd, message_negatif, message_positif, est_connecte
+        */
+        .get(async (req, res) => {
+            try {
+                const connection = await getPool().getConnection();
+                const result = await recupererPlanetes(connection);
+                // Passer les données obtenues au moteur de rendu
+                res.render('pages/', {
+                    planetes_bd: result.rows,
+                    est_connecte: req.session.email && req.session.mdp
+                });
+            } catch (err) {
+                console.error(err);
+                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
+            }
+        });
+
     /*
-        Affichage de la page d'accueil
-        paramètres du render : planete_origine, planete_destination, planetes_bd, message_negatif, message_positif, est_connecte
+    Traitement du formulaire de recherche de voyage
     */
-    .get(async (req, res) => {
-        try {
-            const connection = await getPool().getConnection();
-            const result = await recupererPlanetes(connection);
-            // Passer les données obtenues au moteur de rendu
-            res.render('pages/', {
-                planetes_bd: result.rows,
-                est_connecte: req.session.email && req.session.mdp
-            });
-        } catch (err) {
-            console.error(err);
-            res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
-        }
-    });    
+    app.route('/')
+        .post(async (req, res) => {
+            try {
+                // Ici, vous pouvez récupérer les données du formulaire à partir de req.body
+                const { planete_origine, planete_destination, date_aller, date_retour, personnes, type_billet } = req.body;
+
+                // Exemple de traitement des données :
+                console.log('Planète d\'origine :', planete_origine);
+                console.log('Planète de destination :', planete_destination);
+                console.log('Date de départ :', date_aller);
+                console.log('Date de retour :', date_retour);
+                console.log('Nombre de personnes :', personnes);
+                console.log('Type de billet :', type_billet);
+
+                // Ici, vous pouvez effectuer d'autres traitements, comme la validation des données, la recherche de voyages dans la base de données, etc.
+
+                // Pour l'exemple, nous redirigeons simplement l'utilisateur vers la page d'accueil avec un message positif
+                res.render('pages/', {
+                    est_connecte: req.session.email && req.session.mdp
+                });
+            } catch (err) {
+                console.error(err);
+                // En cas d'erreur, affichez un message négatif
+                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors du traitement du formulaire' });
+            }
+        });
 
     /*
         Page de connexion au compte utilisateur,
         contient un formulaire pour soumettre un courriel et mot de passe utilisateur
     */
     app.route('/connexion')
-    /*
-        Affichage de la page de connexion
-        paramètres du render : message_negatif, est_connecte
-    */
-    .get((req, res) => {
-        res.render('pages/connexion', { 
-            est_connecte: req.session.email && req.session.mdp
-        });
-    })
-    /*
-        POST du formulaire de la page de connexion
-    */
-    .post(async (req, res) => {
-        try {
-            est_connecte = req.session.email && req.session.mdp;
-            const { email, mdp } = req.body;
+        /*
+            Affichage de la page de connexion
+            paramètres du render : message_negatif, est_connecte
+        */
+        .get((req, res) => {
+            res.render('pages/connexion', {
+                est_connecte: req.session.email && req.session.mdp
+            });
+        })
+        /*
+            POST du formulaire de la page de connexion
+        */
+        .post(async (req, res) => {
+            try {
+                est_connecte = req.session.email && req.session.mdp;
+                const { email, mdp } = req.body;
 
-            // Obtention d'une connexion à partir du pool
-            const connection = await getPool().getConnection();
+                // Obtention d'une connexion à partir du pool
+                const connection = await getPool().getConnection();
 
-            // Exécution de la requête pour vérifier l'email
-            const result = await connection.execute(
-                `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                { email: email },
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
-            if (result.rows.length > 0) {
-                const mdp_valide = await bcrypt.compare(mdp, result.rows[0].MOT_DE_PASSE);
-                if (mdp_valide) {
-                    const planeteResult = await trouverPlaneteUtil(connection, result.rows[0].ID_UTILISATEUR);
+                // Exécution de la requête pour vérifier l'email
+                const result = await connection.execute(
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
+                    { email: email },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+                if (result.rows.length > 0) {
+                    const mdp_valide = await bcrypt.compare(mdp, result.rows[0].MOT_DE_PASSE);
+                    if (mdp_valide) {
+                        const planeteResult = await trouverPlaneteUtil(connection, result.rows[0].ID_UTILISATEUR);
 
-                    const listePlanetes = await recupererPlanetes(connection);
-                    let planeteID = 0;
-                    if (planeteResult.rows.length > 0) {
-                        //Ajout des informations nécessaires à la session
-                        req.session.email = email;
-                        req.session.mdp = result.rows[0].MOT_DE_PASSE;
-                        est_connecte = req.session.email && req.session.mdp;
-                        planeteID = Number(planeteResult.rows[0]);
-                        return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: est_connecte });
+                        const listePlanetes = await recupererPlanetes(connection);
+                        let planeteID = 0;
+                        if (planeteResult.rows.length > 0) {
+                            //Ajout des informations nécessaires à la session
+                            req.session.email = email;
+                            req.session.mdp = result.rows[0].MOT_DE_PASSE;
+                            est_connecte = req.session.email && req.session.mdp;
+                            planeteID = Number(planeteResult.rows[0]);
+                            return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: est_connecte });
+                        }
+                    } else {
+                        // Le mot de passe est incorrect
+                        return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: est_connecte });
                     }
                 } else {
-                    // Le mot de passe est incorrect
-                    return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: est_connecte });
+                    // L'utilisateur n'existe pas
+                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'existe pas", est_connecte: est_connecte });
                 }
-            } else {
-                // L'utilisateur n'existe pas
-                return res.render('pages/connexion', { message_negatif: "L'utilisateur n'existe pas", est_connecte: est_connecte });
+            } catch (err) {
+                console.error(err);
+                return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
             }
-        } catch (err) {
-            console.error(err);
-            return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
-        }
-    });
+        });
 
-    
+
     /*
         Affichage de la page de création de compte utilisateur,
         contient le formulaire de soumission de l'information du nouveau compte
     */
     app.route('/inscription')
-    /*
-        Affichage de la page d'inscription
-        paramètres de render : planetes_bd, message_negatif, est_connecte
-    */
-    .get(async (req, res) => {
-        let result = "";
-        try {
-            est_connecte = req.session.email && req.session.mdp;
-            const connection = await getPool().getConnection();
-            result = await recupererPlanetes(connection);
+        /*
+            Affichage de la page d'inscription
+            paramètres de render : planetes_bd, message_negatif, est_connecte
+        */
+        .get(async (req, res) => {
+            let result = "";
+            try {
+                est_connecte = req.session.email && req.session.mdp;
+                const connection = await getPool().getConnection();
+                result = await recupererPlanetes(connection);
 
-            res.render('pages/inscription', {
-                planetes_bd: result.rows,
-                est_connecte: est_connecte
-            });
-        } catch (err) {
-            console.error(err);
-            res.render('pages/inscription', {
-                planetes_bd: result.rows,
-                message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
-                est_connecte: est_connecte
-            });
-        }
-    })
-    /*
-        POST du formulaire de la page d'inscription
-    */
-    .post([
-        check('prenom')
-            .isLength({ min: 2 })
-            .withMessage('Votre prénom doit être au moins 2 charactères.'),
-        check('prenom')
-            .isLength({ max: 50 })
-            .withMessage('Votre prénom doit être au plus 50 charactères.'),
-        check('nom')
-            .isLength({ min: 2 })
-            .withMessage('Votre nom doit être au moins 2 charactères.'),
-        check('nom')
-            .isLength({ max: 50 })
-            .withMessage('Votre nom doit être au plus 50 charactères.'),
-        check('email')
-            .isEmail()
-            .withMessage("L'adresse courriel saisie est invalide."),
-        check('mdp')
-            .isLength({ min: 8 })
-            .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
-        check('mdp')
-            .isLength({ max: 30 })
-            .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
-        check('mdp')
-            .custom(validationMdpEgal),
-    ], async (req, res) => {
-        let planetes_bd;
-        est_connecte = req.session.email && req.session.mdp;
-        try {
-            const connection = await getPool().getConnection();
-            planetes_bd = await recupererPlanetes(connection);
-        } catch (err) {
-            console.error(err);
-            return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
-        }
-
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
-        }
-        const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
-        try {
-            // Obtention d'une connexion à partir du pool
-            const connection = await getPool().getConnection();
-
-            // Exécution de la requête pour vérifier si l'email est utilisé
-            const result = await connection.execute(
-                `SELECT * FROM utilisateur WHERE email = :email`,
-                { email: email },
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
-            
-
-            await connection.close();
-
-            if (result.rows.length > 0) {
-                // L'utilisateur existe
-                return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
-            } else {
-                // L'utilisateur n'existe pas
-                try {
-                    // Obtention d'une connexion à partir du pool
-                    const connection = await getPool().getConnection();
-                    let hashedMdp = await hashMotDePasse(mdp, saltRounds);
-
-                    //la BD n'accepte que les chiffres
-                    const telephone_numerique = telephone.replace(/\D/g,"");
-
-                    // Exécution de l'insertion de données dans la BD
-                    await connection.execute(
-                        `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
-                        VALUES ( :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
-                        {
-                            email: email,
-                            mot_de_passe: hashedMdp,
-                            nom: nom,
-                            prenom: prenom,
-                            adresse: adresse,
-                            telephone: telephone_numerique,
-                            planete_id_planete: planete
-                        }
-                    );
-                    await connection.commit();
-
-                    const nouvel_util = await connection.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
-                    const id_nouvel_util = Number(nouvel_util.rows);
-                    const planete_util = await trouverPlaneteUtil(connection, id_nouvel_util);
-
-                    const planete_id = Number(planete_util.rows[0]);
-
-                    await connection.close();
-                    
-                    req.session.email = email;
-                    req.session.mdp = hashedMdp;
-                    est_connecte = req.session.email && req.session.mdp;
-                    
-                    return res.render('pages/', { message_positif : 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id, est_connecte: est_connecte });
-
-                } catch (err) {
-                    console.error(err);
-                    return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
-                }
-
+                res.render('pages/inscription', {
+                    planetes_bd: result.rows,
+                    est_connecte: est_connecte
+                });
+            } catch (err) {
+                console.error(err);
+                res.render('pages/inscription', {
+                    planetes_bd: result.rows,
+                    message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
+                    est_connecte: est_connecte
+                });
             }
-        } catch (err) {
-            console.error(err);
-            return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
-        }
-    });
+        })
+        /*
+            POST du formulaire de la page d'inscription
+        */
+        .post([
+            check('prenom')
+                .isLength({ min: 2 })
+                .withMessage('Votre prénom doit être au moins 2 charactères.'),
+            check('prenom')
+                .isLength({ max: 50 })
+                .withMessage('Votre prénom doit être au plus 50 charactères.'),
+            check('nom')
+                .isLength({ min: 2 })
+                .withMessage('Votre nom doit être au moins 2 charactères.'),
+            check('nom')
+                .isLength({ max: 50 })
+                .withMessage('Votre nom doit être au plus 50 charactères.'),
+            check('email')
+                .isEmail()
+                .withMessage("L'adresse courriel saisie est invalide."),
+            check('mdp')
+                .isLength({ min: 8 })
+                .withMessage('Votre mot de passe doit être au moins 8 charactères.'),
+            check('mdp')
+                .isLength({ max: 30 })
+                .withMessage('Votre mot de passe doit être au plus 30 charactères.'),
+            check('mdp')
+                .custom(validationMdpEgal),
+        ], async (req, res) => {
+            let planetes_bd;
+            est_connecte = req.session.email && req.session.mdp;
+            try {
+                const connection = await getPool().getConnection();
+                planetes_bd = await recupererPlanetes(connection);
+            } catch (err) {
+                console.error(err);
+                return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
+            }
+
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
+            }
+            const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
+            try {
+                // Obtention d'une connexion à partir du pool
+                const connection = await getPool().getConnection();
+
+                // Exécution de la requête pour vérifier si l'email est utilisé
+                const result = await connection.execute(
+                    `SELECT * FROM utilisateur WHERE email = :email`,
+                    { email: email },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+
+
+                await connection.close();
+
+                if (result.rows.length > 0) {
+                    // L'utilisateur existe
+                    return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
+                } else {
+                    // L'utilisateur n'existe pas
+                    try {
+                        // Obtention d'une connexion à partir du pool
+                        const connection = await getPool().getConnection();
+                        let hashedMdp = await hashMotDePasse(mdp, saltRounds);
+
+                        //la BD n'accepte que les chiffres
+                        const telephone_numerique = telephone.replace(/\D/g, "");
+
+                        // Exécution de l'insertion de données dans la BD
+                        await connection.execute(
+                            `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
+                        VALUES ( :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
+                            {
+                                email: email,
+                                mot_de_passe: hashedMdp,
+                                nom: nom,
+                                prenom: prenom,
+                                adresse: adresse,
+                                telephone: telephone_numerique,
+                                planete_id_planete: planete
+                            }
+                        );
+                        await connection.commit();
+
+                        const nouvel_util = await connection.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
+                        const id_nouvel_util = Number(nouvel_util.rows);
+                        const planete_util = await trouverPlaneteUtil(connection, id_nouvel_util);
+
+                        const planete_id = Number(planete_util.rows[0]);
+
+                        await connection.close();
+
+                        req.session.email = email;
+                        req.session.mdp = hashedMdp;
+                        est_connecte = req.session.email && req.session.mdp;
+
+                        return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id, est_connecte: est_connecte });
+
+                    } catch (err) {
+                        console.error(err);
+                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
+                    }
+
+                }
+            } catch (err) {
+                console.error(err);
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: est_connecte });
+            }
+        });
 
     /*
         Affichage de la page de réservation de voyages,
@@ -369,9 +399,44 @@ async function demarrerServeur() {
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
 
+                    const rechercheData = {
+                        planetOrigine: "Terre",
+                        planetDestination: "Mars",
+                        dateDepart: "2024-02-24",
+                        dateRetour: "2024-02-27",
+                        nombrePersonnes: 2,
+                        typeBillet: ""
+                    };
+
+                    // Exécution de la requête SQL pour rechercher les voyages correspondants
+                    const voyageResult = await connection.execute(
+                        `SELECT * FROM voyage WHERE origine = :origine AND destination = :destination`,
+                        { origine: rechercheData.planetOrigine, destination: rechercheData.planetDestination },
+                        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                    );
+
+                    // Afficher les données récupérées dans la console
+                    console.log("Résultat de la requête de recherche de voyages :", voyageResult.rows);
+
+                    const planetData = {
+                        nom: "Uranus",
+                        type: "Gazeuse",
+                        gravite: "8.69",
+                    };
+
+                    const vaisseuData = {
+                        nom: "Etoile Voyageur",
+                        type: "Propulsion ionique",
+                        capacite: 150
+                    };
+
                     if (result.rows.length > 0) {
                         res.render('pages/reservation', {
-                            est_connecte: est_connecte
+                            est_connecte: est_connecte,
+                            rechercheData: rechercheData,
+                            planetData: planetData,
+                            vaisseuData: vaisseuData,
+                            voyages: voyageResult.rows
                         });
                     }
                 } else res.render('pages/connexion', {
@@ -384,7 +449,7 @@ async function demarrerServeur() {
             }
         });
 
-    
+
     app.route('/exploration')
         /*
             Accès à la page d'exploration
@@ -415,8 +480,8 @@ async function demarrerServeur() {
             const planetes_bd = await recupererPlanetes(connection);
             const id_planete_max = planetes_bd.rows.length;
             let planete_destination = 0;
-            for (let i = 0; i < id_planete_max; i++){
-                planete_destination = (id_planete_+i);
+            for (let i = 0; i < id_planete_max; i++) {
+                planete_destination = (id_planete_ + i);
             }
             res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: id_planete_max, est_connecte: est_connecte });
         });

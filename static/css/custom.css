@@ -131,3 +131,18 @@
     .custom-bg-rvt {
         background: rgba(66, 66, 66, 0.6);
     }
+
+    .compteur-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .compteur-container button {
+        border: none;
+        background: none;
+        margin-top: -3px;
+    }
+
+    .compteur-container input {
+        margin-top: -5px;
+    }
