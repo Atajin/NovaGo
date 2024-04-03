@@ -22,7 +22,8 @@ async function creerProduitsEtPrix() {
                 name: `Classe économique pour ${voyage.DESTINATION} - Départ: ${voyage.DATE_DEPART}`,
                 description: `Ticket classe économique pour ${voyage.ORIGINE} en direction de ${voyage.DESTINATION}`,
                 metadata: {
-                    id_voyage_db: `${voyage.ID_VOYAGE}` // Stockage de l'ID du voyage de la base de données dans les métadonnées
+                    id_voyage_db: `${voyage.ID_VOYAGE}`, // Stockage de l'ID du voyage de la base de données dans les métadonnées
+                    classe_voyage: "economique" // Classe du billet
                 },
             });
 
@@ -30,7 +31,8 @@ async function creerProduitsEtPrix() {
                 name: `Classe affaires pour ${voyage.DESTINATION} - Départ: ${voyage.DATE_DEPART}`,
                 description: `Ticket classe affaires pour ${voyage.ORIGINE} en direction de ${voyage.DESTINATION}`,
                 metadata: {
-                    id_voyage_db: `${voyage.ID_VOYAGE}` // Stockage de l'ID du voyage de la base de données dans les métadonnées
+                    id_voyage_db: `${voyage.ID_VOYAGE}`, // Stockage de l'ID du voyage de la base de données dans les métadonnées
+                    classe_voyage: "affaires" // Classe du billet
                 },
             });
 
