@@ -1,4 +1,11 @@
 <%- include ("../partials/header.ejs") %>
+<!--Champ d'affichage des erreurs lors d'inscription-->
+<% if (typeof message_negatif !== 'undefined') { %>
+    <div class="custom-message-negatif">
+        <%= message_negatif %>
+    </div>
+    <% } %>
+    
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | S'inscrire";
@@ -11,13 +18,6 @@
             <div class="col-1"></div>
 
             <div class="col">
-
-                <!--Champ d'affichage des erreurs lors d'inscription-->
-                <% if (typeof message_negatif !=='undefined' ) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= message_negatif %>
-                    </div>
-                    <% } %>
 
                         <!--Action complétée lors du submit de ce formulaire-->
                         <form action="/inscription" method="POST">
@@ -153,4 +153,5 @@
             });
         });
     </script>-->
+    <script src="/javascript/inscription.js"></script>
     <%- include ("../partials/footer.ejs") %>

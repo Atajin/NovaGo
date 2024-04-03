@@ -58,9 +58,14 @@
         font-size: 20px;
     }
 
-    .custom-font-errors {
+    .custom-message-negatif {
         font-family: 'PPStellar', sans-serif;
         color: red;
+        font-size: 20px;
+    }
+    .custom-message-positif {
+        font-family: 'PPStellar', sans-serif;
+        color: lime;
         font-size: 20px;
     }
 
