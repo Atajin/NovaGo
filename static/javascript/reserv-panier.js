@@ -1,17 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
     let nombre_voyages = 0;
     let nombre_billets = 0;
+    let nombre_argent = 0;
+    let prixVoyages = [];
+    let prixActuel;
 
     let voyagesTotal = document.getElementById('nombre_voyages');
     let billetsTotal = document.getElementById('nombre_billets');
     let montantTotal = document.getElementById('nombre_argents');
     voyagesTotal.textContent = nombre_voyages;
     billetsTotal.textContent = nombre_billets;
+    montantTotal.textContent = nombre_argent + "$"
 
     voyagesData.forEach(voyage => {
         let nbre_panier = 0
         const addBtn = document.getElementById("add_btn_" + voyage.ID_VOYAGE);
-
         addBtn.addEventListener("click", function () {
             let parentDiv = document.querySelector(".conteneur-panier");
             let voyageCode = "Code " + voyage.ID_VOYAGE;
@@ -20,6 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
             nombre_voyages++;
             voyagesTotal.textContent = nombre_voyages;
 
+            nombre_billets += 1;
+            billetsTotal.textContent = nombre_billets;
+
+            prixVoyages[nbre_panier] = parseInt(voyagePrix.textContent);
+
+            // Ajout du prix du voyage au montant total
+            nombre_argent += prixVoyages[nbre_panier];
+            montantTotal.textContent = nombre_argent + "$";
 
             let newElement = document.createElement("div");
             newElement.classList.add("rounded", "px-2", "mt-1", "custom-bg-rvt");
@@ -84,6 +95,7 @@ margin: 0;
             input.classList.add("rounded", "compteurInput" + voyage.ID_VOYAGE + nbre_panier);
             input.setAttribute("type", "text");
             input.setAttribute("value", "1");
+            input.setAttribute("readonly", "true");
             input.style.width = "23px";
             input.style.height = "20px";
             input.style.border = "none";
@@ -121,15 +133,29 @@ margin: 0;
         });
     });
 
-
     function DeleteVoyagesPanier(id, nbre_panier) {
         const deleteBtns = document.querySelectorAll(".delete-btn" + id + nbre_panier);
 
         deleteBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                btn.closest('.rounded').remove();
+
+                // Récupérer le nombre de billets pour ce voyage
+                let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + nbre_panier).value);
+
+                // Décrémenter le montant total
+                nombre_argent -= prixVoyages[nbre_panier] * nbreBilletsVoyage;
+                montantTotal.textContent = nombre_argent + "$";
+
+                // Décrémenter le nombre de voyages
                 nombre_voyages--;
                 voyagesTotal.textContent = nombre_voyages;
+
+                // Décrémenter le nombre de billets
+                nombre_billets -= nbreBilletsVoyage;
+                billetsTotal.textContent = nombre_billets;
+
+                // Supprimer l'élément du DOM
+                btn.closest('.rounded').remove();
             });
         });
     }
@@ -142,8 +168,11 @@ margin: 0;
                 let input = this.closest(".row").querySelector(".compteurInput" + id + nbre_panier);
                 let valeur = parseInt(input.value);
                 input.value = valeur + 1;
-                nombre_billets += parseInt(input.value);
+                nombre_billets += 1;
                 billetsTotal.textContent = nombre_billets;
+
+                nombre_argent += prixVoyages[nbre_panier];
+                montantTotal.textContent = nombre_argent + "$";
             });
         });
     }
@@ -158,8 +187,11 @@ margin: 0;
                 let valeur = parseInt(input.value);
                 if (valeur > 1) {
                     input.value = valeur - 1;
-                    nombre_billets -= parseInt(input.value);
+                    nombre_billets -= 1;
                     billetsTotal.textContent = nombre_billets;
+
+                    nombre_argent -= prixVoyages[nbre_panier];
+                    montantTotal.textContent = nombre_argent + "$";
                 }
             });
         });
