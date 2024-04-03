@@ -1,8 +1,4 @@
-<% if (typeof est_connecte === 'undefined') { %>
-    <%- include ("../partials/header.ejs", {est_connecte: false}) %> 
-<% } else { %>
-    <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
-<% } %>
+<%- include ("../partials/header.ejs") %>
 
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
@@ -21,7 +17,7 @@
                 <h1 class="custom-font-titles text-center">Connexion</h1>
 
                 <!--Champ d'affichage des erreurs lors de connexion-->
-                <% if (typeof message_negatif !== 'undefined') { %>
+                <% if (typeof message_negatif !=='undefined' ) { %>
                     <div class="alert alert-danger" role="alert">
                         <%= message_negatif %>
                     </div>

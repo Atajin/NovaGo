@@ -1,8 +1,4 @@
-<% if (typeof est_connecte === 'undefined') { %>
-    <%- include ("../partials/header.ejs", {est_connecte: false}) %> 
-<% } else { %>
-    <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
-<% } %>
+<%- include ("../partials/header.ejs") %>
 
     <script>
         var nomPage = " | Réserver";
@@ -230,16 +226,16 @@
                                 <div class="row">
                                     <div class="col-sm-7">
                                         <div style="display: flex;">
-                                          
-                                                <button class="text-white custom-font-rvt"
-                                                    style="border: none; background: none;">+</button>
-                                    
-                                                <input class="rounded" type="text" value="1"
-                                                    style="width: 23px; height: 20px; border: none; text-align:center; font-size: small;" />
-                                            
-                                                <button class="text-white custom-font-rvt"
-                                                    style="border: none; background: none;">-</button>
-                                           
+
+                                            <button class="text-white custom-font-rvt"
+                                                style="border: none; background: none;">+</button>
+
+                                            <input class="rounded" type="text" value="1"
+                                                style="width: 23px; height: 20px; border: none; text-align:center; font-size: small;" />
+
+                                            <button class="text-white custom-font-rvt"
+                                                style="border: none; background: none;">-</button>
+
                                         </div>
                                     </div>
                                     <div class="col" style="text-align: right;">

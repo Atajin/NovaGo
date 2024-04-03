@@ -1,8 +1,4 @@
-<% if (typeof est_connecte === 'undefined') { %>
-    <%- include ("../partials/header.ejs", {est_connecte: false}) %> 
-<% } else { %>
-    <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
-<% } %>
+<%- include ("../partials/header.ejs") %>
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | S'inscrire";
@@ -17,7 +13,7 @@
             <div class="col">
 
                 <!--Champ d'affichage des erreurs lors d'inscription-->
-                <% if (typeof message_negatif !== 'undefined') { %>
+                <% if (typeof message_negatif !=='undefined' ) { %>
                     <div class="alert alert-danger" role="alert">
                         <%= message_negatif %>
                     </div>
@@ -112,7 +108,7 @@
                                         céleste courant</label>
                                     <br>
                                     <select id="planete" name="planete" class="form-control" required>
-                                        <% if (typeof planetes_bd !== 'undefined' && planetes_bd.length> 0) { %>
+                                        <% if (typeof planetes_bd !=='undefined' && planetes_bd.length> 0) { %>
                                             <% planetes_bd.forEach(function(planete, i) { %>
                                                 <option value="<%= planete[0] %>">
                                                     <%= planete[1] %>
@@ -121,7 +117,7 @@
                                                     <% } else { %>
                                                         <option selected>Aucune planète disponible</option>
                                                         <% } %>
-                                </select>
+                                    </select>
                                 </div>
                             </div>
 

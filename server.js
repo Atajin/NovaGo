@@ -162,7 +162,8 @@ async function demarrerServeur() {
         */
         .get((req, res) => {
             res.render('pages/connexion', {
-                est_connecte: req.session.email && req.session.mdp
+                est_connecte: req.session.email && req.session.mdp,
+                est_admin: req.session.est_admin
             });
         })
         /*
