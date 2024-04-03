@@ -53,6 +53,13 @@ function getPool() {
     return pool;
 }
 
+function updateLocals(req, res, next) {
+    res.locals.est_connecte = req.session.email && req.session.mdp;
+    res.locals.est_admin = req.session.est_admin;
+    next();
+}
+
+
 async function hashMotDePasse(mdp, saltRounds) {
     try {
         const hash = await bcrypt.hash(mdp, saltRounds);
@@ -142,12 +149,11 @@ async function demarrerServeur() {
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
                     planetes_bd: result.rows,
-                    est_connecte: req.session.email && req.session.mdp,
                     est_admin: req.session.est_admin
                 });
             } catch (err) {
                 console.error(err);
-                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_connecte: req.session.est_connecte, est_admin: req.session.est_admin });
+                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_admin: req.session.est_admin });
             }
         });
 
@@ -162,7 +168,6 @@ async function demarrerServeur() {
         */
         .get((req, res) => {
             res.render('pages/connexion', {
-                est_connecte: req.session.email && req.session.mdp,
                 est_admin: req.session.est_admin
             });
         })
@@ -201,18 +206,20 @@ async function demarrerServeur() {
                             //Ajout des informations nécessaires à la session
                             req.session.email = email;
                             req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
-                            req.session.est_connecte = req.session.email && req.session.mdp;
+                            req.session.est_connecte = true;
                             req.session.est_admin = false;
                             planeteID = Number(planeteResult.rows[0]);
-                            return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: req.session.est_connecte });
+                            updateLocals(req, res, () => {
+                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows });
+                            });
 
                         } else {
-                            return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: req.session.est_connecte });
+                            return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect' });
                         }
 
                     } else {
                         // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: req.session.est_connecte });
+                        return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect' });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
@@ -223,19 +230,21 @@ async function demarrerServeur() {
                         req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.est_admin = true;
-                        req.session.est_connecte = req.session.email && req.session.mdp;
-                        return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!', est_connecte: req.session.est_connecte });
+                        req.session.est_connecte = true;
+                        updateLocals(req, res, () => {
+                            return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
+                        });
                     } else {
                         // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: req.session.est_connecte });
+                        return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect' });
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'existe pas", est_connecte: req.session.est_connecte });
+                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'existe pas" });
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: req.session.est_connecte });
+                return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données' });
             } finally {
                 if (connexion) {
                     await connexion.close();
@@ -261,13 +270,11 @@ async function demarrerServeur() {
                 await connexion.close();
                 res.render('pages/inscription', {
                     planetes_bd: result.rows,
-                    est_connecte: req.session.est_connecte
                 });
             } catch (err) {
                 console.error(err);
                 res.render('pages/inscription', {
                     message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
-                    est_connecte: req.session.email && req.session.mdp
                 });
             }
         })
@@ -307,12 +314,12 @@ async function demarrerServeur() {
                 await connexion.close();
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: req.session.est_connecte });
+                return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données' });
             }
 
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes_bd: planetes_bd.rows, est_connecte: req.session.est_connecte });
+                return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes_bd: planetes_bd.rows });
             }
             const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
             try {
@@ -331,7 +338,7 @@ async function demarrerServeur() {
 
                 if (result.rows.length > 0) {
                     // L'utilisateur existe
-                    return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes_bd: planetes_bd.rows, est_connecte: req.session.est_connecte });
+                    return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes_bd: planetes_bd.rows });
                 } else {
                     // L'utilisateur n'existe pas
                     try {
@@ -370,17 +377,17 @@ async function demarrerServeur() {
                         req.session.mdp = hashedMdp;
                         est_connecte = req.session.email && req.session.mdp;
 
-                        return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id, est_connecte: req.session.est_connecte });
+                        return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id });
 
                     } catch (err) {
                         console.error(err);
-                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: req.session.est_connecte });
+                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows });
                     }
 
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows, est_connecte: req.session.est_connecte });
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows });
             }
         });
 
@@ -398,15 +405,15 @@ async function demarrerServeur() {
                 req.session.est_connecte = req.session.email && req.session.mdp;
                 if (req.session.est_connecte) {
                     res.render('pages/reservation', {
-                        est_connecte: req.session.est_connecte
+
                     });
                 } else res.render('pages/connexion', {
                     message_negatif: 'Connectez vous pour réserver un voyage',
-                    est_connecte: req.session.est_connecte
+
                 });
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: req.session.est_connecte });
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
             }
         });
 
@@ -425,11 +432,10 @@ async function demarrerServeur() {
 
                 res.render('pages/exploration', {
                     planetes_bd: result.rows,
-                    est_connecte: req.session.est_connecte
                 });
             } catch (err) {
                 console.error(err);
-                res.render('pages/exploration', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_connecte: req.session.est_connecte });
+                res.render('pages/exploration', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
             }
         })
         /*
@@ -440,7 +446,7 @@ async function demarrerServeur() {
             const connexion = await getPool().getConnection();
             const planetes_bd = await recupererPlanetes(connexion);
             await connexion.close();
-            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: req.body.selection_planete, est_connecte: req.session.est_connecte });
+            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: req.body.selection_planete });
         });
 
     app.route('/recu-billet')
@@ -451,7 +457,6 @@ async function demarrerServeur() {
         .get((req, res) => {
             req.session.est_connecte = req.session.email && req.session.mdp;
             res.render('pages/recu-billet', {
-                est_connecte: req.session.est_connecte
             })
         });
     /*
