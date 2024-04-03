@@ -67,7 +67,6 @@ async function hashMotDePasse(mdp, saltRounds) {
 
 async function recupererPlanetes(connection) {
     const result = await connection.execute("SELECT * FROM PLANETE");
-    await connection.close();
     return result;
 }
 
@@ -135,6 +134,7 @@ async function demarrerServeur() {
             try {
                 const connection = await getPool().getConnection();
                 const result = await recupererPlanetes(connection);
+                await connection.close();
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
                     planetes_bd: result.rows,
@@ -164,12 +164,13 @@ async function demarrerServeur() {
             POST du formulaire de la page de connexion
         */
         .post(async (req, res) => {
+            let connection
             try {
                 est_connecte = req.session.email && req.session.mdp;
                 const { email, mdp } = req.body;
 
                 // Obtention d'une connexion à partir du pool
-                const connection = await getPool().getConnection();
+                connection = await getPool().getConnection();
 
                 // Exécution de la requête pour vérifier l'email
                 const resultUser = await connection.execute(
@@ -215,7 +216,7 @@ async function demarrerServeur() {
                         req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
                         est_connecte = req.session.email && req.session.mdp;
                         est_admin = true;
-                        return res.render('pages/admin', { message_positif: 'Connexion au compte effectuée avec succès!', est_connecte: est_connecte });
+                        return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!', est_connecte: est_connecte });
                     } else {
                         // Le mot de passe est incorrect
                         return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: est_connecte });
@@ -227,6 +228,10 @@ async function demarrerServeur() {
             } catch (err) {
                 console.error(err);
                 return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
+            } finally {
+                if (connection) {
+                    await connection.close();
+                }
             }
         });
 
@@ -246,7 +251,7 @@ async function demarrerServeur() {
                 est_connecte = req.session.email && req.session.mdp;
                 const connection = await getPool().getConnection();
                 result = await recupererPlanetes(connection);
-
+                await connection.close();
                 res.render('pages/inscription', {
                     planetes_bd: result.rows,
                     est_connecte: est_connecte
@@ -293,6 +298,7 @@ async function demarrerServeur() {
             try {
                 const connection = await getPool().getConnection();
                 planetes_bd = await recupererPlanetes(connection);
+                await connection.close();
             } catch (err) {
                 console.error(err);
                 return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: est_connecte });
@@ -439,6 +445,7 @@ async function demarrerServeur() {
         .post(async (req, res) => {
             const connection = await getPool().getConnection();
             const planetes_bd = await recupererPlanetes(connection);
+            await connection.close();
             res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: req.body.selection_planete, est_connecte: est_connecte });
         });
 
@@ -460,6 +467,7 @@ async function demarrerServeur() {
     app.get('/deconnexion', async (req, res) => {
         const connection = await getPool().getConnection();
         const planetes_bd = await recupererPlanetes(connection);
+        await connection.close();
         if (req.session.email) {
             req.session.destroy();
             est_connecte = false;
