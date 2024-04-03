@@ -31,11 +31,10 @@
 
 
                                     <!--Champ d'entrée du prénom de l'utilisateur-->
-                                    <label for="prenom" class="form-label custom-font-labels">Entrez votre
-                                        prénom</label>
+                                    <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label>
                                     <br>
                                     <input type="text" id="prenom" name="prenom" class="form-control"
-                                        placeholder="Prénom" required>
+                                        placeholder="Prénom" pattern="[a-zA-Z -]" minlength="2" maxlength="50" required>
 
                                     <!--Affichage d'erreur lors d'une entrée dans le champs prénom-->
                                     <div class="invalid-feedback">Veuillez écrire votre prénom.</div>
@@ -44,8 +43,8 @@
                                     <!--Champ d'entrée du nom de l'utilisateur-->
                                     <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label>
                                     <br>
-                                    <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom"
-                                        required>
+                                    <input type="text" id="nom" name="nom" class="form-control"
+                                        placeholder="Nom" pattern="[a-zA-Z -]" minlength="2" maxlength="50" required>
 
                                     <!--Affichage d'erreur lors d'une entrée dans le champs nom-->
                                     <div class="invalid-feedback">Veuillez écrire votre nom.</div>

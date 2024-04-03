@@ -158,7 +158,7 @@ async function demarrerServeur() {
                 await connexion.close();
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
-                    planetes_bd: result.rows,
+                    planetes_bd: planetes_bd.rows,
                     est_admin: req.session.est_admin
                 });
             } catch (err) {
@@ -284,7 +284,7 @@ async function demarrerServeur() {
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
                 res.render('pages/inscription', {
-                    planetes_bd: result.rows,
+                    planetes_bd: planetes_bd.rows,
                 });
             } catch (err) {
                 console.error(err);
