@@ -253,11 +253,10 @@ async function demarrerServeur() {
             paramètres de render : planetes_bd, message_negatif, est_connecte
         */
         .get(async (req, res) => {
-            let result = "";
             try {
-                est_connecte = req.session.email && req.session.mdp;
+                const est_connecte = req.session.email && req.session.mdp;
                 const connexion = await getPool().getConnection();
-                result = await recupererPlanetes(connexion);
+                const result = await recupererPlanetes(connexion);
                 await connexion.close();
                 res.render('pages/inscription', {
                     planetes_bd: result.rows,
@@ -266,9 +265,8 @@ async function demarrerServeur() {
             } catch (err) {
                 console.error(err);
                 res.render('pages/inscription', {
-                    planetes_bd: result.rows,
                     message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
-                    est_connecte: req.session.est_connecte
+                    est_connecte: req.session.email && req.session.mdp
                 });
             }
         })
@@ -301,7 +299,7 @@ async function demarrerServeur() {
                 .custom(validationMdpEgal),
         ], async (req, res) => {
             let planetes_bd;
-            est_connecte = req.session.email && req.session.mdp;
+            let est_connecte = req.session.email && req.session.mdp;
             try {
                 const connexion = await getPool().getConnection();
                 planetes_bd = await recupererPlanetes(connexion);
