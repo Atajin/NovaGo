@@ -1,5 +1,11 @@
 <%- include ("../partials/header.ejs") %>
-
+<!--Champ d'affichage des erreurs lors de connexion-->
+<% if (typeof message_negatif !== 'undefined') { %>
+    <div class="custom-message-negatif">
+        <%= message_negatif %>
+    </div>
+    <% } %>
+    
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | Se connecter";
@@ -15,13 +21,6 @@
 
                 <!--Titre de la page-->
                 <h1 class="custom-font-titles text-center">Connexion</h1>
-
-                <!--Champ d'affichage des erreurs lors de connexion-->
-                <% if (typeof message_negatif !=='undefined' ) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= message_negatif %>
-                    </div>
-                    <% } %>
 
                         <!--Action complétée lors du submit de ce formulaire-->
                         <form method="POST" action="/connexion">
