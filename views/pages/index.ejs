@@ -3,6 +3,19 @@
 <% } else { %>
     <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
 <% } %>
+<!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
+<% if (typeof message_negatif !== 'undefined') { %>
+    <div class="custom-message-negatif">
+        <%= message_negatif %>
+    </div>
+    <% } %>
+<!--Gestion des messages d'erreur-->
+<% if (typeof message_positif !== 'undefined') { %>
+    <div class="custom-message-positif">
+        <%= message_positif %>
+    </div>
+    <% } %>
+    
     <div class="container-fluid" style="margin-top: 10%;">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -10,18 +23,7 @@
                 <!--Action complétée lors du submit de ce formulaire-->
                 <form action="/" method="POST">
 
-                    <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
-                    <% if (typeof message_negatif !== 'undefined') { %>
-                        <div class="alert alert-danger" role="alert">
-                            <%= message_negatif %>
-                        </div>
-                        <% } %>
-                    <!--Gestion des messages d'erreur-->
-                    <% if (typeof message_positif !== 'undefined') { %>
-                        <div class="alert alert-success" role="alert">
-                            <%= message_positif %>
-                        </div>
-                        <% } %>
+                    
 
                             <div class="row mb-3">
 

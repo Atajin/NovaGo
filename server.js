@@ -298,15 +298,14 @@ async function demarrerServeur() {
             check('mdp')
                 .custom(validationMdpEgal),
         ], async (req, res) => {
-            let planetes_bd;
             let est_connecte = req.session.email && req.session.mdp;
             try {
                 const connexion = await getPool().getConnection();
-                planetes_bd = await recupererPlanetes(connexion);
+                const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { planetes_bd: planetes.rows, message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: req.session.est_connecte });
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', est_connecte: req.session.est_connecte });
             }
 
             const errors = validationResult(req);

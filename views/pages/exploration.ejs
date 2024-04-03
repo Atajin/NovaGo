@@ -3,22 +3,24 @@
 <% } else { %>
     <%- include ("../partials/header.ejs", {est_connecte: est_connecte}) %>
 <% } %>
+
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
         var nomPage = " | Explorer";
         document.title += nomPage;
     </script>
 
-    <!--Champ d'affichage des erreurs lors de la connexion à la BD-->
-    <% if (typeof planetes_bd === 'undefined' || planetes_bd.length===0) { %>
-        <div class="alert alert-danger" role="alert" style="margin: 20px;">
-            <% if (typeof message_negatif === 'undefined') { %> Erreur inconnue.
-            <% } else { %>
-                <%= message_negatif %> 
-            <% } %>
-        </div>
+<!--Champ d'affichage des erreurs lors de la connexion à la BD-->
 
-        <% } else { %>
+<% if (typeof planetes_bd === 'undefined' || planetes_bd.length===0) { %>
+    <!--Champ d'affichage des erreurs lors de connexion-->
+    <% if (typeof message_negatif !== 'undefined') { %>
+        <div class="custom-message-negatif">
+            <%= message_negatif %>
+        </div>
+        <% } %>
+
+    <% } else { %>
 
         <form method="POST" action="/exploration">
             <!--Caroussel de toutes les planètes-->
