@@ -254,7 +254,7 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                const est_connecte = req.session.email && req.session.mdp;
+                req.session.est_connecte = req.session.email && req.session.mdp;
                 const connexion = await getPool().getConnection();
                 const result = await recupererPlanetes(connexion);
                 await connexion.close();
