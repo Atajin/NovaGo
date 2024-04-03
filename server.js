@@ -24,6 +24,7 @@ const saltRounds = 10
 
 let pool;
 let est_connecte;
+let est_admin = false;
 
 //Permet de comparer deux champs différents d'express-validator
 const validationMdpEgal = (value, { req }) => {
@@ -171,26 +172,50 @@ async function demarrerServeur() {
                 const connection = await getPool().getConnection();
 
                 // Exécution de la requête pour vérifier l'email
-                const result = await connection.execute(
+                const resultUser = await connection.execute(
                     `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
                     { email: email },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
-                if (result.rows.length > 0) {
-                    const mdp_valide = await bcrypt.compare(mdp, result.rows[0].MOT_DE_PASSE);
+
+                const resultAdmin = await connection.execute(
+                    `SELECT * FROM ADMINISTRATEUR WHERE EMAIL = :email`,
+                    { email: email },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+                if (resultUser.rows.length > 0) {
+                    const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        const planeteResult = await trouverPlaneteUtil(connection, result.rows[0].ID_UTILISATEUR);
+                        const planeteResult = await trouverPlaneteUtil(connection, resultUser.rows[0].ID_UTILISATEUR);
 
                         const listePlanetes = await recupererPlanetes(connection);
                         let planeteID = 0;
                         if (planeteResult.rows.length > 0) {
                             //Ajout des informations nécessaires à la session
                             req.session.email = email;
-                            req.session.mdp = result.rows[0].MOT_DE_PASSE;
+                            req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
                             est_connecte = req.session.email && req.session.mdp;
                             planeteID = Number(planeteResult.rows[0]);
                             return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows, est_connecte: est_connecte });
+            
+                        } else {
+                            return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: est_connecte });
                         }
+
+                    } else {
+                        // Le mot de passe est incorrect
+                        return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: est_connecte });
+                    }
+                
+                } else if (resultAdmin.rows.length > 0) {
+                    const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
+                    if (mdp_valide) {
+                        //Ajout des informations nécessaires à la session
+                        req.session.email = email;
+                        req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
+                        est_connecte = req.session.email && req.session.mdp;
+                        est_admin = true;
+                        return res.render('pages/admin', { message_positif: 'Connexion au compte effectuée avec succès!', est_connecte: est_connecte });
                     } else {
                         // Le mot de passe est incorrect
                         return res.render('pages/connexion', { message_negatif: 'Mot de passe incorrect', est_connecte: est_connecte });
@@ -428,12 +453,6 @@ async function demarrerServeur() {
                 est_connecte: est_connecte
             })
         });
-
-    // Démarrage du serveur après la tentative de connexion à la base de données.
-    const server = app.listen(4000, function () {
-        console.log("serveur fonctionne sur 4000... !");
-    });
-
     /*
         Accès à la page de déconnexion
         paramètres : message_positif, planetes_bd, est_connecte
@@ -461,52 +480,51 @@ async function demarrerServeur() {
     });
 
     app.post('/checkout', async (req, res) => {
-            const { idVoyage, classeVoyage } = req.body; // ID du voyage et classe du billet sélectionnés par l'utilisateur
+        const { idVoyage, classeVoyage } = req.body; // ID du voyage et classe du billet sélectionnés par l'utilisateur
 
-            try {
-                // Récupérer les produits correspondant aux critères de recherche
-                const produits = await stripe.products.list({
-                    metadata: { id_voyage_db: idVoyage.toString(), classe_voyage: classeVoyage }
-                });
+        try {
+            // Récupérer les produits correspondant aux critères de recherche
+            const produits = await stripe.products.list({
+                metadata: { id_voyage_db: idVoyage.toString(), classe_voyage: classeVoyage }
+            });
 
-                let prixId;
-                // Récupérer l'ID du prix associé au produit trouvé
-                if (produits.data.length > 0) {
-                    const prix = await stripe.prices.list({ product: produits.data[0].id });
-                    if (prix.data.length > 0) {
-                        prixId = prix.data[0].id; // Prendre le premier prix trouvé
-                    }
+            let prixId;
+            // Récupérer l'ID du prix associé au produit trouvé
+            if (produits.data.length > 0) {
+                const prix = await stripe.prices.list({ product: produits.data[0].id });
+                if (prix.data.length > 0) {
+                    prixId = prix.data[0].id; // Prendre le premier prix trouvé
                 }
-
-                // Créer la session de paiement Stripe
-                const session = await stripe.checkout.sessions.create({
-                    payment_method_types: ['card'],
-                    line_items: [{
-                        price: prixId,
-                        quantity: 1,
-                    }],
-                    mode: 'payment',
-                    success_url: '/success?session_id={CHECKOUT_SESSION_ID}',
-                    cancel_url: '/reservation',
-                });
-
-                res.redirect(303, session.url);
-            } catch (err) {
-                console.error(err);
-                res.status(500).send("Erreur lors de la création de la session de paiement");
             }
-        });
+
+            // Créer la session de paiement Stripe
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: [{
+                    price: prixId,
+                    quantity: 1,
+                }],
+                mode: 'payment',
+                success_url: '/success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url: '/reservation',
+            });
+
+            res.redirect(303, session.url);
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Erreur lors de la création de la session de paiement");
+        }
+    });
 
     app.get('/success', (req, res) => {
-            // À compléter (logique de gestion du succès de paiement)
-            // Récupérer session_id de la requête pour récupérer des détails sur la session
-            const sessionId = req.query.session_id;
-            // Traiter la session de paiement réussie
-            res.send("Paiement réussi !");
-        });
-}
+        // À compléter (logique de gestion du succès de paiement)
+        // Récupérer session_id de la requête pour récupérer des détails sur la session
+        const sessionId = req.query.session_id;
+        // Traiter la session de paiement réussie
+        res.send("Paiement réussi !");
+    });
 
-app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
         let event;
 
         // Vérifier la signature de l'événement reçu
@@ -532,6 +550,13 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
             res.status(400).send(`Webhook Error: ${err.message}`);
         }
     });
+
+    // Démarrage du serveur après la tentative de connexion à la base de données.
+    const server = app.listen(4000, function () {
+        console.log("serveur fonctionne sur 4000... !");
+    });
+
+}
 
 
 demarrerServeur().catch(err => console.error("Erreur lors du démarrage du serveur:", err));
