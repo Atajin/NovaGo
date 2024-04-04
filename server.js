@@ -297,38 +297,29 @@ async function demarrerServeur() {
             POST du formulaire de la page d'inscription
         */
         .post([
-            check('prenom')
-                .isLength({ min: 2 })
-                .withMessage('Votre prénom doit être au moins 2 caractères.'),
-            check('prenom')
-                .isLength({ max: 50 })
-                .withMessage('Votre prénom doit être au plus 50 caractères.'),
-            check('nom')
-                .isLength({ min: 2 })
-                .withMessage('Votre nom doit être au moins 2 caractères.'),
-            check('nom')
-                .isLength({ max: 50 })
-                .withMessage('Votre nom doit être au plus 50 caractères.'),
             check('email')
                 .isEmail()
                 .withMessage("L'adresse courriel saisie est invalide."),
             check('mdp')
-                .isLength({ min: 8 })
-                .withMessage('Votre mot de passe doit être au moins 8 caractères.'),
-            check('mdp')
-                .isLength({ max: 30 })
-                .withMessage('Votre mot de passe doit être au plus 30 caractères.'),
-            check('mdp')
                 .custom(validationMdpEgal),
         ], async (req, res) => {
             req.session.est_connecte = req.session.email && req.session.mdp;
+            const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
             try {
                 const connexion = await getPool().getConnection();
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                    return res.render('pages/inscription', { message_negatif: errors.array().map(error => error.msg).join(' '), planetes_bd: planetes_bd.rows, est_connecte: req.session.est_connecte });
+                    return res.render('pages/inscription', {    message_negatif: errors.array().map(error => error.msg).join(' '),
+                                                                planetes_bd: planetes_bd.rows,
+                                                                est_connecte: req.session.est_connecte,
+                                                                prenom: prenom,
+                                                                nom: nom,
+                                                                email: email,
+                                                                telephone: telephone,
+                                                                adresse: adresse,
+                                                                planete_id: planete  });
                 }
             } catch (err) {
                 console.error(err);
@@ -337,7 +328,6 @@ async function demarrerServeur() {
 
             
             try {
-                const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
                 // Obtention d'une connexion à partir du pool
                 const connexion = await getPool().getConnection();
 
@@ -354,7 +344,14 @@ async function demarrerServeur() {
                     const planetes_bd = await recupererPlanetes(connexion);
                     await connexion.close();
                     // L'utilisateur existe
-                    return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.', planetes_bd: planetes_bd.rows });
+                    return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.',
+                    planetes_bd: planetes_bd.rows,
+                    prenom: prenom,
+                    nom: nom,
+                    email: email,
+                    telephone: telephone,
+                    adresse: adresse,
+                    planete_id: planete });
                 } else {
                     // L'utilisateur n'existe pas
                     try {
@@ -397,13 +394,13 @@ async function demarrerServeur() {
 
                     } catch (err) {
                         console.error(err);
-                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows });
+                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
                     }
 
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données', planetes_bd: planetes_bd.rows });
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données'});
             }
         });
 

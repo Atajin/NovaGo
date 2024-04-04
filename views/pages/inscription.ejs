@@ -33,21 +33,21 @@
                                     <!--Champ d'entrée du prénom de l'utilisateur-->
                                     <label for="prenom" class="form-label custom-font-labels">Entrez votre prénom</label>
                                     <br>
-                                    <input type="text" id="prenom" name="prenom" class="form-control"
-                                        placeholder="Prénom" pattern="[a-zA-Z -]" minlength="2" maxlength="50" required>
-
-                                    <!--Affichage d'erreur lors d'une entrée dans le champs prénom-->
-                                    <div class="invalid-feedback">Veuillez écrire votre prénom.</div>
+                                    <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom"
+                                    <% if(typeof prenom !== 'undefined'){ %>
+                                        value="<%=prenom%>"
+                                    <% } %>
+                                    pattern="[a-zA-Z \-]{2,50}" title="Votre prénom sans accents avec des espaces ou traits-d'union." required>
 
 
                                     <!--Champ d'entrée du nom de l'utilisateur-->
                                     <label for="nom" class="form-label custom-font-labels">Entrez votre nom</label>
                                     <br>
-                                    <input type="text" id="nom" name="nom" class="form-control"
-                                        placeholder="Nom" pattern="[a-zA-Z -]" minlength="2" maxlength="50" required>
-
-                                    <!--Affichage d'erreur lors d'une entrée dans le champs nom-->
-                                    <div class="invalid-feedback">Veuillez écrire votre nom.</div>
+                                    <input type="text" id="nom" name="nom" class="form-control" placeholder="Nom"
+                                    <% if(typeof nom !== 'undefined'){ %>
+                                        value="<%=nom%>"
+                                    <% } %>
+                                    pattern="[a-zA-Z \-]{2,50}" title="Votre nom sans accents avec des espaces ou traits-d'union." required>
 
 
                                     <!--Champ d'entrée du courriel de l'utilisateur-->
@@ -55,18 +55,20 @@
                                         courriel</label>
                                     <br>
                                     <input type="email" id="email" name="email" class="form-control"
-                                        placeholder="Courriel" required>
-
-                                    <!--Affichage d'erreur lors d'une entrée dans le champs courriel-->
-                                    <div class="invalid-feedback">Veuillez écrire votre adresse courriel.</div>
+                                    <% if(typeof email !== 'undefined'){ %>
+                                        value="<%=email%>"
+                                    <% } %>
+                                        minlength="8" maxlength="30" placeholder="Courriel" required>
 
 
                                     <!--Champ d'entrée du numéro de téléphone de l'utilisateur-->
-                                    <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de
-                                        téléphone</label>
+                                    <label for="telephone" class="form-label custom-font-labels">Entrez votre numéro de téléphone</label>
                                     <br>
                                     <input type="text" id="telephone" name="telephone" class="form-control"
-                                        placeholder="Téléphone">
+                                    <% if(typeof telephone !== 'undefined'){ %>
+                                        value="<%=telephone%>"
+                                    <% } %>
+                                        pattern="[\d]{7,15}" title="Numéro de téléphone de 7 à 15 chiffres." placeholder="Téléphone">
 
 
                                 </div>
@@ -78,10 +80,7 @@
                                         passe</label>
                                     <br>
                                     <input type="password" id="mdp" name="mdp" class="form-control"
-                                        placeholder="Mot de passe" required>
-
-                                    <!--Affichage d'erreur lors d'une entrée dans le champs mot de passe-->
-                                    <div class="invalid-feedback">Veuillez écrire votre mot de passe.</div>
+                                        minlength="8" maxlength="30" placeholder="Mot de passe" required>
 
 
                                     <!--Deuxième champ d'entrée du mot de passe de l'utilisateur-->
@@ -89,18 +88,17 @@
                                         de passe</label>
                                     <br>
                                     <input type="password" id="confirmation" name="confirmation" class="form-control"
-                                        placeholder="Confirmer le mot de passe" required>
-
-                                    <!--Affichage d'erreur lors d'une entrée dans le champs mot de passe-->
-                                    <div class="invalid-feedback">Veuillez confirmer votre mot de passe.</div>
+                                        minlength="8" maxlength="30" placeholder="Confirmer le mot de passe" required>
 
 
                                     <!--Champ d'entrée de l'adresse de l'utilisateur-->
                                     <label for="adresse" class="form-label custom-font-labels">Entrez votre
                                         adresse</label>
                                     <br>
-                                    <input type="text" id="adresse" name="adresse" class="form-control"
-                                        placeholder="Adresse">
+                                    <input type="text" id="adresse" name="adresse" class="form-control" placeholder="Adresse"
+                                    <% if(typeof adresse !== 'undefined'){ %>
+                                        value="<%=adresse%>"
+                                    <% } %>>
 
                                     <!--Champ d'entrée de l'astre d'origine de l'utilisateur-->
                                     <label for="planete" class="form-label custom-font-labels">Sélectionnez votre objet
@@ -109,6 +107,10 @@
                                     <select id="planete" name="planete" class="form-control" required>
                                         <% if (typeof planetes_bd !=='undefined' && planetes_bd.length> 0) { %>
                                             <% planetes_bd.forEach(function(planete, i) { %>
+                                                    <option value="<%= planete[0] %>"
+                                                        <% if(typeof planete_id !== 'undefined' && planete_id == i + 1){ %> selected <% } %>>
+                                                        <%= planete[1] %>
+                                                    </option>
                                                 <option value="<%= planete[0] %>">
                                                     <%= planete[1] %>
                                                 </option>
