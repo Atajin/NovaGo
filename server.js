@@ -584,6 +584,28 @@ async function demarrerServeur() {
         }
     });
 
+    app.route('/administrateur')
+        /*
+            Accès à la page de réservation
+            paramètres : est_connecte
+        */
+        .get(async (req, res) => {
+            try {
+                req.session.est_connecte = req.session.email && req.session.mdp;
+                if (req.session.est_connecte && req.session.est_admin) {
+                    const connexion = await getPool().getConnection();
+                    const result = await connexion.execute("SELECT table_name FROM user_tables");
+                    await connexion.close();
+                    res.render('pages/administrateur', { tables: result.rows });
+                } else res.render('pages/connexion', {
+                    message_negatif: "Connectez vous en tant qu'administrateur pour accéder à cette page",
+                });
+            } catch (err) {
+                console.error(err);
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
+            }
+        });
+
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {
         console.log("serveur fonctionne sur 4000... !");
