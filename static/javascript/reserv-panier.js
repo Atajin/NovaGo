@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let nombre_billets = 0;
     let nombre_argent = 0;
     let prixVoyages = [];
-    let prixActuel;
 
     let voyagesTotal = document.getElementById('nombre_voyages');
     let billetsTotal = document.getElementById('nombre_billets');
@@ -116,7 +115,8 @@ margin: 0;
             col4.style.textAlign = "right";
             let prixP = document.createElement("p");
             prixP.classList.add("custom-font-rvt", "m-0", "voyage-prix");
-            prixP.textContent = voyagePrix.textContent; // Contenu de l'élément "voyage-prix"
+            prixP.textContent = voyagePrix.textContent;
+            prixP.setAttribute("id", "prix_voyage_" + voyage.ID_VOYAGE + "_" + nbre_panier); // Contenu de l'élément "voyage-prix"
             col4.appendChild(prixP);
 
             row2.appendChild(col3);
@@ -135,30 +135,31 @@ margin: 0;
 
     function DeleteVoyagesPanier(id, nbre_panier) {
         const deleteBtns = document.querySelectorAll(".delete-btn" + id + nbre_panier);
-
+    
         deleteBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-
-                // Récupérer le nombre de billets pour ce voyage
                 let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + nbre_panier).value);
-
-                // Décrémenter le montant total
-                nombre_argent -= prixVoyages[nbre_panier] * nbreBilletsVoyage;
+                
+                // Récupérer le prix du voyage depuis l'élément correspondant dans le DOM
+                let prixVoyage = parseInt(document.getElementById("prix_voyage_" + id + "_" + nbre_panier).textContent);
+                
+                // Décrémenter le montant total en fonction du nombre de billets pour ce voyage
+                nombre_argent -= prixVoyage * nbreBilletsVoyage;
                 montantTotal.textContent = nombre_argent + "$";
-
+    
                 // Décrémenter le nombre de voyages
                 nombre_voyages--;
                 voyagesTotal.textContent = nombre_voyages;
-
+    
                 // Décrémenter le nombre de billets
                 nombre_billets -= nbreBilletsVoyage;
                 billetsTotal.textContent = nombre_billets;
-
+    
                 // Supprimer l'élément du DOM
                 btn.closest('.rounded').remove();
             });
         });
-    }
+    }    
 
     // Gestionnaire d'événement pour le bouton "plus"
     function AjouterCompteur(id, nbre_panier) {
@@ -171,7 +172,7 @@ margin: 0;
                 nombre_billets += 1;
                 billetsTotal.textContent = nombre_billets;
 
-                nombre_argent += prixVoyages[nbre_panier];
+                nombre_argent += parseInt(document.getElementById("prix_voyage_" + id + "_" + nbre_panier).textContent);
                 montantTotal.textContent = nombre_argent + "$";
             });
         });
@@ -190,7 +191,7 @@ margin: 0;
                     nombre_billets -= 1;
                     billetsTotal.textContent = nombre_billets;
 
-                    nombre_argent -= prixVoyages[nbre_panier];
+                    nombre_argent -= parseInt(document.getElementById("prix_voyage_" + id + "_" + nbre_panier).textContent);
                     montantTotal.textContent = nombre_argent + "$";
                 }
             });
