@@ -46,9 +46,9 @@ INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, p
 
 
 -- Table administrateur
-INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('kianlettres@gmail.com', 'novago2133307', 'Chowanietz', 'Kian', 'Montreal, Quebec', 1234567890);
-INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('odrolest@gmail.com', 'novago2034730', 'Drolet', 'Olivier', 'Laval, Quebec', 0987654321);
-INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('lechubilly@gmail.com', 'novago2059233', 'Le Chu', 'Billy', 'Montreal, Quebec', 1029384756);
+INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('kianlettres@gmail.com', '$2b$10$Asg/V/Gwe/I/qvZu8SycAuHOAwaAG81yXnI0KjsKznkle9TyQqilC', 'Chowanietz', 'Kian', 'Montreal, Quebec', 1234567890);
+INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('odrolest@gmail.com', '$2b$10$XjHZN7iZ.PF93vCJShqeeOGTCukMDXjgVtJd8RDEOXztiTMkWi/YG', 'Drolet', 'Olivier', 'Laval, Quebec', 0987654321);
+INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('lechubilly@gmail.com', '$2b$10$LCW1MF2R.xrsiHyeMYTdS.rZq5grMdNTrtoApP2c4n0t.YFqMNMh.', 'Le Chu', 'Billy', 'Montreal, Quebec', 1029384756);
 
 -- Table vaisseau
 INSERT INTO vaisseau (nom, type_de_propulsion, capacite) VALUES ('Etoile Voyageur', 'Propulsion ionique', 150);
