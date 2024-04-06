@@ -72,23 +72,33 @@ async function hashMotDePasse(mdp, saltRounds) {
 
 async function recupererPlanetes(connexion) {
     try {
-    const result = await connexion.execute("SELECT * FROM PLANETE");
-    return result;
+        const result = await connexion.execute("SELECT * FROM PLANETE");
+        return result;
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle:", err);
         return null;
     }
 }
 
+async function recupererVoyages(connection, rechercheData) {
+    const voyageResult = await connection.execute(
+        `SELECT * FROM voyage WHERE origine = :origine`,
+        { origine: rechercheData.planetOrigine },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    await connection.close();
+    return voyageResult;
+}
+
 async function trouverPlaneteUtil(connexion, id_util) {
     try {
-    // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
-    const planetUtil = await connexion.execute(
-        `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
-        { utilID: id_util },
-        { outFormat: oracledb.OUT_FORMAT_ARRAY }
-    );
-    return planetUtil;
+        // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
+        const planetUtil = await connexion.execute(
+            `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
+            { utilID: id_util },
+            { outFormat: oracledb.OUT_FORMAT_ARRAY }
+        );
+        return planetUtil;
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle:", err);
         return null;
@@ -178,9 +188,9 @@ async function demarrerServeur() {
         */
         .get((req, res) => {
             try {
-            res.render('pages/connexion', {
-                est_admin: req.session.est_admin
-            });
+                res.render('pages/connexion', {
+                    est_admin: req.session.est_admin
+                });
             } catch (err) {
                 res.render('pages/connexion', {
                     message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données.",
@@ -251,11 +261,11 @@ async function demarrerServeur() {
                         });
                     } else {
                         // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect."});
+                        return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect."});
+                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
@@ -311,22 +321,24 @@ async function demarrerServeur() {
                 await connexion.close();
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                    return res.render('pages/inscription', {    message_negatif: errors.array().map(error => error.msg).join(' '),
-                                                                planetes_bd: planetes_bd.rows,
-                                                                est_connecte: req.session.est_connecte,
-                                                                prenom: prenom,
-                                                                nom: nom,
-                                                                email: email,
-                                                                telephone: telephone,
-                                                                adresse: adresse,
-                                                                planete_id: planete  });
+                    return res.render('pages/inscription', {
+                        message_negatif: errors.array().map(error => error.msg).join(' '),
+                        planetes_bd: planetes_bd.rows,
+                        est_connecte: req.session.est_connecte,
+                        prenom: prenom,
+                        nom: nom,
+                        email: email,
+                        telephone: telephone,
+                        adresse: adresse,
+                        planete_id: planete
+                    });
                 }
             } catch (err) {
                 console.error(err);
                 return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
             }
 
-            
+
             try {
                 // Obtention d'une connexion à partir du pool
                 const connexion = await getPool().getConnection();
@@ -344,14 +356,16 @@ async function demarrerServeur() {
                     const planetes_bd = await recupererPlanetes(connexion);
                     await connexion.close();
                     // L'utilisateur existe
-                    return res.render('pages/inscription', { message_negatif: 'Cette adresse courriel est déjà utilisée.',
-                    planetes_bd: planetes_bd.rows,
-                    prenom: prenom,
-                    nom: nom,
-                    email: email,
-                    telephone: telephone,
-                    adresse: adresse,
-                    planete_id: planete });
+                    return res.render('pages/inscription', {
+                        message_negatif: 'Cette adresse courriel est déjà utilisée.',
+                        planetes_bd: planetes_bd.rows,
+                        prenom: prenom,
+                        nom: nom,
+                        email: email,
+                        telephone: telephone,
+                        adresse: adresse,
+                        planete_id: planete
+                    });
                 } else {
                     // L'utilisateur n'existe pas
                     try {
@@ -400,7 +414,7 @@ async function demarrerServeur() {
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données'});
+                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
             }
         });
 
@@ -415,14 +429,57 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
+                const email = req.session.email;
                 req.session.est_connecte = req.session.email && req.session.mdp;
                 if (req.session.est_connecte) {
-                    res.render('pages/reservation', {
+                    const connection = await getPool().getConnection();
 
-                    });
+                    // Exécution de la requête pour vérifier l'email
+                    const result = await connection.execute(
+                        `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
+                        { email: email },
+                        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                    );
+
+                    const rechercheData = {
+                        planetOrigine: "Terre",
+                        planetDestination: "Mars",
+                        dateDepart: "2024-02-24",
+                        dateRetour: "2024-02-27",
+                        nombrePersonnes: 2,
+                        typeBillet: ""
+                    };
+
+                    // Exécution de la requête SQL pour rechercher les voyages correspondants
+                    const voyageResult = await recupererVoyages(connection, rechercheData);
+
+                    // Afficher les données récupérées dans la console
+                    console.log("Résultat de la requête de recherche de voyages :", voyageResult.rows);
+
+                    const planetData = {
+                        nom: "Uranus",
+                        type: "Gazeuse",
+                        gravite: "8.69",
+                    };
+
+                    const vaisseuData = {
+                        nom: "Etoile Voyageur",
+                        type: "Propulsion ionique",
+                        capacite: 150
+                    };
+
+                    if (result.rows.length > 0) {
+                        res.render('pages/reservation', {
+                            est_connecte: req.session.est_connecte,
+                            rechercheData: rechercheData,
+                            planetData: planetData,
+                            vaisseuData: vaisseuData,
+                            voyages_bd: voyageResult.rows
+                        });
+                    }
                 } else res.render('pages/connexion', {
                     message_negatif: 'Connectez vous pour réserver un voyage',
-
+                    est_connecte: req.session.est_connecte
                 });
             } catch (err) {
                 console.error(err);
