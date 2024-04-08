@@ -17,7 +17,7 @@
 
     <% } else { %>
 
-            <form method="POST" action="/exploration">
+            <!--<form method="POST" action="/exploration">-->
                 <!--Caroussel de toutes les planètes-->
                 <div id="carousel" class="carousel slide">
                     <div class="carousel-inner">
@@ -58,11 +58,11 @@
                                                 </h5>
                                             </div>
                                             <div class="m-4">
-                                                <label for="<%=planete[0]%>"
-                                                    class="form-label custom-font-labels">Choisir cette planète</label>
-                                                <br>
-                                                <input type="radio" id="<%=planete[0]%>" name="selection_planete"
-                                                    value="<%=planete[0]%>">
+                                                <form method="POST" action="/exploration">
+                                                    <button type="submit" id="selection_planete" name="selection_planete" value="<%=planete[0]%>"
+                                                    class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
+                                                    Chercher un voyage</button>
+                                                </form>
                                             </div>
                                         </div>
                                         <div class="col">
@@ -98,11 +98,6 @@
                         </svg>
                     </button>
                 </div>
-                <input type="hidden" id="id_planete_choisie" value="1">
-                <button type="submit" id="bouton_submit" disabled
-                    class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
-                    Chercher un voyage</button>
-            </form>
             <% } %>
 
     <script src="/javascript/exploration.js"></script>
