@@ -660,6 +660,27 @@ async function demarrerServeur() {
             }
         });
 
+    app.post('/administrateur/voirTable', async (req, res) => {
+        const { tableName } = req.body; // Récupérez le nom de la table soumis par le formulaire
+
+        try {
+            req.session.est_connecte = req.session.email && req.session.mdp;
+            if (req.session.est_connecte && req.session.est_admin) {
+                const connexion = await getPool().getConnection();
+                const result = await connexion.execute(`SELECT * FROM ${tableName}`);
+                await connexion.close();
+
+                res.render('pages/voir-table', { data: result.rows, tableName: tableName });
+            } else res.render('pages/connexion', {
+                message_negatif: "Connectez vous en tant qu'administrateur pour accéder à cette page",
+            });
+        } catch (err) {
+            console.error('Erreur lors de la requête:', err);
+            res.send('Erreur lors de la récupération des données');
+        }
+    });
+
+
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {
         console.log("serveur fonctionne sur 4000... !");

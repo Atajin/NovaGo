@@ -1,0 +1,34 @@
+<%- include("../partials/header.ejs") %>
+
+    <div class="container-fluid" style="margin-top: 2%;">
+        <h1 class="custom-font-planet-t petit-titre">Données de la table: <%= tableName %>
+        </h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <% if (data.length> 0) { %>
+                        <% Object.keys(data[0]).forEach(function(column) { %>
+                            <th scope="col">
+                                <%= column %>
+                            </th>
+                            <% }) %>
+                                <% } else { %>
+                                    <th>Aucune donnée trouvée</th>
+                                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% data.forEach(function(row) { %>
+                    <tr>
+                        <% Object.values(row).forEach(function(value) { %>
+                            <td>
+                                <%= value %>
+                            </td>
+                            <% }) %>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <%- include("../partials/footer.ejs") %>
