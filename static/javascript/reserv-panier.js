@@ -82,7 +82,7 @@ margin: 0;
             let row2 = document.createElement("div");
             row2.classList.add("row");
             let col3 = document.createElement("div");
-            col3.classList.add("col-sm-7");
+            col3.classList.add("col");
             let compteurContainer = document.createElement("div");
             compteurContainer.classList.add("compteur-container");
             let plusBtn = document.createElement("button");

@@ -63,6 +63,7 @@
         color: red;
         font-size: 20px;
     }
+
     .custom-message-positif {
         font-family: 'PPStellar', sans-serif;
         color: lime;
@@ -79,7 +80,7 @@
 
     .custom-font-rvt {
         font-family: 'PPStellar', sans-serif;
-        font-size: 17px;
+        font-size: 1em;
     }
 
     .petit-titre {
@@ -133,6 +134,10 @@
         box-shadow: 0 0 5px rgba(253, 67, 67, 0.3);
     }
 
+    .custom-white-btn:hover {
+        box-shadow: 0 0 5px rgba(227, 227, 210, 0.3);
+    }
+
     .custom-bg-rvt {
         background: rgba(66, 66, 66, 0.6);
     }
@@ -150,4 +155,17 @@
 
     .compteur-container input {
         margin-top: -5px;
+    }
+
+    /*SCROLLBAR*/
+    ::-webkit-scrollbar {
+        width: 2px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba(66, 66, 66, 0.6);
+    }   
+
+    ::-webkit-scrollbar-track {
+        background: rgb(0, 0, 0);
     }
