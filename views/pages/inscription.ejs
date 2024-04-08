@@ -129,6 +129,20 @@
             <div class="col-1"></div>
         </div>
     </div>
+    <script>
+        const url = "/inscription";
+        function post_inscription(){
+            const f = fetch(url, {
+                method: "POST"
+            });
+        };
+        f.then(function(res) {
+            return res.json();
+        });
+        f.then(function(json) {
+            document.getElementById("prenom").innerHTML = json.adresse;
+        });
+    </script>
     <!-- tentative de faire apparaitre le message d'erreur qu'une fois que l'utilisateur a tenté de se connecter
     <script>
         document.addEventListener("DOMContentLoaded", function () {
