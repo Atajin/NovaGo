@@ -12,23 +12,36 @@
                                 <%= nomColonne %>
                             </th>
                             <% }) %>
+                            <th scope="col">
+                                OPTIONS
+                            </th>
                                 <% } else { %>
                                     <th>Aucune donnée trouvée</th>
                                     <% } %>
                 </tr>
             </thead>
             <tbody>
-                <% data.forEach(function(row) { %>
-                    <tr>
+                <% data.forEach(function(row, index) { %>
+                    <tr data-row-index="<%= index %>">
                         <% colonnes.forEach(function(nomColonne) { %>
                             <td>
                                 <%= row[nomColonne] %>
                             </td>
                             <% }) %>
+                            <td>
+                                <div class="d-grid gap-2">
+                                    <!-- Bouton Modifier -->
+                                    <button type="button" class="btn btn-primary btn-modifier" data-index="<%= index %>">Modifier</button>
+                                    <!-- Bouton Supprimer -->
+                                    <button type="button" class="btn btn-danger btn-supprimer" data-index="<%= index %>">Supprimer</button>
+                                </div>
+                            </td>
                     </tr>
                     <% }) %>
             </tbody>
         </table>
     </div>
+
+    <script src="/javascript/voir-table.js"></script>
 
     <%- include("../partials/footer.ejs") %>
