@@ -1,12 +1,16 @@
 <%- include ("../partials/header.ejs") %>
 
-    <div class="container-fluid" style="margin-top: 10%;">
+    <div class="container-fluid" style="margin-top: 2%;">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-3">
                 <ul class="list-group">
                     <% tables.forEach(function(table) { %>
-                        <li class="list-group-item">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
                             <%= table %>
+                                <form action="/administrateur/voirTable" method="POST" style="margin-bottom:0;">
+                                    <input type="hidden" name="tableName" value="<%= table %>">
+                                    <button type="submit" class="btn btn-primary">Voir la table</button>
+                                </form>
                         </li>
                         <% }) %>
                 </ul>
