@@ -668,9 +668,20 @@ async function demarrerServeur() {
             if (req.session.est_connecte && req.session.est_admin) {
                 const connexion = await getPool().getConnection();
                 const result = await connexion.execute(`SELECT * FROM ${tableName}`);
+                let colonnes = result.metaData.map(col => col.name);
+
+                // Ce code transforme les rows en objets afin de faciliter la manipulation
+                const dataObjets = result.rows.map(row => {
+                    let objet = {};
+                    row.forEach((value, index) => {
+                        objet[colonnes[index]] = value;
+                    });
+                    return objet;
+                });
+
                 await connexion.close();
 
-                res.render('pages/voir-table', { data: result.rows, tableName: tableName });
+                res.render('pages/voir-table', { data: dataObjets, tableName: tableName, colonnes: colonnes, });
             } else res.render('pages/connexion', {
                 message_negatif: "Connectez vous en tant qu'administrateur pour accéder à cette page",
             });

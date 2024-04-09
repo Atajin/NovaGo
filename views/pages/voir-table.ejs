@@ -6,10 +6,10 @@
         <table class="table">
             <thead>
                 <tr>
-                    <% if (data.length> 0) { %>
-                        <% Object.keys(data[0]).forEach(function(column) { %>
+                    <% if (colonnes && colonnes.length> 0) { %>
+                        <% colonnes.forEach(function(nomColonne) { %>
                             <th scope="col">
-                                <%= column %>
+                                <%= nomColonne %>
                             </th>
                             <% }) %>
                                 <% } else { %>
@@ -20,9 +20,9 @@
             <tbody>
                 <% data.forEach(function(row) { %>
                     <tr>
-                        <% Object.values(row).forEach(function(value) { %>
+                        <% colonnes.forEach(function(nomColonne) { %>
                             <td>
-                                <%= value %>
+                                <%= row[nomColonne] %>
                             </td>
                             <% }) %>
                     </tr>
