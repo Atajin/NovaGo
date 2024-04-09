@@ -42,7 +42,7 @@
                                             </div>
                                             <div class="col" style="text-align: right;">
                                                 <p class="custom-font-rvt m-0">
-                                                    <%= planetData.nom %>
+                                                    
                                                 </p>
                                             </div>
                                         </div>
@@ -52,7 +52,7 @@
                                             </div>
                                             <div class="col" style="text-align: right;">
                                                 <p class="custom-font-rvt m-0">
-                                                    <%= planetData.type %>
+                                                    
                                                 </p>
                                             </div>
                                         </div>
@@ -62,7 +62,7 @@
                                             </div>
                                             <div class="col" style="text-align: right;">
                                                 <p class="custom-font-rvt m-0">
-                                                    <%= planetData.gravite %> m/s²
+                                                    
                                                 </p>
                                             </div>
                                         </div>
@@ -77,7 +77,7 @@
                                             </div>
                                             <div class="col" style="text-align: right;">
                                                 <p class="custom-font-rvt m-0">
-                                                    <%= vaisseuData.nom %>
+                                                    
                                                 </p>
                                             </div>
                                         </div>
@@ -87,7 +87,7 @@
                                             </div>
                                             <div class="col" style="text-align: right;">
                                                 <p class="custom-font-rvt m-0">
-                                                    <%= vaisseuData.type %>
+                                                    
                                                 </p>
                                             </div>
                                         </div>
@@ -97,7 +97,7 @@
                                             </div>
                                             <div class="col" style="text-align: right;">
                                                 <p class="custom-font-rvt m-0">
-                                                    <%= vaisseuData.capacite %>
+                                                    
                                                 </p>
                                             </div>
                                         </div>
@@ -106,7 +106,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div>  
                     <div class="row mt-2">
                         <div class="rounded custom-bg-rvt ">
                             <div class="row">
@@ -189,7 +189,7 @@
                     <div class="mt-1 p-1 rounded custom-bg-rvt">
                         <% voyages_bd.forEach(voyage=> { %>
                             <div class="rounded mt-1 px-2 custom-bg-rvt custom-white-btn" style="cursor: pointer;"
-                                onclick="afficherDetails('<%= voyage.PLANETE_ID_PLANETE2 %>', '<%= voyage.VAISSEAU_ID_VAISSEAU %>')">
+                                onclick="afficherDetails('<%= voyage %>')" id="info_<%= voyage.ID_VOYAGE %>">
                                 <div style="display: flex;">
                                     <h2 class="custom-font-labels m-0">
                                         <%= voyage.ORIGINE %>
@@ -285,12 +285,12 @@
         </div>
     </div>
 
+    <script src="/javascript/reserv-info-voyage.js"></script>
     <script src="/javascript/reserv-panier.js"></script>
     <script src="/javascript/reserv-prix.js"></script>
-    <script src="/javascript/reserv-info-voyage.js"></script>
     <% if (voyages_bd) { %>
         <script>
-            const voyagesData =  <% - JSON.stringify(voyages_bd) %>; 
+            const voyagesData =  <%- JSON.stringify(voyages_bd) %>; 
         </script> <!--Probleme avec EJS et JS confusion de Visual Studio-->
         <% } %>
             <%- include ("../partials/footer.ejs") %>

@@ -90,6 +90,24 @@ async function recupererVoyages(connection, rechercheData) {
     return voyageResult;
 }
 
+async function obtenirDonneesPlaneteParId(connection, planetID) {
+    const planetResult = await connection.execute(
+        `SELECT * FROM PLANETE WHERE id_planete = :planetID`,
+        { planetID: planetID },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    return planetResult;
+}
+
+async function obtenirDonneesVaisseauParId(connection, vaisseauID) {
+    const vaisseauResult = await connection.execute(
+        `SELECT * FROM vaisseau WHERE id_vaisseau = :vaisseauID`,
+        { vaisseauID: vaisseauID },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    return vaisseauResult;
+}
+
 async function trouverPlaneteUtil(connexion, id_util) {
     try {
         // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
@@ -452,28 +470,39 @@ async function demarrerServeur() {
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     const voyageResult = await recupererVoyages(connection, rechercheData);
+                    let vaisseauResult;
+                    let planetResult;
 
-                    // Afficher les données récupérées dans la console
-                    console.log("Résultat de la requête de recherche de voyages :", voyageResult.rows);
+                    // Récupérer les informations de la planète et du vaisseau pour chaque voyage
+                    for (const voyage of voyageResult.rows) {
+                        const planetId = voyage.PLANETE_ID_PLANETE2;
+                        const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
 
-                    const planetData = {
-                        nom: "Uranus",
-                        type: "Gazeuse",
-                        gravite: "8.69",
-                    };
+                        let connection;
+                        try {
+                            connection = await pool.getConnection();
 
-                    const vaisseuData = {
-                        nom: "Etoile Voyageur",
-                        type: "Propulsion ionique",
-                        capacite: 150
-                    };
+                            const planetResult = await obtenirDonneesPlaneteParId(connection, planetId);
+                            const vaisseauResult = await obtenirDonneesVaisseauParId(connection, vaisseauId);
+                            console.log(planetResult.rows); // Afficher les données de la planète
+                            console.log(vaisseauResult.rows); // Afficher les données du vaisseau
+                        } catch (error) {
+                            console.error("Une erreur s'est produite lors de la récupération des données :", error);
+                        } finally {
+                            if (connection) {
+                                try {
+                                    await connection.close();
+                                } catch (error) {
+                                    console.error("Erreur lors de la fermeture de la connexion :", error);
+                                }
+                            }
+                        }
+                    }
 
                     if (result.rows.length > 0) {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
-                            planetData: planetData,
-                            vaisseuData: vaisseuData,
                             voyages_bd: voyageResult.rows
                         });
                     }
