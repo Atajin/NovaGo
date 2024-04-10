@@ -1,4 +1,4 @@
-function afficherDetails(idDestination, idVaisseau) {
+function afficherDetails(voyage) {
 
-
+    console.log(voyage);
 }

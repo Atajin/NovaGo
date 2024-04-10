@@ -56,6 +56,7 @@ function getPool() {
 function updateLocals(req, res, next) {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
+    res.locals.planete_origine = req.session.planete_util;
     next();
 }
 
@@ -88,6 +89,24 @@ async function recupererVoyages(connection, rechercheData) {
     );
     await connection.close();
     return voyageResult;
+}
+
+async function obtenirDonneesPlaneteParId(connection, planetID) {
+    const planetResult = await connection.execute(
+        `SELECT * FROM PLANETE WHERE id_planete = :planetID`,
+        { planetID: planetID },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    return planetResult;
+}
+
+async function obtenirDonneesVaisseauParId(connection, vaisseauID) {
+    const vaisseauResult = await connection.execute(
+        `SELECT * FROM vaisseau WHERE id_vaisseau = :vaisseauID`,
+        { vaisseauID: vaisseauID },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    return vaisseauResult;
 }
 
 async function trouverPlaneteUtil(connexion, id_util) {
@@ -125,6 +144,7 @@ app.use(session({
 app.use((req, res, next) => {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
+    res.locals.planete_origine = req.session.planete_util;
     next();
 });
 
@@ -168,8 +188,7 @@ async function demarrerServeur() {
                 await connexion.close();
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
-                    planetes_bd: planetes_bd.rows,
-                    est_admin: req.session.est_admin
+                    planetes_bd: planetes_bd.rows
                 });
             } catch (err) {
                 console.error(err);
@@ -188,13 +207,10 @@ async function demarrerServeur() {
         */
         .get((req, res) => {
             try {
-                res.render('pages/connexion', {
-                    est_admin: req.session.est_admin
-                });
+                res.render('pages/connexion', {});
             } catch (err) {
                 res.render('pages/connexion', {
-                    message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données.",
-                    est_connecte: req.session.email && req.session.mdp
+                    message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données."
                 });
             }
         })
@@ -235,8 +251,9 @@ async function demarrerServeur() {
                             req.session.est_connecte = true;
                             req.session.est_admin = false;
                             const planeteID = Number(planeteResult.rows[0]);
+                            req.session.planete_util = planeteID;
                             updateLocals(req, res, () => {
-                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows });
+                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
                             });
                         } else {
                             return res.render('pages/connexion', { message_negatif: "Aucune planète liée à l'utilisateur." });
@@ -250,12 +267,16 @@ async function demarrerServeur() {
                 } else if (resultAdmin.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
+                        const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
+                        const listePlanetes = await recupererPlanetes(connexion);
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
                         req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.est_admin = true;
                         req.session.est_connecte = true;
+                        const planeteID = Number(planeteResult.rows[0]);
+                        req.session.planete_util = planeteID;
                         updateLocals(req, res, () => {
                             return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
                         });
@@ -403,6 +424,7 @@ async function demarrerServeur() {
                         req.session.email = email;
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.email && req.session.mdp;
+                        req.session.planete_util = planete;
 
                         return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id });
 
@@ -452,34 +474,44 @@ async function demarrerServeur() {
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     const voyageResult = await recupererVoyages(connection, rechercheData);
+                    let vaisseauResult;
+                    let planetResult;
 
-                    // Afficher les données récupérées dans la console
-                    console.log("Résultat de la requête de recherche de voyages :", voyageResult.rows);
+                    // Récupérer les informations de la planète et du vaisseau pour chaque voyage
+                    for (const voyage of voyageResult.rows) {
+                        const planetId = voyage.PLANETE_ID_PLANETE2;
+                        const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
 
-                    const planetData = {
-                        nom: "Uranus",
-                        type: "Gazeuse",
-                        gravite: "8.69",
-                    };
+                        let connection;
+                        try {
+                            connection = await pool.getConnection();
 
-                    const vaisseuData = {
-                        nom: "Etoile Voyageur",
-                        type: "Propulsion ionique",
-                        capacite: 150
-                    };
+                            const planetResult = await obtenirDonneesPlaneteParId(connection, planetId);
+                            const vaisseauResult = await obtenirDonneesVaisseauParId(connection, vaisseauId);
+                            console.log(planetResult.rows); // Afficher les données de la planète
+                            console.log(vaisseauResult.rows); // Afficher les données du vaisseau
+                        } catch (error) {
+                            console.error("Une erreur s'est produite lors de la récupération des données :", error);
+                        } finally {
+                            if (connection) {
+                                try {
+                                    await connection.close();
+                                } catch (error) {
+                                    console.error("Erreur lors de la fermeture de la connexion :", error);
+                                }
+                            }
+                        }
+                    }
 
                     if (result.rows.length > 0) {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
-                            planetData: planetData,
-                            vaisseuData: vaisseuData,
                             voyages_bd: voyageResult.rows
                         });
                     }
                 } else res.render('pages/connexion', {
-                    message_negatif: 'Connectez vous pour réserver un voyage',
-                    est_connecte: req.session.est_connecte
+                    message_negatif: 'Connectez vous pour réserver un voyage'
                 });
             } catch (err) {
                 console.error(err);
@@ -525,9 +557,7 @@ async function demarrerServeur() {
             paramètres : est_connecte
         */
         .get((req, res) => {
-            req.session.est_connecte = req.session.email && req.session.mdp;
-            res.render('pages/recu-billet', {
-            })
+            res.render('pages/recu-billet', { })
         });
     /*
         Accès à la page de déconnexion
@@ -553,7 +583,8 @@ async function demarrerServeur() {
                     message_positif: "Déconnexion réussie!",
                     planetes_bd: result.rows,
                     est_connecte: false,
-                    est_admin: false
+                    est_admin: false,
+                    planete_origine : null
                 });
             });
         } catch (err) {
