@@ -32,8 +32,30 @@
 					<% } else if (est_connecte) { %>
 						<!-- Navbar pour les utilisateurs connectés -->
 						<li class="nav-item">
-							<a class="nav-link custom-font-navbar" href="/deconnexion">Se déconnecter</a>
+							<a class="nav-link custom-font-navbar" href="deconnexion">Se déconnecter</a>
 						</li>
+						<script>
+						function deconnexion(url, data, callback) {
+							var req = new XMLHttpRequest();
+							req.open("POST", url, true);
+							req.send(data);
+							req.onload = function(e) {
+							  if (this.status == 200) { 
+								callback(e.responseText);  
+							  }
+							};
+							const url = "/deconnexion";
+        					function post_deconnexion(){
+            					const f = fetch(url, {
+                					method: "POST"
+            				});
+        					};
+        					f.then(function(res) {
+								return res.json();
+							});
+						  }
+						  </script>
+						
 						<li class="nav-item">
 							<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
 						</li>
