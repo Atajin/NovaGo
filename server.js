@@ -50,7 +50,6 @@ async function initialiserBaseDeDonnees() {
 }
 
 async function creer_session(connexion, token, date_creation, date_expiration, id_util){
-    console.log(req.session);
     await connexion.execute(
         `INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur)
     VALUES ( :token, :date_creation, :date_expiration, :utilisateur_id_utilisateur)`,
@@ -280,8 +279,7 @@ async function demarrerServeur() {
                             const planeteID = Number(planeteResult.rows[0]);
                             req.session.planete_util = planeteID;
 
-                            console.log(req.session);
-                            creer_session(connexion, token, date_creation, date_expiration, id_util);
+                            creer_session(connexion, req.session.id, new Date, req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
 
                             updateLocals(req, res, () => {
                                 return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
@@ -596,6 +594,7 @@ async function demarrerServeur() {
         try {
             const connexion = await getPool().getConnection();
             const result = await recupererPlanetes(connexion);
+            fermer_session(connexion, req.session.id, 1);
             await connexion.close();
 
             req.session.destroy(function (err) {
