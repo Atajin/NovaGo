@@ -267,7 +267,6 @@ async function demarrerServeur() {
                 } else if (resultAdmin.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
                         const listePlanetes = await recupererPlanetes(connexion);
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
@@ -275,8 +274,7 @@ async function demarrerServeur() {
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.est_admin = true;
                         req.session.est_connecte = true;
-                        const planeteID = Number(planeteResult.rows[0]);
-                        req.session.planete_util = planeteID;
+                        req.session.planete_util = null;
                         updateLocals(req, res, () => {
                             return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
                         });
@@ -557,7 +555,7 @@ async function demarrerServeur() {
             paramètres : est_connecte
         */
         .get((req, res) => {
-            res.render('pages/recu-billet', { })
+            res.render('pages/recu-billet', {})
         });
     /*
         Accès à la page de déconnexion
@@ -584,7 +582,7 @@ async function demarrerServeur() {
                     planetes_bd: result.rows,
                     est_connecte: false,
                     est_admin: false,
-                    planete_origine : null
+                    planete_origine: null
                 });
             });
         } catch (err) {
@@ -736,6 +734,8 @@ async function demarrerServeur() {
             }
             let clauseMiseAJour = partiesClause.join(', ');
 
+            console.log("Clause de mise à jour:", clauseMiseAJour);
+
             const sqlQuery = `UPDATE ${tableName} SET ${clauseMiseAJour} WHERE ID_${tableName} = :sqlRowIndex`;
 
             console.log("SQL query:", sqlQuery);
@@ -751,7 +751,26 @@ async function demarrerServeur() {
         }
     });
 
+    app.post('/administrateur/supprimer', async (req, res) => {
+        const { tableName, sqlRowIndex, data } = req.body;
 
+        try {
+            console.log("Requête de suppression reçue:", req.body);
+
+            const connexion = await getPool().getConnection();
+            const sqlQuery = `DELETE FROM ${tableName} WHERE ID_${tableName} = :sqlRowIndex`;
+
+            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
+
+            await connexion.close();
+
+            res.json({ success: true, message: 'Suppression réussie.' });
+        } catch (err) {
+            console.error('Erreur lors de la suppression:', err);
+            res.status(500).json({ success: false, message: 'Erreur lors de la suppression.' });
+        }
+
+    });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {

@@ -1,7 +1,26 @@
 const titrePage = document.getElementById('titrePage').innerText;
 const tableName = titrePage.split(': ')[1];
 
-function ajouterGestionnairesEvenements() {
+function attacherEcouteurs() {
+    const tbody = document.querySelector('table tbody');
+    tbody.addEventListener('click', gestionBouton);
+}
+
+function gestionBouton(event) {
+    const button = event.target;
+    const rowIndex = button.getAttribute('data-index');
+    if (button.classList.contains('btn-modifier')) {
+        gestionModifier.call(button);
+    } else if (button.classList.contains('btn-supprimer')) {
+        gestionSupprimer.call(button);
+    } else if (button.classList.contains('btn-confirmer')) {
+        gestionConfirmer.call(button);
+    } else if (button.classList.contains('btn-annuler')) {
+        gestionAnnuler.call(button);
+    }
+}
+
+/*function ajouterGestionnairesEvenements() {
     document.querySelectorAll('.btn-modifier').forEach(button => {
         button.addEventListener('click', gestionModifier);
     });
@@ -9,7 +28,7 @@ function ajouterGestionnairesEvenements() {
     document.querySelectorAll('.btn-supprimer').forEach(button => {
         button.addEventListener('click', gestionSupprimer);
     });
-}
+}*/
 
 function gestionModifier() {
     const rowIndex = this.getAttribute('data-index');
@@ -80,38 +99,68 @@ function gestionConfirmer() {
             data: dataUpdate,
         }),
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Succès:', data.message);
-            
-            dataCells.forEach((input) => {
-                const newValue = input.value;
-                const cell = input.closest('td');
-                cell.innerHTML = newValue;
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Succès:', data.message);
 
-            const buttonsCell = row.querySelector('td:last-child');
-            buttonsCell.innerHTML = `
+                dataCells.forEach((input) => {
+                    const newValue = input.value;
+                    const cell = input.closest('td');
+                    cell.innerHTML = newValue;
+                });
+
+                const buttonsCell = row.querySelector('td:last-child');
+                buttonsCell.innerHTML = `
                 <div class="d-grid gap-2">
                     <button type="button" class="btn btn-primary btn-modifier" data-index="${rowIndex}">Modifier</button>
                     <button type="button" class="btn btn-danger btn-supprimer" data-index="${rowIndex}">Supprimer</button>
                 </div>
             `;
 
-            ajouterGestionnairesEvenements();
-        } else {
-            console.error('Erreur lors de la mise à jour:', data.message);
-        }
-    })
-    .catch((error) => {
-        console.error('Erreur:', error);
-    });
+                ajouterGestionnairesEvenements();
+            } else {
+                console.error('Erreur lors de la mise à jour:', data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Erreur:', error);
+        });
 }
 
 
 function gestionSupprimer() {
+    const rowIndex = this.getAttribute('data-index');
+    const sqlRowIndex = parseInt(rowIndex, 10) + 1;
 
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette ligne ?')) return;
+
+    fetch('/administrateur/supprimer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            tableName: tableName,
+            sqlRowIndex: sqlRowIndex,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Suppression réussie:', data.message);
+
+                const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`);
+                if (row) {
+                    row.remove();
+                }
+            } else {
+                console.error('Erreur lors de la suppression:', data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Erreur:', error);
+        });
 }
 
-ajouterGestionnairesEvenements();
+attacherEcouteurs();
