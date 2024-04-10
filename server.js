@@ -56,6 +56,7 @@ function getPool() {
 function updateLocals(req, res, next) {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
+    res.locals.planete_origine = req.session.planete_util;
     next();
 }
 
@@ -143,6 +144,7 @@ app.use(session({
 app.use((req, res, next) => {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
+    res.locals.planete_origine = req.session.planete_util;
     next();
 });
 
@@ -186,8 +188,7 @@ async function demarrerServeur() {
                 await connexion.close();
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
-                    planetes_bd: planetes_bd.rows,
-                    est_admin: req.session.est_admin
+                    planetes_bd: planetes_bd.rows
                 });
             } catch (err) {
                 console.error(err);
@@ -206,13 +207,10 @@ async function demarrerServeur() {
         */
         .get((req, res) => {
             try {
-                res.render('pages/connexion', {
-                    est_admin: req.session.est_admin
-                });
+                res.render('pages/connexion', {});
             } catch (err) {
                 res.render('pages/connexion', {
-                    message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données.",
-                    est_connecte: req.session.email && req.session.mdp
+                    message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données."
                 });
             }
         })
@@ -253,8 +251,9 @@ async function demarrerServeur() {
                             req.session.est_connecte = true;
                             req.session.est_admin = false;
                             const planeteID = Number(planeteResult.rows[0]);
+                            req.session.planete_util = planeteID;
                             updateLocals(req, res, () => {
-                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planete_origine: planeteID, planetes_bd: listePlanetes.rows });
+                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
                             });
                         } else {
                             return res.render('pages/connexion', { message_negatif: "Aucune planète liée à l'utilisateur." });
@@ -268,12 +267,14 @@ async function demarrerServeur() {
                 } else if (resultAdmin.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
+                        const listePlanetes = await recupererPlanetes(connexion);
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
                         req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.est_admin = true;
                         req.session.est_connecte = true;
+                        req.session.planete_util = null;
                         updateLocals(req, res, () => {
                             return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
                         });
@@ -421,6 +422,7 @@ async function demarrerServeur() {
                         req.session.email = email;
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.email && req.session.mdp;
+                        req.session.planete_util = planete;
 
                         return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id });
 
@@ -508,8 +510,7 @@ async function demarrerServeur() {
                         });
                     }
                 } else res.render('pages/connexion', {
-                    message_negatif: 'Connectez vous pour réserver un voyage',
-                    est_connecte: req.session.est_connecte
+                    message_negatif: 'Connectez vous pour réserver un voyage'
                 });
             } catch (err) {
                 console.error(err);
@@ -555,9 +556,7 @@ async function demarrerServeur() {
             paramètres : est_connecte
         */
         .get((req, res) => {
-            req.session.est_connecte = req.session.email && req.session.mdp;
-            res.render('pages/recu-billet', {
-            })
+            res.render('pages/recu-billet', {})
         });
     /*
         Accès à la page de déconnexion
@@ -583,7 +582,8 @@ async function demarrerServeur() {
                     message_positif: "Déconnexion réussie!",
                     planetes_bd: result.rows,
                     est_connecte: false,
-                    est_admin: false
+                    est_admin: false,
+                    planete_origine: null
                 });
             });
         } catch (err) {
@@ -691,7 +691,7 @@ async function demarrerServeur() {
         });
 
     app.post('/administrateur/voirTable', async (req, res) => {
-        const { tableName } = req.body; // Récupérez le nom de la table soumis par le formulaire
+        const { tableName } = req.body;
 
         try {
             req.session.est_connecte = req.session.email && req.session.mdp;
@@ -721,6 +721,57 @@ async function demarrerServeur() {
         }
     });
 
+    app.post('/administrateur/mettreAJour', async (req, res) => {
+        const { tableName, sqlRowIndex, data } = req.body;
+
+        console.log("Requête de mise à jour reçue:", req.body);
+
+        try {
+            const connexion = await getPool().getConnection();
+
+            let partiesClause = [];
+            for (const [key, value] of Object.entries(data)) {
+                partiesClause.push(`${key} = :${key}`);
+            }
+            let clauseMiseAJour = partiesClause.join(', ');
+
+            console.log("Clause de mise à jour:", clauseMiseAJour);
+
+            const sqlQuery = `UPDATE ${tableName} SET ${clauseMiseAJour} WHERE ID_${tableName} = :sqlRowIndex`;
+
+            console.log("SQL query:", sqlQuery);
+
+            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
+
+            await connexion.close();
+
+            res.json({ success: true, message: 'Mise à jour réussie.' });
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour:', err);
+            res.status(500).json({ success: false, message: 'Erreur lors de la mise à jour.' });
+        }
+    });
+
+    app.post('/administrateur/supprimer', async (req, res) => {
+        const { tableName, sqlRowIndex, data } = req.body;
+
+        try {
+            console.log("Requête de suppression reçue:", req.body);
+
+            const connexion = await getPool().getConnection();
+            const sqlQuery = `DELETE FROM ${tableName} WHERE ID_${tableName} = :sqlRowIndex`;
+
+            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
+
+            await connexion.close();
+
+            res.json({ success: true, message: 'Suppression réussie.' });
+        } catch (err) {
+            console.error('Erreur lors de la suppression:', err);
+            res.status(500).json({ success: false, message: 'Erreur lors de la suppression.' });
+        }
+
+    });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {
