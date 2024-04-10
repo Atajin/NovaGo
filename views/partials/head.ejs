@@ -7,4 +7,13 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/custom.css" />
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <!--Preload de l'image pour ne pas que la page soit affichée avant le chargement de l'image-->
+    <script>
+        const image = new Image();
+        image.src = '../../images/spacebg.jpg';
+        image.onload = function () {
+            document.querySelector('.custom-background').style.backgroundImage = `url(${image.src})`;
+            console.log('Image chargée');
+        }
+    </script>
 </head>
