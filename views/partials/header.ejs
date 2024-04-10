@@ -6,3 +6,12 @@
 		<div class="custom-background">
 		</div>
 		<%- include ('../partials/navbar', {est_connecte: est_connecte}) %>
+			<!--Preload de l'image pour ne pas que la page soit affichée avant le chargement de l'image-->
+			<script>
+				const image = new Image();
+				image.src = '../../images/spacebg.jpg';
+				image.onload = function () {
+					document.querySelector('.custom-background').style.backgroundImage = `url(${image.src})`;
+					console.log('Image chargée');
+				}
+			</script>
