@@ -20,7 +20,7 @@ const app = express();
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const saltRounds = 10
+const saltRounds = 10;
 
 let pool;
 
@@ -47,6 +47,33 @@ async function initialiserBaseDeDonnees() {
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle:", err);
     }
+}
+
+async function creer_session(connexion, token, date_creation, date_expiration, id_util){
+    console.log(req.session);
+    await connexion.execute(
+        `INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur)
+    VALUES ( :token, :date_creation, :date_expiration, :utilisateur_id_utilisateur)`,
+        {
+            token: token,
+            date_creation: date_creation,
+            date_expiration: date_expiration,
+            utilisateur_id_utilisateur: id_util
+        }
+    );
+    console.log("Session créée !");
+}
+
+async function fermer_session(connexion, token, date_expiration){
+    await connexion.execute(
+        `UPDATE session_util SET date_expiration = date_expiration WHERE token = token
+        VALUES ( :token, :date_expiration)`,
+        {
+            token: token,
+            date_expiration: date_expiration
+        }
+    );
+    console.log("Session terminée !");
 }
 
 function getPool() {
@@ -252,6 +279,10 @@ async function demarrerServeur() {
                             req.session.est_admin = false;
                             const planeteID = Number(planeteResult.rows[0]);
                             req.session.planete_util = planeteID;
+
+                            console.log(req.session);
+                            creer_session(connexion, token, date_creation, date_expiration, id_util);
+
                             updateLocals(req, res, () => {
                                 return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
                             });
