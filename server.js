@@ -661,7 +661,7 @@ async function demarrerServeur() {
         });
 
     app.post('/administrateur/voirTable', async (req, res) => {
-        const { tableName } = req.body; // Récupérez le nom de la table soumis par le formulaire
+        const { tableName } = req.body;
 
         try {
             req.session.est_connecte = req.session.email && req.session.mdp;
@@ -690,6 +690,36 @@ async function demarrerServeur() {
             res.send('Erreur lors de la récupération des données');
         }
     });
+
+    app.post('/administrateur/mettreAJour', async (req, res) => {
+        const { tableName, sqlRowIndex, data } = req.body;
+
+        console.log("Requête de mise à jour reçue:", req.body);
+
+        try {
+            const connexion = await getPool().getConnection();
+
+            let partiesClause = [];
+            for (const [key, value] of Object.entries(data)) {
+                partiesClause.push(`${key} = :${key}`);
+            }
+            let clauseMiseAJour = partiesClause.join(', ');
+
+            const sqlQuery = `UPDATE ${tableName} SET ${clauseMiseAJour} WHERE ID_${tableName} = :sqlRowIndex`;
+
+            console.log("SQL query:", sqlQuery);
+
+            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
+
+            await connexion.close();
+
+            res.json({ success: true, message: 'Mise à jour réussie.' });
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour:', err);
+            res.status(500).json({ success: false, message: 'Erreur lors de la mise à jour.' });
+        }
+    });
+
 
 
     // Démarrage du serveur après la tentative de connexion à la base de données.

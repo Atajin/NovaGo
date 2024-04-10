@@ -1,7 +1,7 @@
 <%- include("../partials/header.ejs") %>
 
     <div class="container-fluid" style="margin-top: 2%;">
-        <h1 class="custom-font-planet-t petit-titre">Données de la table: <%= tableName %>
+        <h1 class="custom-font-planet-t petit-titre" id="titrePage">Données de la table: <%= tableName %>
         </h1>
         <table class="table">
             <thead>
@@ -12,9 +12,9 @@
                                 <%= nomColonne %>
                             </th>
                             <% }) %>
-                            <th scope="col">
-                                OPTIONS
-                            </th>
+                                <th scope="col">
+                                    OPTIONS
+                                </th>
                                 <% } else { %>
                                     <th>Aucune donnée trouvée</th>
                                     <% } %>
@@ -24,18 +24,20 @@
                 <% data.forEach(function(row, index) { %>
                     <tr data-row-index="<%= index %>">
                         <% colonnes.forEach(function(nomColonne) { %>
-                            <td>
+                            <td data-column-name="<%= nomColonne %>">
                                 <%= row[nomColonne] %>
                             </td>
                             <% }) %>
-                            <td>
-                                <div class="d-grid gap-2">
-                                    <!-- Bouton Modifier -->
-                                    <button type="button" class="btn btn-primary btn-modifier" data-index="<%= index %>">Modifier</button>
-                                    <!-- Bouton Supprimer -->
-                                    <button type="button" class="btn btn-danger btn-supprimer" data-index="<%= index %>">Supprimer</button>
-                                </div>
-                            </td>
+                                <td>
+                                    <div class="d-grid gap-2">
+                                        <!-- Bouton Modifier -->
+                                        <button type="button" class="btn btn-primary btn-modifier"
+                                            data-index="<%= index %>">Modifier</button>
+                                        <!-- Bouton Supprimer -->
+                                        <button type="button" class="btn btn-danger btn-supprimer"
+                                            data-index="<%= index %>">Supprimer</button>
+                                    </div>
+                                </td>
                     </tr>
                     <% }) %>
             </tbody>
