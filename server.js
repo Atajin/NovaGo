@@ -470,8 +470,6 @@ async function demarrerServeur() {
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     const voyageResult = await recupererVoyages(connection, rechercheData);
-                    let vaisseauResult;
-                    let planetResult;
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {
@@ -484,8 +482,11 @@ async function demarrerServeur() {
 
                             const planetResult = await obtenirDonneesPlaneteParId(connection, planetId);
                             const vaisseauResult = await obtenirDonneesVaisseauParId(connection, vaisseauId);
-                            console.log(planetResult.rows); // Afficher les données de la planète
-                            console.log(vaisseauResult.rows); // Afficher les données du vaisseau
+
+                            // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
+                            voyage.planetData = planetResult.rows[0];
+                            voyage.vaisseauData = vaisseauResult.rows[0];
+                            
                         } catch (error) {
                             console.error("Une erreur s'est produite lors de la récupération des données :", error);
                         } finally {
