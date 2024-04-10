@@ -36,7 +36,7 @@
 						</li>
 						<script>
 						function deconnexion(url, data, callback) {
-							var req = new XMLHttpRequest();
+							/*var req = new XMLHttpRequest();
 							req.open("POST", url, true);
 							req.send(data);
 							req.onload = function(e) {
@@ -53,7 +53,39 @@
         					f.then(function(res) {
 								return res.json();
 							});
-						  }
+							let pool;
+							try {
+								const connexion = await pool.getConnection();
+								const result = await recupererPlanetes(connexion);
+								await connexion.close();
+
+								req.session.destroy(function (err) {
+									if (err) {
+										console.error("Erreur lors de la destruction de la session:", err);
+										return res.render('pages/', {
+											message_negatif: "Erreur lors de la déconnexion.",
+											planetes_bd: result.rows,
+											est_connecte: false,
+											est_admin: false
+										});
+									}
+									res.render('pages/', {
+										message_positif: "Déconnexion réussie!",
+										planetes_bd: result.rows,
+										est_connecte: false,
+										est_admin: false,
+										planete_origine : null
+									});
+								});
+							} catch (err) {
+								console.error("Erreur lors de la récupération des données de la base de données:", err);
+								res.render('pages/', {
+									message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
+									est_connecte: false,
+									est_admin: false
+								});
+						  }*/
+						}
 						  </script>
 						
 						<li class="nav-item">
