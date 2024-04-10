@@ -267,7 +267,6 @@ async function demarrerServeur() {
                 } else if (resultAdmin.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
                         const listePlanetes = await recupererPlanetes(connexion);
                         //Ajout des informations nécessaires à la session
                         req.session.email = email;
@@ -275,8 +274,7 @@ async function demarrerServeur() {
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.est_admin = true;
                         req.session.est_connecte = true;
-                        const planeteID = Number(planeteResult.rows[0]);
-                        req.session.planete_util = planeteID;
+                        req.session.planete_util = null;
                         updateLocals(req, res, () => {
                             return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
                         });
