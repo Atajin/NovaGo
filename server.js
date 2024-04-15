@@ -63,16 +63,15 @@ async function creer_session(connexion, token, date_creation, date_expiration, i
     console.log("Session créée !");
 }
 
-async function fermer_session(connexion, token, date_expiration){
+async function fermer_session(connexion, token){
     await connexion.execute(
-        `UPDATE session_util SET date_expiration = date_expiration WHERE token = token
-        VALUES ( :token, :date_expiration)`,
+        `UPDATE session_util SET date_expiration = :date_SQL WHERE token = :token`,
         {
             token: token,
-            date_expiration: date_expiration
+            date_SQL: new Date()
         }
     );
-    console.log("Session terminée !");
+    console.log("Session fermée !");
 }
 
 function getPool() {
@@ -279,8 +278,9 @@ async function demarrerServeur() {
                             const planeteID = Number(planeteResult.rows[0]);
                             req.session.planete_util = planeteID;
 
-                            creer_session(connexion, req.session.id, new Date, req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
-
+                            creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
+                            await connexion.commit();
+                            
                             updateLocals(req, res, () => {
                                 return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
                             });
@@ -595,7 +595,7 @@ async function demarrerServeur() {
         try {
             const connexion = await getPool().getConnection();
             const result = await recupererPlanetes(connexion);
-            fermer_session(connexion, req.session.id, 1);
+            fermer_session(connexion, req.session.id);
             await connexion.close();
 
             req.session.destroy(function (err) {
