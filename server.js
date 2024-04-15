@@ -219,7 +219,12 @@ async function demarrerServeur() {
                 console.error(err);
                 res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_admin: req.session.est_admin });
             }
+        })
+
+        .post(async (req, res) => {
+
         });
+
 
     /*
         Page de connexion au compte utilisateur,
@@ -595,12 +600,12 @@ async function demarrerServeur() {
         try {
             const connexion = await getPool().getConnection();
             const result = await recupererPlanetes(connexion);
-            if(req.session.est_connecte){
-                
+            if (req.session.est_connecte) {
+
                 fermer_session(connexion, req.session.id);
                 await connexion.commit();
                 await connexion.close();
-    
+
                 req.session.destroy(function (err) {
                     if (err) {
                         console.error("Erreur lors de la destruction de la session:", err);
@@ -622,7 +627,7 @@ async function demarrerServeur() {
             } else {
                 res.render('pages/', { planetes_bd: result.rows });
             }
-            
+
         } catch (err) {
             console.error("Erreur lors de la récupération des données de la base de données:", err);
             res.render('pages/', {
