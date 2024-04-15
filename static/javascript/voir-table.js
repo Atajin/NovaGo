@@ -6,6 +6,14 @@ function attacherEcouteurs() {
     tbody.addEventListener('click', gestionBouton);
 }
 
+function setTailleBoutonAjouter() {
+    let boutonModifier = document.querySelector('.btn-modifier');
+    let largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
+    let boutonAjouter = document.querySelector('.btn-ajouter');
+
+    boutonAjouter.style.width = largeurBoutonModifier;
+}
+
 function gestionBouton(event) {
     const button = event.target;
     const rowIndex = button.getAttribute('data-index');
@@ -164,3 +172,5 @@ function gestionSupprimer() {
 }
 
 attacherEcouteurs();
+
+setTailleBoutonAjouter();

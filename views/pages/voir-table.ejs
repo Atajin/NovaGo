@@ -1,8 +1,12 @@
 <%- include("../partials/header.ejs") %>
 
     <div class="container-fluid" style="margin-top: 2%;">
-        <h1 class="custom-font-planet-t petit-titre" id="titrePage">Données de la table: <%= tableName %>
-        </h1>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="custom-font-planet-t petit-titre" id="titrePage">Données de la table: <%= tableName %>
+            </h1>
+            <!-- Bouton Ajouter -->
+            <button type="button" class="btn btn-success btn-ajouter me-2">Ajouter</button>
+        </div>
         <div class="table-responsive">
             <table class="table">
                 <thead>
