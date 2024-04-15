@@ -49,7 +49,7 @@ async function initialiserBaseDeDonnees() {
     }
 }
 
-async function creer_session(connexion, token, date_creation, date_expiration, id_util){
+async function creer_session(connexion, token, date_creation, date_expiration, id_util) {
     await connexion.execute(
         `INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur)
     VALUES ( :token, :date_creation, :date_expiration, :utilisateur_id_utilisateur)`,
@@ -63,7 +63,7 @@ async function creer_session(connexion, token, date_creation, date_expiration, i
     console.log("Session créée !");
 }
 
-async function fermer_session(connexion, token){
+async function fermer_session(connexion, token) {
     await connexion.execute(
         `UPDATE session_util SET date_expiration = :date_SQL WHERE token = :token`,
         {
@@ -280,7 +280,7 @@ async function demarrerServeur() {
 
                             creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
                             await connexion.commit();
-                            
+
                             updateLocals(req, res, () => {
                                 return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
                             });
@@ -517,7 +517,7 @@ async function demarrerServeur() {
                             // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
                             voyage.planetData = planetResult.rows[0];
                             voyage.vaisseauData = vaisseauResult.rows[0];
-                            
+
                         } catch (error) {
                             console.error("Une erreur s'est produite lors de la récupération des données :", error);
                         } finally {
