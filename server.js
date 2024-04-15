@@ -595,28 +595,34 @@ async function demarrerServeur() {
         try {
             const connexion = await getPool().getConnection();
             const result = await recupererPlanetes(connexion);
-            fermer_session(connexion, req.session.id);
-            await connexion.commit();
-            await connexion.close();
-
-            req.session.destroy(function (err) {
-                if (err) {
-                    console.error("Erreur lors de la destruction de la session:", err);
-                    return res.render('pages/', {
-                        message_negatif: "Erreur lors de la déconnexion.",
+            if(req.session.est_connecte){
+                
+                fermer_session(connexion, req.session.id);
+                await connexion.commit();
+                await connexion.close();
+    
+                req.session.destroy(function (err) {
+                    if (err) {
+                        console.error("Erreur lors de la destruction de la session:", err);
+                        return res.render('pages/', {
+                            message_negatif: "Erreur lors de la déconnexion.",
+                            planetes_bd: result.rows,
+                            est_connecte: false,
+                            est_admin: false
+                        });
+                    }
+                    res.render('pages/', {
+                        message_positif: "Déconnexion réussie!",
                         planetes_bd: result.rows,
                         est_connecte: false,
-                        est_admin: false
+                        est_admin: false,
+                        planete_origine: null
                     });
-                }
-                res.render('pages/', {
-                    message_positif: "Déconnexion réussie!",
-                    planetes_bd: result.rows,
-                    est_connecte: false,
-                    est_admin: false,
-                    planete_origine: null
                 });
-            });
+            } else {
+                res.render('pages/', { planetes_bd: result.rows });
+            }
+            
         } catch (err) {
             console.error("Erreur lors de la récupération des données de la base de données:", err);
             res.render('pages/', {
