@@ -501,8 +501,6 @@ async function demarrerServeur() {
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     const voyageResult = await recupererVoyages(connection, rechercheData);
-                    let vaisseauResult;
-                    let planetResult;
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {
@@ -515,8 +513,11 @@ async function demarrerServeur() {
 
                             const planetResult = await obtenirDonneesPlaneteParId(connection, planetId);
                             const vaisseauResult = await obtenirDonneesVaisseauParId(connection, vaisseauId);
-                            console.log(planetResult.rows); // Afficher les données de la planète
-                            console.log(vaisseauResult.rows); // Afficher les données du vaisseau
+
+                            // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
+                            voyage.planetData = planetResult.rows[0];
+                            voyage.vaisseauData = vaisseauResult.rows[0];
+                            
                         } catch (error) {
                             console.error("Une erreur s'est produite lors de la récupération des données :", error);
                         } finally {
@@ -584,7 +585,7 @@ async function demarrerServeur() {
             paramètres : est_connecte
         */
         .get((req, res) => {
-            res.render('pages/recu-billet', { })
+            res.render('pages/recu-billet', {})
         });
     /*
         Accès à la page de déconnexion
@@ -612,7 +613,7 @@ async function demarrerServeur() {
                     planetes_bd: result.rows,
                     est_connecte: false,
                     est_admin: false,
-                    planete_origine : null
+                    planete_origine: null
                 });
             });
         } catch (err) {
@@ -764,6 +765,8 @@ async function demarrerServeur() {
             }
             let clauseMiseAJour = partiesClause.join(', ');
 
+            console.log("Clause de mise à jour:", clauseMiseAJour);
+
             const sqlQuery = `UPDATE ${tableName} SET ${clauseMiseAJour} WHERE ID_${tableName} = :sqlRowIndex`;
 
             console.log("SQL query:", sqlQuery);
@@ -779,7 +782,26 @@ async function demarrerServeur() {
         }
     });
 
+    app.post('/administrateur/supprimer', async (req, res) => {
+        const { tableName, sqlRowIndex, data } = req.body;
 
+        try {
+            console.log("Requête de suppression reçue:", req.body);
+
+            const connexion = await getPool().getConnection();
+            const sqlQuery = `DELETE FROM ${tableName} WHERE ID_${tableName} = :sqlRowIndex`;
+
+            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
+
+            await connexion.close();
+
+            res.json({ success: true, message: 'Suppression réussie.' });
+        } catch (err) {
+            console.error('Erreur lors de la suppression:', err);
+            res.status(500).json({ success: false, message: 'Erreur lors de la suppression.' });
+        }
+
+    });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {
