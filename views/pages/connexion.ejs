@@ -50,4 +50,25 @@
             <div class="col"></div>
         </div>
     </div>
+    <script>
+    function connexion(url, data, callback) {
+        var req = new XMLHttpRequest();
+        req.open("POST", url, true);
+        req.send(data);
+        req.onload = function(e) {
+          if (this.status == 200) { 
+            callback(e.responseText);  
+          }
+        };
+        const url = "/connexion";
+        function post_connexion(){
+            const f = fetch(url, {
+                method: "POST"
+        });
+        };
+        f.then(function(res) {
+            return res.json();
+        });
+    }
+      </script>
     <%- include ("../partials/footer.ejs") %>
