@@ -596,6 +596,7 @@ async function demarrerServeur() {
             const connexion = await getPool().getConnection();
             const result = await recupererPlanetes(connexion);
             fermer_session(connexion, req.session.id);
+            await connexion.commit();
             await connexion.close();
 
             req.session.destroy(function (err) {
