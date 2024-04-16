@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("codeVoyage").innerHTML = "Code " + premierVoyage.ID_VOYAGE;
     document.getElementById("nomDestination").innerHTML = premierVoyage.planetData.NOM;
     document.getElementById("typeDestination").innerHTML = premierVoyage.planetData.TYPE;
-    document.getElementById("graviteDestination").innerHTML = premierVoyage.planetData.GRAVITE;
+    document.getElementById("graviteDestination").innerHTML = premierVoyage.planetData.GRAVITE + " m/s";
 
     document.getElementById("nomVaisseau").innerHTML = premierVoyage.vaisseauData.NOM;
     document.getElementById("typeVaisseau").innerHTML = premierVoyage.vaisseauData.TYPE_DE_PROPULSION;
@@ -21,7 +21,7 @@ function afficherDetails(idVoyage) {
 
         document.getElementById("nomDestination").innerHTML = voyage.planetData.NOM;
         document.getElementById("typeDestination").innerHTML = voyage.planetData.TYPE;
-        document.getElementById("graviteDestination").innerHTML = voyage.planetData.GRAVITE;
+        document.getElementById("graviteDestination").innerHTML = voyage.planetData.GRAVITE + " m/s";
 
         document.getElementById("nomVaisseau").innerHTML = voyage.vaisseauData.NOM;
         document.getElementById("typeVaisseau").innerHTML = voyage.vaisseauData.TYPE_DE_PROPULSION;
