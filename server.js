@@ -560,8 +560,12 @@ async function demarrerServeur() {
 
         .post(async (req, res) => {
             const montantArgents = req.body.montantArgents;
+            const arrayArgents =  req.body.arrayArgents;
+            const arrayBillets = req.body.arrayBillets;
             // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
             console.log('Montant d\'argents reçu :', montantArgents);
+            console.log(arrayArgents);
+            console.log(arrayBillets);
             // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
             res.sendStatus(200);
         });

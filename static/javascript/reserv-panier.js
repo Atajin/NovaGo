@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     let col1 = document.createElement("div");
                     col1.classList.add("col");
                     let codeP = document.createElement("p");
-                    codeP.classList.add("custom-font-rvt", "m-0", "voyage-code");
+                    codeP.classList.add("custom-font-rvt", "m-0", "voyage-code" + voyage.ID_VOYAGE);
                     codeP.textContent = voyageCode; // Contenu de l'élément "voyage-code"
                     col1.appendChild(codeP);
 
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     col2.style.textAlign = "right";
                     // Création du bouton supprimer
                     let deleteBtn = document.createElement("button");
-                    deleteBtn.classList.add("m-0", "p-0", "delete-btn" + voyage.ID_VOYAGE + nbre_panier);
+                    deleteBtn.classList.add("m-0", "p-0", "delete-btn" + voyage.ID_VOYAGE + "_" + nbre_panier);
                     deleteBtn.style.border = "none";
                     deleteBtn.style.background = "none";
                     deleteBtn.style.color = "white";
@@ -101,12 +101,12 @@ margin: 0;
                     let compteurContainer = document.createElement("div");
                     compteurContainer.classList.add("compteur-container");
                     let plusBtn = document.createElement("button");
-                    plusBtn.classList.add("text-white", "custom-font-rvt", "plusBtn" + voyage.ID_VOYAGE + nbre_panier);
+                    plusBtn.classList.add("text-white", "custom-font-rvt", "plusBtn" + voyage.ID_VOYAGE + "_" + nbre_panier);
                     plusBtn.style.border = "none";
                     plusBtn.style.background = "none";
                     plusBtn.textContent = "+";
                     let input = document.createElement("input");
-                    input.classList.add("rounded", "compteurInput" + voyage.ID_VOYAGE + nbre_panier);
+                    input.classList.add("rounded", "compteurInput" + voyage.ID_VOYAGE + "_" + nbre_panier);
                     input.setAttribute("type", "text");
                     input.setAttribute("value", "1");
                     input.setAttribute("readonly", "true");
@@ -116,7 +116,7 @@ margin: 0;
                     input.style.textAlign = "center";
                     input.style.fontSize = "small";
                     let moinsBtn = document.createElement("button");
-                    moinsBtn.classList.add("text-white", "custom-font-rvt", "moinsBtn" + voyage.ID_VOYAGE + nbre_panier);
+                    moinsBtn.classList.add("text-white", "custom-font-rvt", "moinsBtn" + voyage.ID_VOYAGE + "_" + nbre_panier);
                     moinsBtn.style.border = "none";
                     moinsBtn.style.background = "none";
                     moinsBtn.textContent = "-";
@@ -147,7 +147,7 @@ margin: 0;
                     RetirerCompteur(voyage.ID_VOYAGE, nbre_panier);
                 } else {
                     // S'il existe déjà un élément avec le même ID de voyage, incrémenter simplement le compteur
-                    let input = existingElement.querySelector(".compteurInput" + voyage.ID_VOYAGE + nbre_panier);
+                    let input = existingElement.querySelector(".compteurInput" + voyage.ID_VOYAGE + "_" + nbre_panier);
                     let valeur = parseInt(input.value);
                     input.value = valeur + 1;
 
@@ -164,11 +164,11 @@ margin: 0;
     });
 
     function DeleteVoyagesPanier(id, nbre_panier) {
-        const deleteBtns = document.querySelectorAll(".delete-btn" + id + nbre_panier);
+        const deleteBtns = document.querySelectorAll(".delete-btn" + id + "_" + nbre_panier);
 
         deleteBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + nbre_panier).value);
+                let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + "_" + nbre_panier).value);
 
                 // Récupérer le prix du voyage depuis l'élément correspondant dans le DOM
                 let prixVoyage = parseInt(document.getElementById("prix_voyage_" + id + "_" + nbre_panier).textContent);
@@ -193,10 +193,10 @@ margin: 0;
 
     // Gestionnaire d'événement pour le bouton "plus"
     function AjouterCompteur(id, nbre_panier) {
-        const plusBtns = document.querySelectorAll(".plusBtn" + id + nbre_panier);
+        const plusBtns = document.querySelectorAll(".plusBtn" + id + "_" + nbre_panier);
         plusBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                let input = this.closest(".row").querySelector(".compteurInput" + id + nbre_panier);
+                let input = this.closest(".row").querySelector(".compteurInput" + id + "_" + nbre_panier);
                 let valeur = parseInt(input.value);
                 input.value = valeur + 1;
                 nombre_billets++;
@@ -210,11 +210,11 @@ margin: 0;
 
     // Gestionnaire d'événement pour le bouton "moins"
     function RetirerCompteur(id, nbre_panier) {
-        const moinsBtns = document.querySelectorAll(".moinsBtn" + id + nbre_panier);
+        const moinsBtns = document.querySelectorAll(".moinsBtn" + id + "_" + nbre_panier);
 
         moinsBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                let input = this.closest(".row").querySelector(".compteurInput" + id + nbre_panier);
+                let input = this.closest(".row").querySelector(".compteurInput" + id + "_" + nbre_panier);
                 let valeur = parseInt(input.value);
                 if (valeur > 1) {
                     input.value = valeur - 1;
