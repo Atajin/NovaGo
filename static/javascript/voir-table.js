@@ -7,11 +7,24 @@ function attacherEcouteurs() {
 }
 
 function setTailleBoutonAjouter() {
-    let boutonModifier = document.querySelector('.btn-modifier');
-    let largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
-    let boutonAjouter = document.querySelector('.btn-ajouter');
+    const boutonModifier = document.querySelector('.btn-modifier');
+    const largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
+    const boutonAjouter = document.querySelector('.btn-ajouter');
 
     boutonAjouter.style.width = largeurBoutonModifier;
+}
+
+function alignerBoutonAjouter() {
+    const boutonModifier = document.querySelector('.btn-modifier');
+    const boutonAjouter = document.querySelector('.btn-ajouter');
+
+    if (boutonModifier && boutonAjouter) {
+        const boutonModifierDroite = boutonModifier.getBoundingClientRect().right;
+        const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
+
+        const ajustementMarge = boutonAjouterDroite - boutonModifierDroite;
+        boutonAjouter.style.marginRight = `${ajustementMarge}px`;
+    }
 }
 
 function gestionBouton(event) {
@@ -32,7 +45,7 @@ function gestionBouton(event) {
     document.querySelectorAll('.btn-modifier').forEach(button => {
         button.addEventListener('click', gestionModifier);
     });
-
+ 
     document.querySelectorAll('.btn-supprimer').forEach(button => {
         button.addEventListener('click', gestionSupprimer);
     });
@@ -174,3 +187,5 @@ function gestionSupprimer() {
 attacherEcouteurs();
 
 setTailleBoutonAjouter();
+
+alignerBoutonAjouter();
