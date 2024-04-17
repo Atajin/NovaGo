@@ -23,7 +23,7 @@
                 <h1 class="custom-font-titles text-center">Connexion</h1>
 
                         <!--Action complétée lors du submit de ce formulaire-->
-                        <form method="POST" action="/connexion">
+                        <form method="POST" id="formulaire_connexion">
 
                             <!--Champ d'entrée du courriel de l'utilisateur-->
                             <div class="row-md-auto">
@@ -51,14 +51,17 @@
         </div>
     </div>
     <script>
-        /*$("bouton_submit").click(function(){
-        $.post("/connexion",
-        { },
-        function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
+        $("#formulaire_connexion").submit(function(){
+            $.ajax({
+                url: "http://localhost:4000/connexion",
+                type: "POST",
+                data: { },
+                success: function(data){
+                    console.log(data);
+                }
+            });
         });
-        }); 
-    function connexion(url, data, callback) {
+    /*function connexion(url, data, callback) {
         var req = new XMLHttpRequest();
         req.open("POST", url, true);
         req.send(data);

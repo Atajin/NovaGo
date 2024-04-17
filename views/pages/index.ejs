@@ -1,13 +1,13 @@
 <%- include ("../partials/header.ejs") %>
 <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
 <% if (typeof message_negatif !== 'undefined') { %>
-    <div class="custom-message-negatif">
+    <div class="custom-message-negatif" id="message_negatif">
         <%= message_negatif %>
     </div>
     <% } %>
 <!--Gestion des messages d'erreur-->
 <% if (typeof message_positif !== 'undefined') { %>
-    <div class="custom-message-positif">
+    <div class="custom-message-positif" id="message_positif">
         <%= message_positif %>
     </div>
     <% } %>
