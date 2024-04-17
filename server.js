@@ -252,7 +252,7 @@ async function demarrerServeur() {
             POST du formulaire de la page de connexion
         */
         .post(async (req, res) => {
-            res.status(200).send({ message_positif: 'Connecté' });
+            //return res.status(200).send({ message_positif: 'Connecté' });
             let connexion;
             try {
                 req.session.est_connecte = req.session.email && req.session.mdp;
