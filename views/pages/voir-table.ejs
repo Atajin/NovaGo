@@ -29,7 +29,7 @@
                     <% data.forEach(function(row, index) { %>
                         <tr data-row-index="<%= index %>">
                             <% colonnes.forEach(function(nomColonne) { %>
-                                <td data-column-name="<%= nomColonne %>">
+                                <td class="wrap-text" data-column-name=" <%=nomColonne %>">
                                     <%= row[nomColonne] %>
                                 </td>
                                 <% }) %>

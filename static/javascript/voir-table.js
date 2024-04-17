@@ -1,6 +1,8 @@
 const titrePage = document.getElementById('titrePage').innerText;
 const tableName = titrePage.split(': ')[1];
 
+window.addEventListener('resize', setTailleBoutonAjouter);
+
 function attacherEcouteurs() {
     const tbody = document.querySelector('table tbody');
     tbody.addEventListener('click', gestionBouton);
@@ -8,28 +10,43 @@ function attacherEcouteurs() {
 
 function setTailleBoutonAjouter() {
     const boutonModifier = document.querySelector('.btn-modifier');
-    const largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
-    const boutonAjouter = document.querySelector('.btn-ajouter');
-
-    boutonAjouter.style.width = largeurBoutonModifier;
+    if (boutonModifier) {
+        const largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
+        const boutonAjouter = document.querySelector('.btn-ajouter');
+        if (boutonAjouter) {
+            boutonAjouter.style.width = largeurBoutonModifier;
+        }
+    }
 }
 
 function alignerBoutonAjouter() {
     const boutonModifier = document.querySelector('.btn-modifier');
-    const boutonAjouter = document.querySelector('.btn-ajouter');
-
-    if (boutonModifier && boutonAjouter) {
+    if (boutonModifier) {
         const boutonModifierDroite = boutonModifier.getBoundingClientRect().right;
-        const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
+        const boutonAjouter = document.querySelector('.btn-ajouter');
+        const viewportWidth = window.innerWidth;
 
-        const ajustementMarge = boutonAjouterDroite - boutonModifierDroite;
-        boutonAjouter.style.marginRight = `${ajustementMarge}px`;
+        if (boutonAjouter) {
+
+            if (viewportWidth > boutonModifierDroite) {
+                const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
+                const ajustementMarge = boutonAjouterDroite - boutonModifierDroite;
+                console.log("Adjustment Margin for marginRight: " + ajustementMarge);
+                boutonAjouter.style.marginRight = `${ajustementMarge}px`;
+                boutonAjouter.style.right = '';
+            } else {
+                const ajustementDroite = viewportWidth - boutonModifierDroite;
+                console.log("Adjustment Margin for right: " + ajustementDroite);
+                boutonAjouter.style.right = `${ajustementDroite}px`;
+                boutonAjouter.style.marginRight = '';
+            }
+        }
     }
 }
 
+
 function gestionBouton(event) {
     const button = event.target;
-    const rowIndex = button.getAttribute('data-index');
     if (button.classList.contains('btn-modifier')) {
         gestionModifier.call(button);
     } else if (button.classList.contains('btn-supprimer')) {
@@ -185,7 +202,5 @@ function gestionSupprimer() {
 }
 
 attacherEcouteurs();
-
 setTailleBoutonAjouter();
-
 alignerBoutonAjouter();
