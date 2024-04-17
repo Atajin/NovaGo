@@ -27,18 +27,15 @@ function alignerBoutonAjouter() {
         const viewportWidth = window.innerWidth;
 
         if (boutonAjouter) {
-
+            const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
             if (viewportWidth > boutonModifierDroite) {
-                const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
-                const ajustementMarge = boutonAjouterDroite - boutonModifierDroite;
-                console.log("Adjustment Margin for marginRight: " + ajustementMarge);
-                boutonAjouter.style.marginRight = `${ajustementMarge}px`;
-                boutonAjouter.style.right = '';
+                const ajustementDroite = boutonAjouterDroite - boutonModifierDroite;
+                console.log("Adjustment Margin for marginRight: " + ajustementDroite);
+                boutonAjouter.style.marginRight = `${ajustementDroite}px`;
             } else {
-                const ajustementDroite = viewportWidth - boutonModifierDroite;
+                const ajustementDroite = 8;
                 console.log("Adjustment Margin for right: " + ajustementDroite);
-                boutonAjouter.style.right = `${ajustementDroite}px`;
-                boutonAjouter.style.marginRight = '';
+                boutonAjouter.style.marginRight = `${ajustementDroite}px`;
             }
         }
     }
