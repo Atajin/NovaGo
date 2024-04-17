@@ -18,7 +18,9 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <h2 class="custom-font-labels m-0 px-2" id="codeVoyage"><!--Code du Voyage--></h2>
+                                            <h2 class="custom-font-labels m-0 px-2" id="codeVoyage">
+                                                <!--Code du Voyage-->
+                                            </h2>
                                         </div>
                                         <div class="col" style="text-align: right;">
                                             <!--le bouton n'est somehow pas un coeur-->
@@ -106,7 +108,7 @@
 
                             </div>
                         </div>
-                    </div>  
+                    </div>
                     <div class="row mt-2">
                         <div class="rounded custom-bg-rvt ">
                             <div class="row">
@@ -276,8 +278,8 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col p-0">
-                            <button type="submit"
-                                class="btn btn-outline-light btn-lg custom-font-planet-p w-100">Confirmer</button>
+                            <button type="submit" class="btn btn-outline-light btn-lg custom-font-planet-p w-100"
+                                id="confirmer-btn">Confirmer</button>
                         </div>
                     </div>
                 </div>
@@ -290,7 +292,28 @@
     <script src="/javascript/reserv-prix.js"></script>
     <% if (voyages_bd) { %>
         <script>
-            const voyagesData =  <%- JSON.stringify(voyages_bd) %>; 
+            const voyagesData =  <%- JSON.stringify(voyages_bd) %>;
+
+            document.getElementById('confirmer-btn').addEventListener('click', function () {
+                // Récupérer le montant total d'argent à partir de l'élément HTML où il est affiché
+                const montantArgents = document.getElementById('nombre_argents').textContent;
+
+                // Utiliser AJAX pour envoyer le montant au serveur
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/confirmer-transaction', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        // Le serveur a répondu avec succès
+                        console.log('Confirmation réussie !');
+                        // Vous pouvez effectuer d'autres actions après confirmation réussie ici
+                    } else {
+                        // Gérer les erreurs ou les réponses du serveur ici
+                        console.error('Erreur lors de la confirmation !');
+                    }
+                };
+                xhr.send(JSON.stringify({ montantArgents: montantArgents }));
+            });
         </script> <!--Probleme avec EJS et JS confusion de Visual Studio-->
         <% } %>
             <%- include ("../partials/footer.ejs") %>

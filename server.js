@@ -552,6 +552,19 @@ async function demarrerServeur() {
             }
         });
 
+    /*
+        Confirmer la transaction de la page reservation
+    */
+
+    app.route('/confirmer-transaction')
+
+        .post(async (req, res) => {
+            const montantArgents = req.body.montantArgents;
+            // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
+            console.log('Montant d\'argents reçu :', montantArgents);
+            // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
+            res.sendStatus(200);
+        });
 
     app.route('/exploration')
         /*
@@ -575,7 +588,6 @@ async function demarrerServeur() {
         })
         /*
             POST du formulaire de la page d'exploration
-            paramètres : -
         */
         .post(async (req, res) => {
             const connexion = await getPool().getConnection();
