@@ -222,7 +222,11 @@ async function demarrerServeur() {
         })
 
         .post(async (req, res) => {
-
+            let reservation;
+            const { planete_origine, planete_destination, dateDepart, nombrePersonnes } = req.body;
+            const voyageDispo = await requeteBD(planete_origine, planete_destination, dateDepart, nombrePersonnes);
+            //pour tester si le post en tant que tel fonctionnait (*NE FONCTIONNE PAS*)
+            //res.render('pages/reservation', { voyageDispo });
         });
 
 
