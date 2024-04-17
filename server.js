@@ -252,7 +252,8 @@ async function demarrerServeur() {
             POST du formulaire de la page de connexion
         */
         .post(async (req, res) => {
-            //return res.status(200).send({ message_positif: 'Connecté' });
+            console.log("test");
+            console.log(req.body);
             let connexion;
             try {
                 req.session.est_connecte = req.session.email && req.session.mdp;
@@ -295,12 +296,12 @@ async function demarrerServeur() {
                                 return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
                             });
                         } else {
-                            return res.render('pages/connexion', { message_negatif: "Aucune planète liée à l'utilisateur." });
+                            res.status(404).send({ message_negatif: "Aucune planète liée à l'utilisateur." });
                         }
 
                     } else {
                         // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
@@ -319,15 +320,15 @@ async function demarrerServeur() {
                         });
                     } else {
                         // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+                return res.status(401).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             } finally {
                 if (connexion) {
                     await connexion.close();
