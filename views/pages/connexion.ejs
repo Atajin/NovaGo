@@ -37,7 +37,7 @@
                             </div>
 
                             <!--Boutton submit pour se connecter à un compte-->
-                            <button type="submit" onclick="post_connexion()"
+                            <button type="button" onclick="post_connexion()" href="deconnexion"
                                 class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
                                 Connexion au compte
                             </button>
@@ -47,8 +47,7 @@
     </div>
     <script>
         function post_connexion(){
-            console.log("test");
-            const regex = new RegExp("[.]{8,30}");
+            const regex = new RegExp("[a-z]{8,}");
             console.log(regex.test(document.getElementById("mdp").value));
             if (regex.test(document.getElementById("email").value)){
                 console.log("post_connexion");
@@ -62,7 +61,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("message");
                     document.getElementById("message_negatif").textContent = data.message_negatif;
                 }).catch((error) => {
                     console.error('Erreur:', error);
