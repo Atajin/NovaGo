@@ -762,7 +762,7 @@ async function demarrerServeur() {
 
             let partiesClause = [];
             for (const [key, value] of Object.entries(data)) {
-                partiesClause.push(`${key} = :${key}`);
+                partiesClause.push(`${key} = :${key.trim()}`);
             }
             let clauseMiseAJour = partiesClause.join(', ');
 
