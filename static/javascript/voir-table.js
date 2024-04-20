@@ -106,7 +106,6 @@ function gestionAnnuler() {
         </div>
     `;
 
-    ajouterGestionnairesEvenements();
 }
 
 function gestionConfirmer() {
@@ -153,7 +152,6 @@ function gestionConfirmer() {
                 </div>
             `;
 
-                ajouterGestionnairesEvenements();
             } else {
                 console.error('Erreur lors de la mise à jour:', data.message);
             }
