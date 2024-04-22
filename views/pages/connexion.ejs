@@ -61,6 +61,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     document.getElementById("message_negatif").textContent = data.message_negatif;
                 }).catch((error) => {
                     console.error('Erreur:', error);

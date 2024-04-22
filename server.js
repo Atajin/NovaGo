@@ -273,33 +273,38 @@ async function demarrerServeur() {
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
                 if (resultUser.rows.length > 0) {
-                    const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
-                    if (mdp_valide) {
-                        const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
+                    if (req.session.email != email){
+                        const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
+                        if (mdp_valide) {
+                            const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
-                        const listePlanetes = await recupererPlanetes(connexion);
-                        if (planeteResult.rows.length > 0) {
-                            //Ajout des informations nécessaires à la session
-                            req.session.email = email;
-                            req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
-                            req.session.est_connecte = true;
-                            req.session.est_admin = false;
-                            const planeteID = Number(planeteResult.rows[0]);
-                            req.session.planete_util = planeteID;
+                            const listePlanetes = await recupererPlanetes(connexion);
+                            if (planeteResult.rows.length > 0) {
+                                //Ajout des informations nécessaires à la session
+                                req.session.email = email;
+                                req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
+                                req.session.est_connecte = true;
+                                req.session.est_admin = false;
+                                const planeteID = Number(planeteResult.rows[0]);
+                                req.session.planete_util = planeteID;
 
-                            creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
-                            await connexion.commit();
+                                creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
+                                await connexion.commit();
 
-                            updateLocals(req, res, () => {
-                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
-                            });
+                                updateLocals(req, res, () => {
+                                    return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
+                                });
+                            } else {
+                                res.status(404).send({ message_negatif: "Aucune planète liée à l'utilisateur." });
+                            }
+
                         } else {
-                            res.status(404).send({ message_negatif: "Aucune planète liée à l'utilisateur." });
+                            // Le mot de passe est incorrect
+                            return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                         }
-
                     } else {
-                        // Le mot de passe est incorrect
-                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        // Le compte est déjà connecté
+                        return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
