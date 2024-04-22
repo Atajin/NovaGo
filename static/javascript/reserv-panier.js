@@ -11,6 +11,32 @@ document.addEventListener("DOMContentLoaded", function () {
     billetsTotal.textContent = nombre_billets;
     montantTotal.textContent = nombre_argent + "$";
 
+    let prixEtBillets = []; // Tableau pour stocker les prix de voyage et le nombre total de billets
+
+    document.getElementById('confirmer-btn').addEventListener('click', function () {
+        const montantArgents = document.getElementById('nombre_argents').textContent;
+        const nombreBillets = document.getElementById('nombre_billets').textContent;
+    
+        // Utiliser AJAX pour envoyer les données au serveur
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/confirmer-transaction', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // Le serveur a répondu avec succès
+                console.log('Confirmation réussie !');
+                // Vous pouvez effectuer d'autres actions après confirmation réussie ici
+            } else {
+                // Gérer les erreurs ou les réponses du serveur ici
+                console.error('Erreur lors de la confirmation !');
+            }
+        };
+    
+        // Envoyer les données au serveur sous forme JSON
+        xhr.send(JSON.stringify({ montantArgents: montantArgents, nombreBillets: nombreBillets, prixEtBillets: prixEtBillets }));
+    });
+    
+
     voyagesData.forEach(voyage => {
         lettreCodes[voyage.ID_VOYAGE] = 'E'; // Initialisation de la lettre pour chaque ID de voyage
         const addBtns = document.querySelectorAll("#add_btn_" + voyage.ID_VOYAGE);
@@ -31,10 +57,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     voyagesTotal.textContent = nombre_voyages;
 
                     nombre_billets += 1;
+
                     billetsTotal.textContent = nombre_billets;
 
                     nombre_argent += nouveauPrix;
                     montantTotal.textContent = nombre_argent + "$";
+
+                    // Ajouter le prix du voyage et le nombre total de billets au tableau prixEtBillets
+                    prixEtBillets.push({ prix: nouveauPrix, billets: 1 });
 
                     let newElement = document.createElement("div");
                     newElement.id = "element_" + voyage.ID_VOYAGE + "_prix" + nouveauPrix;
@@ -136,6 +166,9 @@ margin: 0;
                     nombre_billets++;
                     billetsTotal.textContent = nombre_billets;
 
+                    // Mettre à jour prixEtBillets avec les nouvelles informations
+                    updatePrixEtBillets(nouveauPrix, valeur + 1);
+
                     nombre_argent += nouveauPrix;
                     montantTotal.textContent = nombre_argent + "$";
                 }
@@ -148,6 +181,8 @@ margin: 0;
 
         deleteBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
+                // Supprimer les informations correspondantes de prixEtBillets
+                prixEtBillets = prixEtBillets.filter(item => !(item.prix === prix && item.billets === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + "_prix" + prix).value)));
                 let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + "_prix" + prix).value);
                 let prixVoyage = parseInt(document.getElementById("prix_voyage_" + id + "_prix" + prix).textContent);
                 nombre_argent -= prixVoyage * nbreBilletsVoyage;
@@ -177,6 +212,9 @@ margin: 0;
                 billetsTotal.textContent = nombre_billets;
                 nombre_argent += parseInt(document.getElementById("prix_voyage_" + id + "_prix" + prix).textContent);
                 montantTotal.textContent = nombre_argent + "$";
+
+                // Mettre à jour prixEtBillets avec les nouvelles informations
+                updatePrixEtBillets(prix, valeur + 1);
             });
         });
     }
@@ -193,8 +231,20 @@ margin: 0;
                     billetsTotal.textContent = nombre_billets;
                     nombre_argent -= parseInt(document.getElementById("prix_voyage_" + id + "_prix" + prix).textContent);
                     montantTotal.textContent = nombre_argent + "$";
+
+                    // Mettre à jour prixEtBillets avec les nouvelles informations
+                    updatePrixEtBillets(prix, valeur - 1);
                 }
             });
         });
+    }
+
+    function updatePrixEtBillets(prix, billets) {
+        const existingPriceIndex = prixEtBillets.findIndex(item => item.prix === prix);
+        if (existingPriceIndex !== -1) {
+            prixEtBillets[existingPriceIndex].billets = billets;
+        } else {
+            prixEtBillets.push({ prix: prix, billets: billets });
+        }
     }
 });

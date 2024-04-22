@@ -294,40 +294,6 @@
         <script>
             const voyagesData =  <%- JSON.stringify(voyages_bd) %>;
 
-            document.getElementById('confirmer-btn').addEventListener('click', function () {
-                // Récupérer le montant total d'argent à partir de l'élément HTML où il est affiché
-                const montantArgents = document.getElementById('nombre_argents').textContent;
-
-                const nombreBillets = document.getElementById('nombre_billets').textContent;
-                const nombreVoyages =  document.getElementById('nombre_voyages').textContent;
-                let arrayArgents = [];
-                let arrayBillets = [];
-                voyagesData.forEach(voyage => {
-                    for (let i = 0; i < nombreBillets; i++) {
-                        if(typeof(arrayArgents[i]) !== "undefined" && typeof(arrayBillets[i]) !== "undefined") {
-                            arrayArgents[i].push(document.getElementById("prix_voyage_" + voyage.ID_VOYAGE + "_" + i).textContent);
-                            arrayBillets[i].push(document.querySelector("compteurInput" + voyage.ID_VOYAGE + "_" + i).textContent);
-                        }
-                        
-                    }
-                });
-
-                // Utiliser AJAX pour envoyer le montant au serveur
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', '/confirmer-transaction', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        // Le serveur a répondu avec succès
-                        console.log('Confirmation réussie !');
-                        // Vous pouvez effectuer d'autres actions après confirmation réussie ici
-                    } else {
-                        // Gérer les erreurs ou les réponses du serveur ici
-                        console.error('Erreur lors de la confirmation !');
-                    }
-                };
-                xhr.send(JSON.stringify({ montantArgents: montantArgents, arrayArgents: arrayArgents, arrayBillets: arrayBillets }));
-            });
         </script> <!--Probleme avec EJS et JS confusion de Visual Studio-->
         <% } %>
             <%- include ("../partials/footer.ejs") %>
