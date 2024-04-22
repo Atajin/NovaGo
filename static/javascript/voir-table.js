@@ -6,6 +6,11 @@ window.addEventListener('resize', setTailleBoutonAjouter);
 function attacherEcouteurs() {
     const tbody = document.querySelector('table tbody');
     tbody.addEventListener('click', gestionBouton);
+
+    const boutonAjouter = document.querySelector('.btn-ajouter');
+    if (boutonAjouter) {
+        boutonAjouter.addEventListener('click', gestionAjouter);
+    }
 }
 
 function setTailleBoutonAjouter() {
@@ -150,7 +155,7 @@ function gestionConfirmer() {
                     <button type="button" class="btn btn-primary btn-modifier" data-index="${rowIndex}">Modifier</button>
                     <button type="button" class="btn btn-danger btn-supprimer" data-index="${rowIndex}">Supprimer</button>
                 </div>
-            `;
+                `;
 
             } else {
                 console.error('Erreur lors de la mise à jour:', data.message);
@@ -194,6 +199,30 @@ function gestionSupprimer() {
         .catch((error) => {
             console.error('Erreur:', error);
         });
+}
+
+function gestionAjouter() {
+    const table = document.getElementById("dbTable");
+    const lastRow = table.rows[table.rows.length - 1];
+    const nextIndex = parseInt(lastRow.getAttribute('data-row-index'), 10) + 1;
+
+    const newRow = table.insertRow(1);
+    newRow.setAttribute('data-row-index', nextIndex);
+
+    const nbCells = table.rows.length > 0 ? table.rows[2].cells.length : 0;
+
+    for (let i = 0; i < nbCells - 1; i++) {
+        let newCell = newRow.insertCell(i);
+        newCell.innerHTML = '<input type="text" class="form-control">';
+    }
+
+    let buttonsCell = newRow.insertCell(nbCells - 1);
+    buttonsCell.innerHTML = `
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-primary btn-modifier" data-index="${nextIndex}">Modifier</button>
+        <button type="button" class="btn btn-danger btn-supprimer" data-index="${nextIndex}">Supprimer</button>
+    </div>
+    `;
 }
 
 attacherEcouteurs();
