@@ -37,7 +37,7 @@
                             </div>
 
                             <!--Boutton submit pour se connecter à un compte-->
-                            <button type="button" onclick="post_connexion()" href="deconnexion"
+                            <button type="button" onclick="post_connexion()"
                                 class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
                                 Connexion au compte
                             </button>
@@ -47,10 +47,10 @@
     </div>
     <script>
         function post_connexion(){
-            const regex = new RegExp("[a-z]{8,}");
+            const regex = new RegExp(".{8,}");
+            const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})*$");
             console.log(regex.test(document.getElementById("mdp").value));
-            if (regex.test(document.getElementById("email").value)){
-                console.log("post_connexion");
+            if (courriel_regex.test(document.getElementById("email").value) && regex.test(document.getElementById("mdp").value)){
                 const f = fetch("connexion", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json' },
@@ -65,7 +65,7 @@
                 }).catch((error) => {
                     console.error('Erreur:', error);
                 });
-            }
+            } else document.getElementById("message_negatif").textContent = "L'adresse courriel doit être valide et le mot de passe doit être plus de 8 caractères.";
         }
       </script>
     <%- include ("../partials/footer.ejs") %>
