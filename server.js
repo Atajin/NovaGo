@@ -273,9 +273,9 @@ async function demarrerServeur() {
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
                 if (resultUser.rows.length > 0) {
-                    if (req.session.email != email){
-                        const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
-                        if (mdp_valide) {
+                    const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
+                    if (mdp_valide) {
+                        if (req.session.email != email){
                             const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
                             const listePlanetes = await recupererPlanetes(connexion);
@@ -292,19 +292,19 @@ async function demarrerServeur() {
                                 await connexion.commit();
 
                                 updateLocals(req, res, () => {
-                                    return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
+                                    return res.status(201).send({ message_positif: "Connexion au compte effectuée avec succès!" });
                                 });
                             } else {
                                 res.status(404).send({ message_negatif: "Aucune planète liée à l'utilisateur." });
                             }
 
                         } else {
-                            // Le mot de passe est incorrect
-                            return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                            // Le compte est déjà connecté
+                            return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
                         }
                     } else {
-                        // Le compte est déjà connecté
-                        return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
+                        // Le mot de passe est incorrect
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
@@ -319,8 +319,10 @@ async function demarrerServeur() {
                             req.session.est_admin = true;
                             req.session.est_connecte = true;
                             req.session.planete_util = null;
+                            
+                            console.log("Session créée !");
                             updateLocals(req, res, () => {
-                                return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
+                                return res.status(201).send({ message_positif: "Connexion au compte admin effectuée avec succès!" });
                             });
                         } else {
                             // Le mot de passe est incorrect
