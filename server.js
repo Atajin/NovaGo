@@ -82,6 +82,9 @@ function updateLocals(req, res, next) {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
+    res.locals.planete_destination = req.body.selection_planete;
+    res.locals.message_positif = req.body.message_positif;
+    res.locals.message_negatif = req.body.message_negatif;
     next();
 }
 
@@ -170,6 +173,9 @@ app.use((req, res, next) => {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
+    res.locals.planete_destination = req.session.planete_destination;
+    res.locals.message_positif = req.session.message_positif;
+    res.locals.message_negatif = req.session.message_negatif;
     next();
 });
 
@@ -278,7 +284,6 @@ async function demarrerServeur() {
                         if (req.session.email != email){
                             const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
-                            const listePlanetes = await recupererPlanetes(connexion);
                             if (planeteResult.rows.length > 0) {
                                 //Ajout des informations nécessaires à la session
                                 req.session.email = email;
@@ -311,7 +316,6 @@ async function demarrerServeur() {
                     if (req.session.email != email){
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
-                            const listePlanetes = await recupererPlanetes(connexion);
                             //Ajout des informations nécessaires à la session
                             req.session.email = email;
                             req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
@@ -610,10 +614,10 @@ async function demarrerServeur() {
             POST du formulaire de la page d'exploration
         */
         .post(async (req, res) => {
-            const connexion = await getPool().getConnection();
-            const planetes_bd = await recupererPlanetes(connexion);
-            await connexion.close();
-            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: req.body.selection_planete });
+            updateLocals(req, res, () => {
+                req.session.planete_destination = req.body.selection_planete;
+                res.redirect('/');
+            });
         });
 
     app.route('/recu-billet')
