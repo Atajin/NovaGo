@@ -1,10 +1,10 @@
 <%- include ("../partials/header.ejs") %>
 <!--Champ d'affichage des erreurs lors de connexion-->
-<% if (typeof message_negatif !== 'undefined') { %>
-    <div class="custom-message-negatif">
-        <%= message_negatif %>
+    <div class="custom-message-negatif" id="message_negatif">
+        <% if (typeof message_negatif !== 'undefined') { %>
+            <%= message_negatif %>
+        <% } %>
     </div>
-    <% } %>
     
     <!--Affichage du nom de la page dans le titre du navigateur web-->
     <script>
@@ -22,53 +22,50 @@
                 <!--Titre de la page-->
                 <h1 class="custom-font-titles text-center">Connexion</h1>
 
-                        <!--Action complétée lors du submit de ce formulaire-->
-                        <form method="POST" action="/connexion">
-
                             <!--Champ d'entrée du courriel de l'utilisateur-->
                             <div class="row-md-auto">
                                 <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
                                 <br>
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Courriel"
-                                    minlength="8" maxlength="30" required>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
                             </div>
 
                             <!--Champ d'entrée du mot de passe de l'utilisateur-->
                             <div class="mb-3">
                                 <label for="mdp" class="form-label custom-font-labels">Entrez votre mot de passe</label>
                                 <br>
-                                <input type="password" id="mdp" name="mdp" class="form-control"
-                                    minlength="8" maxlength="30" placeholder="Mot de passe" required>
+                                <input type="password" id="mdp" name="mdp" class="form-control" placeholder="Mot de passe" required>
                             </div>
 
                             <!--Boutton submit pour se connecter à un compte-->
-                            <button type="submit"
-                                class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">Connexion
-                                au compte</button>
-                        </form>
+                            <button type="button" onclick="post_connexion()" href="deconnexion"
+                                class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
+                                Connexion au compte
+                            </button>
             </div>
             <div class="col"></div>
         </div>
     </div>
     <script>
-    function connexion(url, data, callback) {
-        var req = new XMLHttpRequest();
-        req.open("POST", url, true);
-        req.send(data);
-        req.onload = function(e) {
-          if (this.status == 200) { 
-            callback(e.responseText);  
-          }
-        };
-        const url = "/connexion";
         function post_connexion(){
-            const f = fetch(url, {
-                method: "POST"
-        });
-        };
-        f.then(function(res) {
-            return res.json();
-        });
-    }
+            const regex = new RegExp("[a-z]{8,}");
+            console.log(regex.test(document.getElementById("mdp").value));
+            if (regex.test(document.getElementById("email").value)){
+                console.log("post_connexion");
+                const f = fetch("connexion", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById("email").value,
+                        mdp: document.getElementById("mdp").value,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("message_negatif").textContent = data.message_negatif;
+                }).catch((error) => {
+                    console.error('Erreur:', error);
+                });
+            }
+        }
       </script>
     <%- include ("../partials/footer.ejs") %>
