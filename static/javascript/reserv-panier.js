@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let nombre_voyages = 0;
     let nombre_billets = 0;
     let nombre_argent = 0;
-    let lettreCodes = {}; // Tableau pour stocker les lettres pour chaque ID de voyage
 
     let voyagesTotal = document.getElementById('nombre_voyages');
     let billetsTotal = document.getElementById('nombre_billets');
@@ -38,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
     voyagesData.forEach(voyage => {
-        lettreCodes[voyage.ID_VOYAGE] = 'E'; // Initialisation de la lettre pour chaque ID de voyage
         const addBtns = document.querySelectorAll("#add_btn_" + voyage.ID_VOYAGE);
 
         addBtns.forEach(function (btn) {
@@ -51,7 +49,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 let existingElement = document.querySelector(".conteneur-panier #element_" + voyage.ID_VOYAGE + "_prix" + nouveauPrix);
 
                 if (!existingElement) {
-                    let voyageCode = "Code " + voyage.ID_VOYAGE + "." + lettreCodes[voyage.ID_VOYAGE]; // Utilisation de la lettre correspondante pour cet ID de voyage
+                    let voyageCode = ""; // Utilisation de la lettre correspondante
+                    if (voyage.PRIX_ECONO == nouveauPrix) {
+                        voyageCode = "Code " + voyage.ID_VOYAGE + ".E"; 
+                        console.log("Voyage ID: " + voyage.ID_VOYAGE + ", Prix Econo: " + voyage.PRIX_ECONO + ", Nouveau Prix: " + nouveauPrix);
+                    } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
+                        voyageCode = "Code " + voyage.ID_VOYAGE + ".A"; 
+                        console.log("Voyage ID: " + voyage.ID_VOYAGE + ", Prix Business: " + voyage.PRIX_BUSINESS + ", Nouveau Prix: " + nouveauPrix);
+                    }
 
                     nombre_voyages++;
                     voyagesTotal.textContent = nombre_voyages;
@@ -155,9 +160,6 @@ margin: 0;
                     DeleteVoyagesPanier(voyage.ID_VOYAGE, nouveauPrix);
                     AjouterCompteur(voyage.ID_VOYAGE, nouveauPrix);
                     RetirerCompteur(voyage.ID_VOYAGE, nouveauPrix);
-
-                    // Augmenter la lettre pour le prochain prix
-                    lettreCodes[voyage.ID_VOYAGE] = String.fromCharCode(lettreCodes[voyage.ID_VOYAGE].charCodeAt(0) - 4);
                 } else {
                     let input = existingElement.querySelector(".compteurInput" + voyage.ID_VOYAGE + "_prix" + nouveauPrix);
                     let valeur = parseInt(input.value);
@@ -192,11 +194,6 @@ margin: 0;
                 nombre_billets -= nbreBilletsVoyage;
                 billetsTotal.textContent = nombre_billets;
                 btn.closest('.rounded').remove();
-
-                // Si tous les conteneurs pour cet ID de voyage ont été supprimés, réinitialiser la lettre à "A"
-                if (!document.querySelector(".conteneur-panier #element_" + id)) {
-                    lettreCodes[id] = 'E';
-                }
             });
         });
     }
