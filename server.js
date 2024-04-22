@@ -308,26 +308,31 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
-                    const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
-                    if (mdp_valide) {
-                        const listePlanetes = await recupererPlanetes(connexion);
-                        //Ajout des informations nécessaires à la session
-                        req.session.email = email;
-                        req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
-                        req.session.est_connecte = req.session.email && req.session.mdp;
-                        req.session.est_admin = true;
-                        req.session.est_connecte = true;
-                        req.session.planete_util = null;
-                        updateLocals(req, res, () => {
-                            return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
-                        });
+                    if (req.session.email != email){
+                        const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
+                        if (mdp_valide) {
+                            const listePlanetes = await recupererPlanetes(connexion);
+                            //Ajout des informations nécessaires à la session
+                            req.session.email = email;
+                            req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
+                            req.session.est_connecte = req.session.email && req.session.mdp;
+                            req.session.est_admin = true;
+                            req.session.est_connecte = true;
+                            req.session.planete_util = null;
+                            updateLocals(req, res, () => {
+                                return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
+                            });
+                        } else {
+                            // Le mot de passe est incorrect
+                            return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        }
                     } else {
-                        // Le mot de passe est incorrect
-                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        // Le compte est déjà connecté
+                        return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
                     }
-                } else {
+                }   else {
                     // L'utilisateur n'existe pas
-                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });                    
                 }
             } catch (err) {
                 console.error(err);
