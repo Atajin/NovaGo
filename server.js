@@ -324,7 +324,8 @@ async function demarrerServeur() {
                             req.session.est_admin = true;
                             req.session.est_connecte = true;
                             req.session.planete_util = null;
-                            
+                            req.session.message_positif = "Connexion au compte effectuée avec succès!";
+
                             console.log("Session créée !");
                             updateLocals(req, res, () => {
                                 return res.status(201).send({ message_positif: "Connexion au compte admin effectuée avec succès!" });
@@ -478,8 +479,11 @@ async function demarrerServeur() {
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.planete_util = planete;
+                        req.session.message_positif = "Compte créé avec succès!";
 
-                        return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id });
+                        updateLocals(req, res, () => {
+                            res.redirect('/');
+                        });
 
                     } catch (err) {
                         console.error(err);
