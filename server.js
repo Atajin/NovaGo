@@ -755,9 +755,9 @@ async function demarrerServeur() {
     app.post('/administrateur/mettreAJour', async (req, res) => {
         const { tableName, sqlRowIndex, data } = req.body;
 
-        console.log("Requête de mise à jour reçue:", req.body);
-
         try {
+            console.log("Requête de mise à jour reçue:", req.body);
+
             const connexion = await getPool().getConnection();
 
             let partiesClause = [];
@@ -780,6 +780,43 @@ async function demarrerServeur() {
         } catch (err) {
             console.error('Erreur lors de la mise à jour:', err);
             res.status(500).json({ success: false, message: 'Erreur lors de la mise à jour.' });
+        }
+    });
+
+    app.post('/administrateur/ajouter', async (req, res) => {
+        const { tableName, data } = req.body;
+
+        try {
+            console.log("Requête d'insertion reçue':", req.body);
+            
+            const connexion = await getPool().getConnection();
+
+            let partiesClauseCles = [];
+            let partiesClauseValeurs = [];
+
+            for (const [key, value] of Object.entries(data)) {
+                partiesClauseCles.push(`${key}`);
+                partiesClauseValeurs.push(`:${key}`);
+            }
+            let clauseInsertionCles = partiesClauseCles.join(', ');
+            let clauseInsertionValeurs = partiesClauseValeurs.join(', ');
+
+            console.log("Clés de la clause d'insertion:", clauseInsertionCles);
+            
+            console.log("Valeurs de la clause d'insertion:", clauseInsertionValeurs);
+
+            const sqlQuery = `INSERT INTO ${tableName} (${clauseInsertionCles}) VALUES (${clauseInsertionValeurs})`;
+
+            console.log("SQL query:", sqlQuery);
+
+            await connexion.execute(sqlQuery, { ...data}, { autoCommit: true });
+
+            await connexion.close();
+
+            res.json({ success: true, message: 'Insertion réussie.' });
+        } catch (err) {
+            console.error("Erreur lors de l'insertion", err);
+            res.status(500).json({ success: false, message: "Erreur lors de l'insertion." });
         }
     });
 
