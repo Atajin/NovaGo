@@ -292,6 +292,7 @@ async function demarrerServeur() {
                                 req.session.est_admin = false;
                                 const planeteID = Number(planeteResult.rows[0]);
                                 req.session.planete_util = planeteID;
+                                req.session.message_positif = "Connexion au compte effectuée avec succès!";
 
                                 creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
                                 await connexion.commit();
