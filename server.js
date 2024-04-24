@@ -83,7 +83,7 @@ function updateLocals(req, res, next) {
         res.locals.est_connecte = req.session.email && req.session.mdp;
         res.locals.est_admin = req.session.est_admin;
         res.locals.planete_origine = req.session.planete_util;
-        res.locals.planete_destination = req.session.selection_planete;
+        res.locals.planete_destination = req.session.planete_destination;
         res.locals.message_positif = req.session.message_positif;
         res.locals.message_negatif = req.session.message_negatif;
     } else {
@@ -227,6 +227,9 @@ async function demarrerServeur() {
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
 
+                /*if (!req.session.message_positif && req.session.message_positif != ""){
+                    req.session.message_positif = "Déconnexion réussie!"
+                }*/
                 const message_positif = req.session.message_positif;
                 req.session.message_positif = "";
                 // Passer les données obtenues au moteur de rendu
@@ -325,7 +328,7 @@ async function demarrerServeur() {
                         }
                     } else {
                         // Le mot de passe est incorrect
-                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
@@ -347,7 +350,7 @@ async function demarrerServeur() {
                             });
                         } else {
                             // Le mot de passe est incorrect
-                            return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                            return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                         }
                     } else {
                         // Le compte est déjà connecté
@@ -355,7 +358,7 @@ async function demarrerServeur() {
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
@@ -599,12 +602,10 @@ async function demarrerServeur() {
     app.route('/confirmer-transaction')
 
         .post(async (req, res) => {
-            const montantArgents = req.body.montantArgents;
-            const nombreTotalBillets = req.body.nombreBillets;
+            const panierData = req.body.panierData;
             const prixEtBillets = req.body.prixEtBillets;
             // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
-            console.log('Montant d\'argents reçu :', montantArgents);
-            console.log(nombreTotalBillets);
+            console.log(panierData);
             console.log(prixEtBillets);
             // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
             res.sendStatus(200);
@@ -634,8 +635,8 @@ async function demarrerServeur() {
             POST du formulaire de la page d'exploration
         */
         .post(async (req, res) => {
+            req.session.planete_destination = req.body.selection_planete;
             updateLocals(req, res, () => {
-                req.session.planete_destination = req.body.selection_planete;
                 res.redirect('/');
             });
         });
