@@ -12,6 +12,7 @@ import dateFormat from "dateformat";
 import bcrypt from "bcrypt";
 import { connect } from "http2";
 import Stripe from 'stripe';
+import { error } from "console";
 
 const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
@@ -79,7 +80,11 @@ function getPool() {
 }
 
 function updateLocals(req, res, next) {
+<<<<<<< HEAD
     if (req.session){
+=======
+    if (req.session) {
+>>>>>>> Felix
         res.locals.est_connecte = req.session.email && req.session.mdp;
         res.locals.est_admin = req.session.est_admin;
         res.locals.planete_origine = req.session.planete_util;
@@ -242,12 +247,16 @@ async function demarrerServeur() {
             }
         })
 
+        // AFFICHE UNE ERREUR LORS DU DÉMARRAGE DU SERVEUR!!!!
         .post(async (req, res) => {
-            let reservation;
             const { planete_origine, planete_destination, dateDepart, nombrePersonnes } = req.body;
-            const voyageDispo = await requeteBD(planete_origine, planete_destination, dateDepart, nombrePersonnes);
-            //pour tester si le post en tant que tel fonctionnait (*NE FONCTIONNE PAS*)
-            //res.render('pages/reservation', { voyageDispo });
+
+            // Validation d'aucun champ vide
+            if (!planete_origine || !planete_destination || !dateDepart || !nombrePersonnes) {
+                return res.render('pages/reservation.ejs', { error: 'Veuillez remplir tous les champs requis' })
+            }
+
+            res.render('pages/reservation.ejs', { rechercheData: { planete_origine, planete_destination, dateDepart, nombrePersonnes } });
         });
 
 
@@ -296,7 +305,11 @@ async function demarrerServeur() {
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
+<<<<<<< HEAD
                         if (req.session.email != email){
+=======
+                        if (req.session.email != email) {
+>>>>>>> Felix
                             const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
                             if (planeteResult.rows.length > 0) {
@@ -329,7 +342,11 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
+<<<<<<< HEAD
                     if (req.session.email != email){
+=======
+                    if (req.session.email != email) {
+>>>>>>> Felix
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
                             //Ajout des informations nécessaires à la session
@@ -355,7 +372,11 @@ async function demarrerServeur() {
                     }
                 }   else {
                     // L'utilisateur n'existe pas
+<<<<<<< HEAD
                     return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });                    
+=======
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+>>>>>>> Felix
                 }
             } catch (err) {
                 console.error(err);
@@ -600,7 +621,11 @@ async function demarrerServeur() {
 
         .post(async (req, res) => {
             const montantArgents = req.body.montantArgents;
+<<<<<<< HEAD
             const nombreTotalBillets =  req.body.nombreBillets;
+=======
+            const nombreTotalBillets = req.body.nombreBillets;
+>>>>>>> Felix
             const prixEtBillets = req.body.prixEtBillets;
             // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
             console.log('Montant d\'argents reçu :', montantArgents);
