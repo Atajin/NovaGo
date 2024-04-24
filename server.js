@@ -86,6 +86,10 @@ function updateLocals(req, res, next) {
         res.locals.planete_destination = req.session.planete_destination;
         res.locals.message_positif = req.session.message_positif;
         res.locals.message_negatif = req.session.message_negatif;
+        
+        res.locals.date_aller = req.session.date_aller;
+        res.locals.date_retour = req.session.date_retour;
+        res.locals.personnes = req.session.personnes;
     } else {
         res.locals.est_connecte = false;
         res.locals.est_admin = false;
@@ -93,6 +97,9 @@ function updateLocals(req, res, next) {
         res.locals.planete_destination = null;
         res.locals.message_positif = "";
         res.locals.message_negatif = "";
+        res.locals.personnes = 0;
+        res.locals.date_aller = null;
+        res.locals.date_retour = null;
     }
     next();
 }
@@ -120,12 +127,21 @@ async function recupererPlanetes(connexion) {
 
 async function recupererVoyages(connection, rechercheData) {
     const voyageResult = await connection.execute(
-        `SELECT * FROM voyage WHERE origine = :origine`,
+        `SELECT * FROM voyage WHERE planete_id_planete = :origine`,
         { origine: rechercheData.planetOrigine },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     await connection.close();
     return voyageResult;
+}
+
+async function chercherNomPlaneteParId(connection, planetID) {
+    const planetResult = await connection.execute(
+        `SELECT * FROM PLANETE WHERE id_planete = :planetID`,
+        { planetID: planetID },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    return planetResult;
 }
 
 async function obtenirDonneesPlaneteParId(connection, planetID) {
@@ -246,24 +262,15 @@ async function demarrerServeur() {
         })
 
         .post(async (req, res) => {
-            const planeteOrigine = req.body.planete_origine;
-            const planeteDestination = req.body.planete_destination;
-            const dateDepart = req.body.date-aller;
-            const dateRetour =  req.body.date-retour;
-            const personnes = req.body.personnes;
+            req.session.planete_util = req.body.planete_origine;
+            req.session.planete_destination = req.body.planete_destination;
+            req.session.personnes = req.body.personnes;
+            req.session.date_aller = req.body.date_aller;
+            req.session.date_retour = req.body.date_retour;
 
-            const rechercheData = {
-                planetOrigine: planeteOrigine,
-                planetDestination: planeteDestination,
-                dateDepart: dateDepart,
-                dateRetour: dateRetour,
-                nombrePersonnes:  personnes
-            };
-
-            /** 
-            res.render('pages/reservation', {
-                rechercheData: rechercheData,
-            });*/
+            updateLocals(req, res, () => {
+                res.redirect('/reservation');
+            });
         });
 
 
@@ -552,12 +559,11 @@ async function demarrerServeur() {
                     );
 
                     const rechercheData = {
-                        planetOrigine: "Terre",
-                        planetDestination: "Mars",
-                        dateDepart: "2024-02-24",
-                        dateRetour: "2024-02-27",
-                        nombrePersonnes: 2,
-                        typeBillet: ""
+                        planetOrigine: req.session.planete_util,
+                        planetDestination: req.session.planete_destination,
+                        dateDepart: req.session.date_aller,
+                        dateRetour: req.session.date_retour,
+                        nombrePersonnes: req.session.personnes
                     };
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants

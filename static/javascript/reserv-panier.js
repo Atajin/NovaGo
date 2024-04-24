@@ -54,10 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     let voyageCode = ""; // Utilisation de la lettre correspondante
                     if (voyage.PRIX_ECONO == nouveauPrix) {
                         voyageCode = "Code " + voyage.ID_VOYAGE + ".E"; 
-                        dataPanier.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "economie", quantiteBillet: 1});
+                        dataPanier.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "economique", quantiteBillet: 1});
                     } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
                         voyageCode = "Code " + voyage.ID_VOYAGE + ".A"; 
-                        dataPanier.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaire", quantiteBillet: 1});
+                        dataPanier.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaires", quantiteBillet: 1});
                     }
             
                     nombre_voyages++;
@@ -163,7 +163,7 @@ margin: 0;
                     AjouterCompteur(voyage, nouveauPrix);
                     RetirerCompteur(voyage, nouveauPrix);
                 } else {
-                    let input = existingElement.querySelector(".compteurInput" + voyage.ID_VOYAGE + "_prix" + nouveauPrix);
+                    let input = existingElement.querySelector(".compteurInput" + vaffairesoyage.ID_VOYAGE + "_prix" + nouveauPrix);
                     let valeur = parseInt(input.value);
                     input.value = valeur + 1;
 
@@ -174,9 +174,9 @@ margin: 0;
                     updatePrixEtBillets(nouveauPrix, valeur + 1);
 
                     if (voyage.PRIX_ECONO == nouveauPrix) { 
-                        updateBillets(voyage.ID_VOYAGE, "economie", valeur + 1);
+                        updateBillets(voyage.ID_VOYAGE, "economique", valeur + 1);
                     } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
-                        updateBillets(voyage.ID_VOYAGE, "affaire", valeur + 1)
+                        updateBillets(voyage.ID_VOYAGE, "affaires", valeur + 1)
                     }  
 
                     nombre_argent += nouveauPrix;
@@ -194,9 +194,9 @@ margin: 0;
                 // Supprimer les informations correspondantes de prixEtBillets
                 prixEtBillets = prixEtBillets.filter(item => !(item.prix === prix && item.billets === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
                 if (voyage.PRIX_ECONO == prix) { 
-                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "economie" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
+                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "economique" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
                 } else if (voyage.PRIX_BUSINESS == prix) {
-                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "affaire" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
+                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "affaires" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
                 }  
                 let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value);
                 let prixVoyage = parseInt(document.getElementById("prix_voyage_" + voyage.ID_VOYAGE + "_prix" + prix).textContent);
@@ -227,9 +227,9 @@ margin: 0;
                 updatePrixEtBillets(prix, valeur + 1);
 
                 if (voyage.PRIX_ECONO == prix) { 
-                    updateBillets(voyage.ID_VOYAGE, "economie", valeur + 1);
+                    updateBillets(voyage.ID_VOYAGE, "economique", valeur + 1);
                 } else if (voyage.PRIX_BUSINESS == prix) {
-                    updateBillets(voyage.ID_VOYAGE, "affaire", valeur + 1)
+                    updateBillets(voyage.ID_VOYAGE, "affaires", valeur + 1)
                 }  
             });
         });
@@ -252,9 +252,9 @@ margin: 0;
                     updatePrixEtBillets(prix, valeur - 1);
 
                     if (voyage.PRIX_ECONO == prix) { 
-                        updateBillets(voyage.ID_VOYAGE, "economie", valeur - 1);
+                        updateBillets(voyage.ID_VOYAGE, "economique", valeur - 1);
                     } else if (voyage.PRIX_BUSINESS == prix) {
-                        updateBillets(voyage.ID_VOYAGE, "affaire", valeur - 1)
+                        updateBillets(voyage.ID_VOYAGE, "affaires", valeur - 1)
                     }  
                 }
             });
