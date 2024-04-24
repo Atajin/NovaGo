@@ -86,7 +86,7 @@ function updateLocals(req, res, next) {
         res.locals.planete_destination = req.session.planete_destination;
         res.locals.message_positif = req.session.message_positif;
         res.locals.message_negatif = req.session.message_negatif;
-        
+
         res.locals.date_aller = req.session.date_aller;
         res.locals.date_retour = req.session.date_retour;
         res.locals.personnes = req.session.personnes;
@@ -693,56 +693,58 @@ async function demarrerServeur() {
         try {
             let panier = [];
             for (let i = 0; i < dataPanier.length; i++) {
-                let products = await stripe.products.list();
+                let found = false;
 
-                let lignePanier = products.data.filter(product =>
-                    product.metadata.id_voyage_db === dataPanier[i].idVoyage.toString() &&
-                    product.metadata.classe_voyage === dataPanier[i].classeVoyage
-                );
 
-                console.log(`Filtered products for item ${i}:`, lignePanier);
+                for await (const product of stripe.products.list({ limit: 100 })) {
+                    if (product.metadata.id_voyage_db === dataPanier[i].idVoyage.toString() &&
+                        product.metadata.classe_voyage === dataPanier[i].classeVoyage) {
+                        let quantiteBillet = dataPanier[i].quantiteBillet;
+                        let prix = await stripe.prices.list({ product: product.id });
 
-                if (lignePanier.length > 0) {
-                    let billet = lignePanier[0];
-                    let quantiteBillet = dataPanier[i].quantiteBillet;
-                    let prix = await stripe.prices.list({ product: billet.id })
-                    let idPrix;
+                        if (prix.data.length > 0) {
+                            let item = {
+                                price: prix.data[0].id,
+                                quantity: quantiteBillet
+                            };
 
-                    if (prix.data.length > 0) {
-                        idPrix = prix.data[0].id;
+                            panier.push(item);
+                            found = true;
+                            break;
+                        }
                     }
+                }
 
-                    let item = {
-                        price: idPrix,
-                        quantity: quantiteBillet
-                    };
-
-                    panier.push(item);
+                if (!found) {
+                    console.log(`Aucun résultat pour l'item ${i} avec ID voyage: ${dataPanier[i].idVoyage} et classe: ${dataPanier[i].classeVoyage}`);
                 }
             }
-            console.log("Panier:", panier);
+
+            if (panier.length === 0) {
+                console.error("Le panier est vide. La session de checkout ne peut pas être ouverte.");
+                res.status(400).send("Le panier est vide. La session de checkout ne peut pas être ouverte.");
+                return;
+            }
+
             // Créer la session de paiement Stripe
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: 'http://localhost:4000/succes?session_id={CHECKOUT_SESSION_ID}',
+                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: 'http://localhost:4000/reservation',
             });
 
-            res.redirect(303, session.url);
+            return res.json({ url: session.url });
         } catch (err) {
-            console.error(err);
+            console.error('Erreur checkout Stripe:', err);
             res.status(500).send("Erreur lors de la création de la session de paiement");
         }
     });
 
-    app.get('/succes', (req, res) => {
-        // À compléter (logique de gestion du succès de paiement)
-        // Récupérer session_id de la requête pour récupérer des détails sur la session
+    app.get('/success', (req, res) => {
         const sessionId = req.query.session_id;
-        // Traiter la session de paiement réussie
-        res.render('success', { sessionId: sessionId });
+        res.render('pages/success', { sessionId: sessionId });
     });
 
     app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
