@@ -243,6 +243,7 @@ async function demarrerServeur() {
             }
         })
 
+        // AFFICHE UNE ERREUR LORS DU DÉMARRAGE DU SERVEUR!!!
         .post(async (req, res) => {
             const { planete_origine, planete_destination, dateDepart, nombrePersonnes } = req.body;
 
