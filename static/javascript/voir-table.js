@@ -223,6 +223,7 @@ function gestionAjouter() {
             newCell.setAttribute('data-column-name', nomColonne);
             newCell.innerHTML = sqlRowIndex;
         } else {
+            newCell.setAttribute('data-column-name', nomColonne);
             newCell.innerHTML = '<input type="text" class="form-control">';
         }
     }
