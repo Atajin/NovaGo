@@ -248,8 +248,8 @@ async function demarrerServeur() {
         .post(async (req, res) => {
             const planeteOrigine = req.body.planete_origine;
             const planeteDestination = req.body.planete_destination;
-            const dateDepart = req.body.date-aller;
-            const dateRetour =  req.body.date-retour;
+            const dateDepart = req.body.date - aller;
+            const dateRetour = req.body.date - retour;
             const personnes = req.body.personnes;
 
             const rechercheData = {
@@ -257,7 +257,7 @@ async function demarrerServeur() {
                 planetDestination: planeteDestination,
                 dateDepart: dateDepart,
                 dateRetour: dateRetour,
-                nombrePersonnes:  personnes
+                nombrePersonnes: personnes
             };
 
             /** 
@@ -696,14 +696,19 @@ async function demarrerServeur() {
         try {
             let panier = [];
             for (let i = 0; i < dataPanier.length; i++) {
-                let lignePanier = await stripe.products.list({
-                    metadata: { id_voyage_db: dataPanier[i].idVoyage.toString(), classe_voyage: dataPanier[i].classeVoyage }
-                });
+                let products = await stripe.products.list();
 
-                if (lignePanier.data.length > 0) {
-                    let billet = lignePanier.data[0];
+                let lignePanier = products.data.filter(product =>
+                    product.metadata.id_voyage_db === dataPanier[i].idVoyage.toString() &&
+                    product.metadata.classe_voyage === dataPanier[i].classeVoyage
+                );
+
+                console.log(`Filtered products for item ${i}:`, lignePanier);
+
+                if (lignePanier.length > 0) {
+                    let billet = lignePanier[0];
                     let quantiteBillet = dataPanier[i].quantiteBillet;
-                    let prix = await stripe.prices.list({ product: billet.data[0].id })
+                    let prix = await stripe.prices.list({ product: billet.id })
                     let idPrix;
 
                     if (prix.data.length > 0) {
@@ -718,14 +723,14 @@ async function demarrerServeur() {
                     panier.push(item);
                 }
             }
-
+            console.log("Panier:", panier);
             // Créer la session de paiement Stripe
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: '/success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url: '/reservation',
+                success_url: 'http://localhost:4000/succes?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url: 'http://localhost:4000/reservation',
             });
 
             res.redirect(303, session.url);
@@ -735,12 +740,12 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/success', (req, res) => {
+    app.get('/succes', (req, res) => {
         // À compléter (logique de gestion du succès de paiement)
         // Récupérer session_id de la requête pour récupérer des détails sur la session
         const sessionId = req.query.session_id;
         // Traiter la session de paiement réussie
-        res.send("Paiement réussi !");
+        res.render('success', { sessionId: sessionId });
     });
 
     app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
