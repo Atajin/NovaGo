@@ -328,7 +328,7 @@ async function demarrerServeur() {
                         }
                     } else {
                         // Le mot de passe est incorrect
-                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
@@ -350,7 +350,7 @@ async function demarrerServeur() {
                             });
                         } else {
                             // Le mot de passe est incorrect
-                            return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                            return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                         }
                     } else {
                         // Le compte est déjà connecté
@@ -358,7 +358,7 @@ async function demarrerServeur() {
                     }
                 }   else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });                    
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });                    
                 }
             } catch (err) {
                 console.error(err);
