@@ -246,11 +246,24 @@ async function demarrerServeur() {
         })
 
         .post(async (req, res) => {
-            let reservation;
-            const { planete_origine, planete_destination, dateDepart, nombrePersonnes } = req.body;
-            const voyageDispo = await requeteBD(planete_origine, planete_destination, dateDepart, nombrePersonnes);
-            //pour tester si le post en tant que tel fonctionnait (*NE FONCTIONNE PAS*)
-            //res.render('pages/reservation', { voyageDispo });
+            const planeteOrigine = req.body.planete_origine;
+            const planeteDestination = req.body.planete_destination;
+            const dateDepart = req.body.date-aller;
+            const dateRetour =  req.body.date-retour;
+            const personnes = req.body.personnes;
+
+            const rechercheData = {
+                planetOrigine: planeteOrigine,
+                planetDestination: planeteDestination,
+                dateDepart: dateDepart,
+                dateRetour: dateRetour,
+                nombrePersonnes:  personnes
+            };
+
+            /** 
+            res.render('pages/reservation', {
+                rechercheData: rechercheData,
+            });*/
         });
 
 
