@@ -11,29 +11,30 @@ document.addEventListener("DOMContentLoaded", function () {
     montantTotal.textContent = nombre_argent + "$";
 
     let prixEtBillets = []; // Tableau pour stocker les prix de voyage et le nombre total de billets
-    let panierData = [];
+    let dataPanier = [];
 
     document.getElementById('confirmer-btn').addEventListener('click', function () {
-        const montantArgents = document.getElementById('nombre_argents').textContent;
-        const nombreBillets = document.getElementById('nombre_billets').textContent;
-    
         // Utiliser AJAX pour envoyer les données au serveur
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/confirmer-transaction', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                // Le serveur a répondu avec succès
-                console.log('Confirmation réussie !');
-                // Vous pouvez effectuer d'autres actions après confirmation réussie ici
-            } else {
-                // Gérer les erreurs ou les réponses du serveur ici
-                console.error('Erreur lors de la confirmation !');
-            }
-        };
-    
-        // Envoyer les données au serveur sous forme JSON
-        xhr.send(JSON.stringify({ panierData: panierData, prixEtBillets: prixEtBillets }));
+        fetch('/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                dataPanier: dataPanier
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Succès:', data.message);
+                } else {
+                    console.error('Erreur lors de la transaction:', data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Erreur:', error);
+            });
     });
     
 
@@ -53,10 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     let voyageCode = ""; // Utilisation de la lettre correspondante
                     if (voyage.PRIX_ECONO == nouveauPrix) {
                         voyageCode = "Code " + voyage.ID_VOYAGE + ".E"; 
-                        panierData.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "economie", quantiteBillet: 1});
+                        dataPanier.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "economie", quantiteBillet: 1});
                     } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
                         voyageCode = "Code " + voyage.ID_VOYAGE + ".A"; 
-                        panierData.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaire", quantiteBillet: 1});
+                        dataPanier.push({idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaire", quantiteBillet: 1});
                     }
             
                     nombre_voyages++;
@@ -193,9 +194,9 @@ margin: 0;
                 // Supprimer les informations correspondantes de prixEtBillets
                 prixEtBillets = prixEtBillets.filter(item => !(item.prix === prix && item.billets === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
                 if (voyage.PRIX_ECONO == prix) { 
-                    panierData = panierData.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "economie" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
+                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "economie" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
                 } else if (voyage.PRIX_BUSINESS == prix) {
-                    panierData = panierData.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "affaire" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
+                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "affaire" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
                 }  
                 let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value);
                 let prixVoyage = parseInt(document.getElementById("prix_voyage_" + voyage.ID_VOYAGE + "_prix" + prix).textContent);
@@ -270,11 +271,11 @@ margin: 0;
     }
 
     function updateBillets(id, classe, billets) {
-        const existingIDClasseIndex = panierData.findIndex(item => item.idVoyage === id && item.classeVoyage === classe);
+        const existingIDClasseIndex = dataPanier.findIndex(item => item.idVoyage === id && item.classeVoyage === classe);
         if (existingIDClasseIndex !== -1) {
-            panierData[existingIDClasseIndex].quantiteBillet = billets;
+            dataPanier[existingIDClasseIndex].quantiteBillet = billets;
         } else {
-            panierData.push({ idVoyage: id, classeVoyage: classe, quantiteBillet: billets });
+            dataPanier.push({ idVoyage: id, classeVoyage: classe, quantiteBillet: billets });
         }
     }
 });

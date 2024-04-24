@@ -608,22 +608,6 @@ async function demarrerServeur() {
             }
         });
 
-    /*
-        Confirmer la transaction de la page reservation
-    */
-
-    app.route('/confirmer-transaction')
-
-        .post(async (req, res) => {
-            const panierData = req.body.panierData;
-            const prixEtBillets = req.body.prixEtBillets;
-            // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
-            console.log(panierData);
-            console.log(prixEtBillets);
-            // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
-            res.sendStatus(200);
-        });
-
     app.route('/exploration')
         /*
             Accès à la page d'exploration
@@ -707,6 +691,7 @@ async function demarrerServeur() {
 
     app.post('/checkout', async (req, res) => {
         const { dataPanier } = req.body;
+        console.log(dataPanier);
 
         try {
             let panier = [];
