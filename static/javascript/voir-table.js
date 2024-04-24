@@ -1,55 +1,75 @@
 const titrePage = document.getElementById('titrePage').innerText;
 const tableName = titrePage.split(': ')[1];
 
+window.addEventListener('resize', setTailleBoutonAjouter);
+
 function attacherEcouteurs() {
     const tbody = document.querySelector('table tbody');
     tbody.addEventListener('click', gestionBouton);
-}
 
-function setTailleBoutonAjouter() {
-    const boutonModifier = document.querySelector('.btn-modifier');
-    const largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
     const boutonAjouter = document.querySelector('.btn-ajouter');
-
-    boutonAjouter.style.width = largeurBoutonModifier;
-}
-
-function alignerBoutonAjouter() {
-    const boutonModifier = document.querySelector('.btn-modifier');
-    const boutonAjouter = document.querySelector('.btn-ajouter');
-
-    if (boutonModifier && boutonAjouter) {
-        const boutonModifierDroite = boutonModifier.getBoundingClientRect().right;
-        const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
-
-        const ajustementMarge = boutonAjouterDroite - boutonModifierDroite;
-        boutonAjouter.style.marginRight = `${ajustementMarge}px`;
+    if (boutonAjouter) {
+        boutonAjouter.addEventListener('click', gestionAjouter);
     }
 }
 
 function gestionBouton(event) {
-    const button = event.target;
-    const rowIndex = button.getAttribute('data-index');
+    const button = event.target.closest('button');
+    if (!button) return;
+
     if (button.classList.contains('btn-modifier')) {
         gestionModifier.call(button);
     } else if (button.classList.contains('btn-supprimer')) {
         gestionSupprimer.call(button);
-    } else if (button.classList.contains('btn-confirmer')) {
-        gestionConfirmer.call(button);
+    } else if (button.classList.contains('btn-confirmer-modification')) {
+        gestionConfirmerModification.call(button, event);
     } else if (button.classList.contains('btn-annuler')) {
         gestionAnnuler.call(button);
+    } else if (button.classList.contains('btn-confirmer-ajout')) {
+        gestionConfirmerAjout.call(button, event);
     }
 }
 
-/*function ajouterGestionnairesEvenements() {
-    document.querySelectorAll('.btn-modifier').forEach(button => {
-        button.addEventListener('click', gestionModifier);
-    });
- 
-    document.querySelectorAll('.btn-supprimer').forEach(button => {
-        button.addEventListener('click', gestionSupprimer);
-    });
-}*/
+function getNomColonne(tableElement, cellIndex) {
+    let headerRow = tableElement.rows[0];
+
+    headerCell = headerRow.cells[cellIndex];
+
+    return headerCell.innerText;
+}
+
+function setTailleBoutonAjouter() {
+    const boutonModifier = document.querySelector('.btn-modifier');
+    if (boutonModifier) {
+        const largeurBoutonModifier = window.getComputedStyle(boutonModifier).width;
+        const boutonAjouter = document.querySelector('.btn-ajouter');
+        if (boutonAjouter) {
+            boutonAjouter.style.width = largeurBoutonModifier;
+        }
+    }
+}
+
+function alignerBoutonAjouter() {
+    const boutonModifier = document.querySelector('.btn-modifier');
+    if (boutonModifier) {
+        const boutonModifierDroite = boutonModifier.getBoundingClientRect().right;
+        const boutonAjouter = document.querySelector('.btn-ajouter');
+        const viewportWidth = window.innerWidth;
+
+        if (boutonAjouter) {
+            const boutonAjouterDroite = boutonAjouter.getBoundingClientRect().right;
+            if (viewportWidth > boutonModifierDroite) {
+                const ajustementDroite = boutonAjouterDroite - boutonModifierDroite;
+                console.log("Adjustment Margin for marginRight: " + ajustementDroite);
+                boutonAjouter.style.marginRight = `${ajustementDroite}px`;
+            } else {
+                const ajustementDroite = 8;
+                console.log("Adjustment Margin for right: " + ajustementDroite);
+                boutonAjouter.style.marginRight = `${ajustementDroite}px`;
+            }
+        }
+    }
+}
 
 function gestionModifier() {
     const rowIndex = this.getAttribute('data-index');
@@ -65,12 +85,12 @@ function gestionModifier() {
     const buttonsCell = row.querySelector('td:last-child');
     buttonsCell.innerHTML = `
     <div class="d-grid gap-2">
-        <button type="button" class="btn btn-success btn-confirmer" data-index="${rowIndex}">Confirmer</button>
+        <button type="button" class="btn btn-success btn-confirmer-modification" data-index="${rowIndex}">Confirmer</button>
         <button type="button" class="btn btn-secondary btn-annuler" data-index="${rowIndex}">Annuler</button>
     </div>
     `;
 
-    buttonsCell.querySelector('.btn-confirmer').addEventListener('click', gestionConfirmer);
+    buttonsCell.querySelector('.btn-confirmer-modification').addEventListener('click', gestionConfirmerModification);
     buttonsCell.querySelector('.btn-annuler').addEventListener('click', gestionAnnuler);
 }
 
@@ -92,10 +112,10 @@ function gestionAnnuler() {
         </div>
     `;
 
-    ajouterGestionnairesEvenements();
 }
 
-function gestionConfirmer() {
+function gestionConfirmerModification(event) {
+    event.stopPropagation();
     const rowIndex = this.getAttribute('data-index');
     const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`);
     const dataCells = row.querySelectorAll('td:not(:last-child) input.form-control');
@@ -137,9 +157,8 @@ function gestionConfirmer() {
                     <button type="button" class="btn btn-primary btn-modifier" data-index="${rowIndex}">Modifier</button>
                     <button type="button" class="btn btn-danger btn-supprimer" data-index="${rowIndex}">Supprimer</button>
                 </div>
-            `;
+                `;
 
-                ajouterGestionnairesEvenements();
             } else {
                 console.error('Erreur lors de la mise à jour:', data.message);
             }
@@ -184,8 +203,94 @@ function gestionSupprimer() {
         });
 }
 
+function gestionAjouter() {
+    const table = document.getElementById("dbTable");
+    const lastRow = table.rows[table.rows.length - 1];
+    const nextRowIndex = parseInt(lastRow.getAttribute('data-row-index'), 10) + 1;
+
+    const newRow = table.insertRow(1);
+    newRow.setAttribute('data-row-index', nextRowIndex);
+
+    const nbCells = table.rows.length > 0 ? table.rows[2].cells.length : 0;
+
+    for (let i = 0; i < nbCells - 1; i++) {
+        let newCell = newRow.insertCell(i);
+        let nomColonne = getNomColonne(table, i);
+
+        if (nomColonne.includes("ID_")) {
+            sqlRowIndex = nextRowIndex + 1;
+            newCell.setAttribute('class', 'wrap-text');
+            newCell.setAttribute('data-column-name', nomColonne);
+            newCell.innerHTML = sqlRowIndex;
+        } else {
+            newCell.setAttribute('data-column-name', nomColonne);
+            newCell.innerHTML = '<input type="text" class="form-control">';
+        }
+    }
+
+
+    let buttonsCell = newRow.insertCell(nbCells - 1);
+    buttonsCell.innerHTML = `
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-primary btn-confirmer-ajout" data-index="${nextRowIndex}">Confirmer</button>
+        <button type="button" class="btn btn-danger btn-supprimer" data-index="${nextRowIndex}">Supprimer</button>
+    </div>
+    `;
+}
+
+function gestionConfirmerAjout(event) {
+    event.stopPropagation();
+    const rowIndex = this.getAttribute('data-index');
+    const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`);
+    const dataCells = row.querySelectorAll('td:not(:last-child) input.form-control');
+
+    let dataInsert = {};
+    dataCells.forEach((input) => {
+        let nomColonne = input.closest('td').getAttribute('data-column-name');
+        let valeur = input.value;
+        if (!nomColonne.includes("ID_")) {
+            dataInsert[nomColonne] = valeur;
+        }
+    });
+
+    fetch('/administrateur/ajouter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            tableName: tableName,
+            data: dataInsert,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Succès:', data.message);
+
+                dataCells.forEach((input) => {
+                    const newValue = input.value;
+                    const cell = input.closest('td');
+                    cell.innerHTML = newValue;
+                });
+
+                const buttonsCell = row.querySelector('td:last-child');
+                buttonsCell.innerHTML = `
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-modifier" data-index="${rowIndex}">Modifier</button>
+                    <button type="button" class="btn btn-danger btn-supprimer" data-index="${rowIndex}">Supprimer</button>
+                </div>
+                `;
+
+            } else {
+                console.error('Erreur lors de la mise à jour:', data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Erreur:', error);
+        });
+}
+
 attacherEcouteurs();
-
 setTailleBoutonAjouter();
-
 alignerBoutonAjouter();
