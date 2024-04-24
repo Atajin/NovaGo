@@ -358,11 +358,11 @@ async function demarrerServeur() {
                     }
                 }   else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });                    
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
-                return res.status(401).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
+                return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             } finally {
                 if (connexion) {
                     await connexion.close();
@@ -428,7 +428,7 @@ async function demarrerServeur() {
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+                return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             }
 
 
@@ -449,16 +449,7 @@ async function demarrerServeur() {
                     const planetes_bd = await recupererPlanetes(connexion);
                     await connexion.close();
                     // L'utilisateur existe
-                    return res.render('pages/inscription', {
-                        message_negatif: 'Cette adresse courriel est déjà utilisée.',
-                        planetes_bd: planetes_bd.rows,
-                        prenom: prenom,
-                        nom: nom,
-                        email: email,
-                        telephone: telephone,
-                        adresse: adresse,
-                        planete_id: planete
-                    });
+                    return res.status(401).send({ message_negatif: "Cette adresse courriel est déjà utilisée." });
                 } else {
                     // L'utilisateur n'existe pas
                     try {
@@ -500,18 +491,18 @@ async function demarrerServeur() {
                         req.session.message_positif = "Compte créé avec succès!";
 
                         updateLocals(req, res, () => {
-                            res.redirect('/');
+                            return res.status(201).send({ message_positif: "Compte créé avec succès!" });
                         });
 
                     } catch (err) {
                         console.error(err);
-                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
+                        return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
                     }
 
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
+                return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             }
         });
 
