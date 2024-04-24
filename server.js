@@ -79,12 +79,21 @@ function getPool() {
 }
 
 function updateLocals(req, res, next) {
-    res.locals.est_connecte = req.session.email && req.session.mdp;
-    res.locals.est_admin = req.session.est_admin;
-    res.locals.planete_origine = req.session.planete_util;
-    res.locals.planete_destination = req.body.selection_planete;
-    res.locals.message_positif = req.body.message_positif;
-    res.locals.message_negatif = req.body.message_negatif;
+    if (req.session){
+        res.locals.est_connecte = req.session.email && req.session.mdp;
+        res.locals.est_admin = req.session.est_admin;
+        res.locals.planete_origine = req.session.planete_util;
+        res.locals.planete_destination = req.session.selection_planete;
+        res.locals.message_positif = req.session.message_positif;
+        res.locals.message_negatif = req.session.message_negatif;
+    } else {
+        res.locals.est_connecte = false;
+        res.locals.est_admin = false;
+        res.locals.planete_origine = null;
+        res.locals.planete_destination = null;
+        res.locals.message_positif = "";
+        res.locals.message_negatif = "";
+    }
     next();
 }
 
@@ -217,9 +226,15 @@ async function demarrerServeur() {
                 const connexion = await getPool().getConnection();
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
+
+                const message_positif = req.session.message_positif;
+                req.session.message_positif = "";
                 // Passer les données obtenues au moteur de rendu
-                res.render('pages/', {
-                    planetes_bd: planetes_bd.rows
+                updateLocals(req, res, () => {
+                    res.render('pages/', {
+                        planetes_bd: planetes_bd.rows,
+                        message_positif: message_positif
+                    })
                 });
             } catch (err) {
                 console.error(err);
@@ -657,12 +672,9 @@ async function demarrerServeur() {
                             est_admin: false
                         });
                     }
-                    res.render('pages/', {
-                        message_positif: "Déconnexion réussie!",
-                        planetes_bd: result.rows,
-                        est_connecte: false,
-                        est_admin: false,
-                        planete_origine: null
+                    //req.session.message_positif = "Déconnexion réussie!";
+                    updateLocals(req, res, () => {
+                        res.redirect('/');
                     });
                 });
             } else {
