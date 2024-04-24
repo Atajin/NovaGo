@@ -12,6 +12,7 @@ import dateFormat from "dateformat";
 import bcrypt from "bcrypt";
 import { connect } from "http2";
 import Stripe from 'stripe';
+import { error } from "console";
 
 const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
@@ -79,9 +80,21 @@ function getPool() {
 }
 
 function updateLocals(req, res, next) {
-    res.locals.est_connecte = req.session.email && req.session.mdp;
-    res.locals.est_admin = req.session.est_admin;
-    res.locals.planete_origine = req.session.planete_util;
+    if (req.session) {
+        res.locals.est_connecte = req.session.email && req.session.mdp;
+        res.locals.est_admin = req.session.est_admin;
+        res.locals.planete_origine = req.session.planete_util;
+        res.locals.planete_destination = req.session.selection_planete;
+        res.locals.message_positif = req.session.message_positif;
+        res.locals.message_negatif = req.session.message_negatif;
+    } else {
+        res.locals.est_connecte = false;
+        res.locals.est_admin = false;
+        res.locals.planete_origine = null;
+        res.locals.planete_destination = null;
+        res.locals.message_positif = "";
+        res.locals.message_negatif = "";
+    }
     next();
 }
 
@@ -170,6 +183,9 @@ app.use((req, res, next) => {
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
+    res.locals.planete_destination = req.session.planete_destination;
+    res.locals.message_positif = req.session.message_positif;
+    res.locals.message_negatif = req.session.message_negatif;
     next();
 });
 
@@ -211,9 +227,15 @@ async function demarrerServeur() {
                 const connexion = await getPool().getConnection();
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
+
+                const message_positif = req.session.message_positif;
+                req.session.message_positif = "";
                 // Passer les données obtenues au moteur de rendu
-                res.render('pages/', {
-                    planetes_bd: planetes_bd.rows
+                updateLocals(req, res, () => {
+                    res.render('pages/', {
+                        planetes_bd: planetes_bd.rows,
+                        message_positif: message_positif
+                    })
                 });
             } catch (err) {
                 console.error(err);
@@ -222,11 +244,14 @@ async function demarrerServeur() {
         })
 
         .post(async (req, res) => {
-            let reservation;
             const { planete_origine, planete_destination, dateDepart, nombrePersonnes } = req.body;
-            const voyageDispo = await requeteBD(planete_origine, planete_destination, dateDepart, nombrePersonnes);
-            //pour tester si le post en tant que tel fonctionnait (*NE FONCTIONNE PAS*)
-            //res.render('pages/reservation', { voyageDispo });
+
+            // Validation d'aucun champ vide
+            if (!planete_origine || !planete_destination || !dateDepart || !nombrePersonnes) {
+                return res.render('pages/reservation.ejs', { error: 'Veuillez remplir tous les champs requis' })
+            }
+
+            res.render('pages/reservation.ejs', { rechercheData: { planete_origine, planete_destination, dateDepart, nombrePersonnes } });
         });
 
 
@@ -275,58 +300,70 @@ async function demarrerServeur() {
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
+                        if (req.session.email != email) {
+                            const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
-                        const listePlanetes = await recupererPlanetes(connexion);
-                        if (planeteResult.rows.length > 0) {
-                            //Ajout des informations nécessaires à la session
-                            req.session.email = email;
-                            req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
-                            req.session.est_connecte = true;
-                            req.session.est_admin = false;
-                            const planeteID = Number(planeteResult.rows[0]);
-                            req.session.planete_util = planeteID;
+                            if (planeteResult.rows.length > 0) {
+                                //Ajout des informations nécessaires à la session
+                                req.session.email = email;
+                                req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
+                                req.session.est_connecte = true;
+                                req.session.est_admin = false;
+                                const planeteID = Number(planeteResult.rows[0]);
+                                req.session.planete_util = planeteID;
+                                req.session.message_positif = "Connexion au compte effectuée avec succès!";
 
-                            creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
-                            await connexion.commit();
+                                creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
+                                await connexion.commit();
 
-                            updateLocals(req, res, () => {
-                                return res.render('pages/', { message_positif: 'Connexion au compte effectuée avec succès!', planetes_bd: listePlanetes.rows });
-                            });
+                                updateLocals(req, res, () => {
+                                    return res.status(201).send({ message_positif: "Connexion au compte effectuée avec succès!" });
+                                });
+                            } else {
+                                res.status(404).send({ message_negatif: "Aucune planète liée à l'utilisateur." });
+                            }
+
                         } else {
-                            return res.render('pages/connexion', { message_negatif: "Aucune planète liée à l'utilisateur." });
+                            // Le compte est déjà connecté
+                            return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
                         }
-
                     } else {
                         // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
-                    const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
-                    if (mdp_valide) {
-                        const listePlanetes = await recupererPlanetes(connexion);
-                        //Ajout des informations nécessaires à la session
-                        req.session.email = email;
-                        req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
-                        req.session.est_connecte = req.session.email && req.session.mdp;
-                        req.session.est_admin = true;
-                        req.session.est_connecte = true;
-                        req.session.planete_util = null;
-                        updateLocals(req, res, () => {
-                            return res.render('pages/', { message_positif: 'Connexion au compte admin effectuée avec succès!' });
-                        });
+                    if (req.session.email != email) {
+                        const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
+                        if (mdp_valide) {
+                            //Ajout des informations nécessaires à la session
+                            req.session.email = email;
+                            req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
+                            req.session.est_connecte = req.session.email && req.session.mdp;
+                            req.session.est_admin = true;
+                            req.session.est_connecte = true;
+                            req.session.planete_util = null;
+                            req.session.message_positif = "Connexion au compte effectuée avec succès!";
+
+                            console.log("Session créée !");
+                            updateLocals(req, res, () => {
+                                return res.status(201).send({ message_positif: "Connexion au compte admin effectuée avec succès!" });
+                            });
+                        } else {
+                            // Le mot de passe est incorrect
+                            return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        }
                     } else {
-                        // Le mot de passe est incorrect
-                        return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                        // Le compte est déjà connecté
+                        return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.render('pages/connexion', { message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/connexion', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+                return res.status(401).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             } finally {
                 if (connexion) {
                     await connexion.close();
@@ -461,8 +498,11 @@ async function demarrerServeur() {
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.email && req.session.mdp;
                         req.session.planete_util = planete;
+                        req.session.message_positif = "Compte créé avec succès!";
 
-                        return res.render('pages/', { message_positif: 'Compte créé avec succès!', planetes_bd: planetes_bd.rows, planete_origine: planete_id });
+                        updateLocals(req, res, () => {
+                            res.redirect('/');
+                        });
 
                     } catch (err) {
                         console.error(err);
@@ -556,6 +596,23 @@ async function demarrerServeur() {
             }
         });
 
+    /*
+        Confirmer la transaction de la page reservation
+    */
+
+    app.route('/confirmer-transaction')
+
+        .post(async (req, res) => {
+            const montantArgents = req.body.montantArgents;
+            const nombreTotalBillets = req.body.nombreBillets;
+            const prixEtBillets = req.body.prixEtBillets;
+            // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
+            console.log('Montant d\'argents reçu :', montantArgents);
+            console.log(nombreTotalBillets);
+            console.log(prixEtBillets);
+            // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
+            res.sendStatus(200);
+        });
 
     app.route('/exploration')
         /*
@@ -579,13 +636,12 @@ async function demarrerServeur() {
         })
         /*
             POST du formulaire de la page d'exploration
-            paramètres : -
         */
         .post(async (req, res) => {
-            const connexion = await getPool().getConnection();
-            const planetes_bd = await recupererPlanetes(connexion);
-            await connexion.close();
-            res.render('pages/', { planetes_bd: planetes_bd.rows, planete_destination: req.body.selection_planete });
+            updateLocals(req, res, () => {
+                req.session.planete_destination = req.body.selection_planete;
+                res.redirect('/');
+            });
         });
 
     app.route('/recu-billet')
@@ -620,12 +676,9 @@ async function demarrerServeur() {
                             est_admin: false
                         });
                     }
-                    res.render('pages/', {
-                        message_positif: "Déconnexion réussie!",
-                        planetes_bd: result.rows,
-                        est_connecte: false,
-                        est_admin: false,
-                        planete_origine: null
+                    //req.session.message_positif = "Déconnexion réussie!";
+                    updateLocals(req, res, () => {
+                        res.redirect('/');
                     });
                 });
             } else {
