@@ -125,10 +125,10 @@ async function recupererPlanetes(connexion) {
     }
 }
 
-async function recupererVoyages(connection, rechercheData) {
+async function recupererVoyages(connection, planetID) {
     const voyageResult = await connection.execute(
-        `SELECT * FROM voyage WHERE planete_id_planete = :origine`,
-        { origine: rechercheData.planetOrigine },
+        `SELECT * FROM voyage WHERE planete_id_planete = :planetID`,
+        { planetID: planetID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     await connection.close();
@@ -136,12 +136,13 @@ async function recupererVoyages(connection, rechercheData) {
 }
 
 async function chercherNomPlaneteParId(connection, planetID) {
-    const planetResult = await connection.execute(
-        `SELECT * FROM PLANETE WHERE id_planete = :planetID`,
+    const result = await connection.execute(
+        `SELECT NOM FROM PLANETE WHERE id_planete = :planetID`,
         { planetID: planetID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-    return planetResult;
+    const planetNom = result.rows[0].NOM;
+    return planetNom;
 }
 
 async function obtenirDonneesPlaneteParId(connection, planetID) {
@@ -550,15 +551,15 @@ async function demarrerServeur() {
                     );
 
                     const rechercheData = {
-                        planetOrigine: req.session.planete_util,
-                        planetDestination: req.session.planete_destination,
+                        planetOrigine: await chercherNomPlaneteParId(connection, req.session.planete_util),
+                        planetDestination: await chercherNomPlaneteParId(connection, req.session.planete_destination),
                         dateDepart: req.session.date_aller,
                         dateRetour: req.session.date_retour,
                         nombrePersonnes: req.session.personnes
                     };
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
-                    const voyageResult = await recupererVoyages(connection, rechercheData);
+                    const voyageResult = await recupererVoyages(connection, req.session.planete_util);
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {

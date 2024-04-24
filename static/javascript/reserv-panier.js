@@ -96,17 +96,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     deleteBtn.style.background = "none";
                     deleteBtn.style.color = "white";
                     deleteBtn.style.cssText = `
-border: none;
-background: none;
-color: white;
-padding: 0;
-margin: 0;
-`;
+                                            border: none;
+                                            background: none;
+                                            color: white;
+                                            padding: 0;
+                                            margin: 0;
+                                            `;
                     deleteBtn.innerHTML = `
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg custom-btn-x" viewBox="0 0 16 16" style="border-radius: 100%;">
-<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-</svg>
-`;
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg custom-btn-x" viewBox="0 0 16 16" style="border-radius: 100%;">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                                        </svg>
+                                        `;
                     col2.appendChild(deleteBtn);
 
                     row1.appendChild(col1);
