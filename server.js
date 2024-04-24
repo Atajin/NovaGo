@@ -83,7 +83,7 @@ function updateLocals(req, res, next) {
         res.locals.est_connecte = req.session.email && req.session.mdp;
         res.locals.est_admin = req.session.est_admin;
         res.locals.planete_origine = req.session.planete_util;
-        res.locals.planete_destination = req.session.selection_planete;
+        res.locals.planete_destination = req.session.planete_destination;
         res.locals.message_positif = req.session.message_positif;
         res.locals.message_negatif = req.session.message_negatif;
     } else {
@@ -227,6 +227,9 @@ async function demarrerServeur() {
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
 
+                /*if (!req.session.message_positif && req.session.message_positif != ""){
+                    req.session.message_positif = "Déconnexion réussie!"
+                }*/
                 const message_positif = req.session.message_positif;
                 req.session.message_positif = "";
                 // Passer les données obtenues au moteur de rendu
@@ -634,8 +637,8 @@ async function demarrerServeur() {
             POST du formulaire de la page d'exploration
         */
         .post(async (req, res) => {
+            req.session.planete_destination = req.body.selection_planete;
             updateLocals(req, res, () => {
-                req.session.planete_destination = req.body.selection_planete;
                 res.redirect('/');
             });
         });
