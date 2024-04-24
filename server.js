@@ -382,7 +382,7 @@ async function demarrerServeur() {
                 }
             } catch (err) {
                 console.error(err);
-                return res.status(401).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
+                return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             } finally {
                 if (connexion) {
                     await connexion.close();
@@ -448,7 +448,7 @@ async function demarrerServeur() {
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+                return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             }
 
 
@@ -469,16 +469,7 @@ async function demarrerServeur() {
                     const planetes_bd = await recupererPlanetes(connexion);
                     await connexion.close();
                     // L'utilisateur existe
-                    return res.render('pages/inscription', {
-                        message_negatif: 'Cette adresse courriel est déjà utilisée.',
-                        planetes_bd: planetes_bd.rows,
-                        prenom: prenom,
-                        nom: nom,
-                        email: email,
-                        telephone: telephone,
-                        adresse: adresse,
-                        planete_id: planete
-                    });
+                    return res.status(401).send({ message_negatif: "Cette adresse courriel est déjà utilisée." });
                 } else {
                     // L'utilisateur n'existe pas
                     try {
@@ -520,18 +511,18 @@ async function demarrerServeur() {
                         req.session.message_positif = "Compte créé avec succès!";
 
                         updateLocals(req, res, () => {
-                            res.redirect('/');
+                            return res.status(201).send({ message_positif: "Compte créé avec succès!" });
                         });
 
                     } catch (err) {
                         console.error(err);
-                        return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
+                        return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
                     }
 
                 }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
+                return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
             }
         });
 
@@ -702,14 +693,19 @@ async function demarrerServeur() {
         try {
             let panier = [];
             for (let i = 0; i < dataPanier.length; i++) {
-                let lignePanier = await stripe.products.list({
-                    metadata: { id_voyage_db: dataPanier[i].idVoyage.toString(), classe_voyage: dataPanier[i].classeVoyage }
-                });
+                let products = await stripe.products.list();
 
-                if (lignePanier.data.length > 0) {
-                    let billet = lignePanier.data[0];
+                let lignePanier = products.data.filter(product =>
+                    product.metadata.id_voyage_db === dataPanier[i].idVoyage.toString() &&
+                    product.metadata.classe_voyage === dataPanier[i].classeVoyage
+                );
+
+                console.log(`Filtered products for item ${i}:`, lignePanier);
+
+                if (lignePanier.length > 0) {
+                    let billet = lignePanier[0];
                     let quantiteBillet = dataPanier[i].quantiteBillet;
-                    let prix = await stripe.prices.list({ product: billet.data[0].id })
+                    let prix = await stripe.prices.list({ product: billet.id })
                     let idPrix;
 
                     if (prix.data.length > 0) {
@@ -724,14 +720,14 @@ async function demarrerServeur() {
                     panier.push(item);
                 }
             }
-
+            console.log("Panier:", panier);
             // Créer la session de paiement Stripe
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: '/success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url: '/reservation',
+                success_url: 'http://localhost:4000/succes?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url: 'http://localhost:4000/reservation',
             });
 
             res.redirect(303, session.url);
@@ -741,12 +737,12 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/success', (req, res) => {
+    app.get('/succes', (req, res) => {
         // À compléter (logique de gestion du succès de paiement)
         // Récupérer session_id de la requête pour récupérer des détails sur la session
         const sessionId = req.query.session_id;
         // Traiter la session de paiement réussie
-        res.send("Paiement réussi !");
+        res.render('success', { sessionId: sessionId });
     });
 
     app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
