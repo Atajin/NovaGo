@@ -79,7 +79,7 @@ function getPool() {
 }
 
 function updateLocals(req, res, next) {
-    if (req.session){
+    if (req.session) {
         res.locals.est_connecte = req.session.email && req.session.mdp;
         res.locals.est_admin = req.session.est_admin;
         res.locals.planete_origine = req.session.planete_util;
@@ -312,7 +312,7 @@ async function demarrerServeur() {
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        if (req.session.email != email){
+                        if (req.session.email != email) {
                             const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
                             if (planeteResult.rows.length > 0) {
@@ -345,7 +345,7 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
-                    if (req.session.email != email){
+                    if (req.session.email != email) {
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
                             //Ajout des informations nécessaires à la session
@@ -369,9 +369,9 @@ async function demarrerServeur() {
                         // Le compte est déjà connecté
                         return res.status(401).send({ message_negatif: "Vous êtes déjà connecté à ce compte." });
                     }
-                }   else {
+                } else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });                    
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
@@ -706,30 +706,38 @@ async function demarrerServeur() {
     });
 
     app.post('/checkout', async (req, res) => {
-        const { idVoyage, classeVoyage } = req.body; // ID du voyage et classe du billet sélectionnés par l'utilisateur
+        const { dataPanier } = req.body;
 
         try {
-            // Récupérer les produits correspondant aux critères de recherche
-            const produits = await stripe.products.list({
-                metadata: { id_voyage_db: idVoyage.toString(), classe_voyage: classeVoyage }
-            });
+            let panier = [];
+            for (let i = 0; i < dataPanier.length; i++) {
+                let lignePanier = await stripe.products.list({
+                    metadata: { id_voyage_db: dataPanier[i].idVoyage.toString(), classe_voyage: dataPanier[i].classeVoyage }
+                });
 
-            let prixId;
-            // Récupérer l'ID du prix associé au produit trouvé
-            if (produits.data.length > 0) {
-                const prix = await stripe.prices.list({ product: produits.data[0].id });
-                if (prix.data.length > 0) {
-                    prixId = prix.data[0].id; // Prendre le premier prix trouvé
+                if (lignePanier.data.length > 0) {
+                    let billet = lignePanier.data[0];
+                    let quantiteBillet = dataPanier[i].quantiteBillet;
+                    let prix = await stripe.prices.list({ product: billet.data[0].id })
+                    let idPrix;
+
+                    if (prix.data.length > 0) {
+                        idPrix = prix.data[0].id;
+                    }
+
+                    let item = {
+                        price: idPrix,
+                        quantity: quantiteBillet
+                    };
+
+                    panier.push(item);
                 }
             }
 
             // Créer la session de paiement Stripe
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
-                line_items: [{
-                    price: prixId,
-                    quantity: 1,
-                }],
+                line_items: panier,
                 mode: 'payment',
                 success_url: '/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: '/reservation',
@@ -866,7 +874,7 @@ async function demarrerServeur() {
 
         try {
             console.log("Requête d'insertion reçue':", req.body);
-            
+
             const connexion = await getPool().getConnection();
 
             let partiesClauseCles = [];
@@ -880,14 +888,14 @@ async function demarrerServeur() {
             let clauseInsertionValeurs = partiesClauseValeurs.join(', ');
 
             console.log("Clés de la clause d'insertion:", clauseInsertionCles);
-            
+
             console.log("Valeurs de la clause d'insertion:", clauseInsertionValeurs);
 
             const sqlQuery = `INSERT INTO ${tableName} (${clauseInsertionCles}) VALUES (${clauseInsertionValeurs})`;
 
             console.log("SQL query:", sqlQuery);
 
-            await connexion.execute(sqlQuery, { ...data}, { autoCommit: true });
+            await connexion.execute(sqlQuery, { ...data }, { autoCommit: true });
 
             await connexion.close();
 

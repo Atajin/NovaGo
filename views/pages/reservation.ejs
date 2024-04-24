@@ -292,7 +292,7 @@
     <script src="/javascript/reserv-prix.js"></script>
     <% if (voyages_bd) { %>
         <script>
-            const voyagesData =  <%- JSON.stringify(voyages_bd) %>;
+            const voyagesData = JSON.stringify(voyages_bd);
 
         </script> <!--Probleme avec EJS et JS confusion de Visual Studio-->
         <% } %>

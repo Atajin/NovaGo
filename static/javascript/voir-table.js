@@ -14,7 +14,7 @@ function attacherEcouteurs() {
 }
 
 function gestionBouton(event) {
-    const button = event.target.closest('button');
+    const button = event.target;
     if (!button) return;
 
     if (button.classList.contains('btn-modifier')) {
