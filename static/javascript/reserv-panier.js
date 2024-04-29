@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     AjouterCompteur(voyage, nouveauPrix);
                     RetirerCompteur(voyage, nouveauPrix);
                 } else {
-                    let input = existingElement.querySelector(".compteurInput" + vaffairesoyage.ID_VOYAGE + "_prix" + nouveauPrix);
+                    let input = existingElement.querySelector(".compteurInput" + voyage.ID_VOYAGE + "_prix" + nouveauPrix);
                     let valeur = parseInt(input.value);
                     input.value = valeur + 1;
 
