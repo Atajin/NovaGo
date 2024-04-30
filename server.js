@@ -142,7 +142,7 @@ async function chercherNomPlaneteParId(connection, planetID) {
         { planetID: planetID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-    const planetNom = result.rows[0].NOM;
+    const planetNom = result.rows[0];
     return planetNom;
 }
 
@@ -377,7 +377,7 @@ async function demarrerServeur() {
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });                    
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });                    
                 }
             } catch (err) {
                 console.error(err);
