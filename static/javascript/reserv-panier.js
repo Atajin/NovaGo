@@ -11,32 +11,30 @@ document.addEventListener("DOMContentLoaded", function () {
     montantTotal.textContent = nombre_argent + "$";
 
     let prixEtBillets = []; // Tableau pour stocker les prix de voyage et le nombre total de billets
-    let dataPanier = [];
 
     document.getElementById('confirmer-btn').addEventListener('click', function () {
+        const montantArgents = document.getElementById('nombre_argents').textContent;
+        const nombreBillets = document.getElementById('nombre_billets').textContent;
+    
         // Utiliser AJAX pour envoyer les données au serveur
-        fetch('/checkout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                dataPanier: dataPanier
-            }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.url) {
-                    window.location.href = data.url;
-                } else {
-                    console.error('Erreur lors de la transaction:', data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Erreur:', error);
-            });
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/confirmer-transaction', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // Le serveur a répondu avec succès
+                console.log('Confirmation réussie !');
+                // Vous pouvez effectuer d'autres actions après confirmation réussie ici
+            } else {
+                // Gérer les erreurs ou les réponses du serveur ici
+                console.error('Erreur lors de la confirmation !');
+            }
+        };
+    
+        // Envoyer les données au serveur sous forme JSON
+        xhr.send(JSON.stringify({ montantArgents: montantArgents, nombreBillets: nombreBillets, prixEtBillets: prixEtBillets }));
     });
-
+    
 
     voyagesData.forEach(voyage => {
         const addBtns = document.querySelectorAll("#add_btn_" + voyage.ID_VOYAGE);
@@ -53,11 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!existingElement) {
                     let voyageCode = ""; // Utilisation de la lettre correspondante
                     if (voyage.PRIX_ECONO == nouveauPrix) {
-                        voyageCode = "Code " + voyage.ID_VOYAGE + ".E";
-                        dataPanier.push({ idVoyage: voyage.ID_VOYAGE, classeVoyage: "economique", quantiteBillet: 1 });
+                        voyageCode = "Code " + voyage.ID_VOYAGE + ".E"; 
+                        console.log("Voyage ID: " + voyage.ID_VOYAGE + ", Prix Econo: " + voyage.PRIX_ECONO + ", Nouveau Prix: " + nouveauPrix);
                     } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
-                        voyageCode = "Code " + voyage.ID_VOYAGE + ".A";
-                        dataPanier.push({ idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaires", quantiteBillet: 1 });
+                        voyageCode = "Code " + voyage.ID_VOYAGE + ".A"; 
+                        console.log("Voyage ID: " + voyage.ID_VOYAGE + ", Prix Business: " + voyage.PRIX_BUSINESS + ", Nouveau Prix: " + nouveauPrix);
                     }
 
                     nombre_voyages++;
@@ -96,17 +94,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     deleteBtn.style.background = "none";
                     deleteBtn.style.color = "white";
                     deleteBtn.style.cssText = `
-                                            border: none;
-                                            background: none;
-                                            color: white;
-                                            padding: 0;
-                                            margin: 0;
-                                            `;
+border: none;
+background: none;
+color: white;
+padding: 0;
+margin: 0;
+`;
                     deleteBtn.innerHTML = `
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg custom-btn-x" viewBox="0 0 16 16" style="border-radius: 100%;">
-                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-                                        </svg>
-                                        `;
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg custom-btn-x" viewBox="0 0 16 16" style="border-radius: 100%;">
+<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+</svg>
+`;
                     col2.appendChild(deleteBtn);
 
                     row1.appendChild(col1);
@@ -159,11 +157,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     newElement.appendChild(row2);
 
                     parentDiv.appendChild(newElement);
-                    DeleteVoyagesPanier(voyage, nouveauPrix);
-                    AjouterCompteur(voyage, nouveauPrix);
-                    RetirerCompteur(voyage, nouveauPrix);
+                    DeleteVoyagesPanier(voyage.ID_VOYAGE, nouveauPrix);
+                    AjouterCompteur(voyage.ID_VOYAGE, nouveauPrix);
+                    RetirerCompteur(voyage.ID_VOYAGE, nouveauPrix);
                 } else {
-                    let input = existingElement.querySelector(".compteurInput" + vaffairesoyage.ID_VOYAGE + "_prix" + nouveauPrix);
+                    let input = existingElement.querySelector(".compteurInput" + voyage.ID_VOYAGE + "_prix" + nouveauPrix);
                     let valeur = parseInt(input.value);
                     input.value = valeur + 1;
 
@@ -173,12 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Mettre à jour prixEtBillets avec les nouvelles informations
                     updatePrixEtBillets(nouveauPrix, valeur + 1);
 
-                    if (voyage.PRIX_ECONO == nouveauPrix) {
-                        updateBillets(voyage.ID_VOYAGE, "economique", valeur + 1);
-                    } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
-                        updateBillets(voyage.ID_VOYAGE, "affaires", valeur + 1)
-                    }
-
                     nombre_argent += nouveauPrix;
                     montantTotal.textContent = nombre_argent + "$";
                 }
@@ -186,20 +178,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    function DeleteVoyagesPanier(voyage, prix) {
-        const deleteBtns = document.querySelectorAll(".delete-btn" + voyage.ID_VOYAGE + "_prix" + prix);
+    function DeleteVoyagesPanier(id, prix) {
+        const deleteBtns = document.querySelectorAll(".delete-btn" + id + "_prix" + prix);
 
         deleteBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
                 // Supprimer les informations correspondantes de prixEtBillets
-                prixEtBillets = prixEtBillets.filter(item => !(item.prix === prix && item.billets === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
-                if (voyage.PRIX_ECONO == prix) {
-                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "economique" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
-                } else if (voyage.PRIX_BUSINESS == prix) {
-                    dataPanier = dataPanier.filter(item => !(item.idVoyage === voyage.ID_VOYAGE && item.classeVoyage === "affaires" && item.quantiteBillet === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value)));
-                }
-                let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + voyage.ID_VOYAGE + "_prix" + prix).value);
-                let prixVoyage = parseInt(document.getElementById("prix_voyage_" + voyage.ID_VOYAGE + "_prix" + prix).textContent);
+                prixEtBillets = prixEtBillets.filter(item => !(item.prix === prix && item.billets === parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + "_prix" + prix).value)));
+                let nbreBilletsVoyage = parseInt(btn.closest('.rounded').querySelector('.compteurInput' + id + "_prix" + prix).value);
+                let prixVoyage = parseInt(document.getElementById("prix_voyage_" + id + "_prix" + prix).textContent);
                 nombre_argent -= prixVoyage * nbreBilletsVoyage;
                 montantTotal.textContent = nombre_argent + "$";
                 nombre_voyages--;
@@ -211,51 +198,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function AjouterCompteur(voyage, prix) {
-        const plusBtns = document.querySelectorAll(".plusBtn" + voyage.ID_VOYAGE + "_prix" + prix);
+    function AjouterCompteur(id, prix) {
+        const plusBtns = document.querySelectorAll(".plusBtn" + id + "_prix" + prix);
         plusBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                let input = this.closest(".row").querySelector(".compteurInput" + voyage.ID_VOYAGE + "_prix" + prix);
+                let input = this.closest(".row").querySelector(".compteurInput" + id + "_prix" + prix);
                 let valeur = parseInt(input.value);
                 input.value = valeur + 1;
                 nombre_billets++;
                 billetsTotal.textContent = nombre_billets;
-                nombre_argent += parseInt(document.getElementById("prix_voyage_" + voyage.ID_VOYAGE + "_prix" + prix).textContent);
+                nombre_argent += parseInt(document.getElementById("prix_voyage_" + id + "_prix" + prix).textContent);
                 montantTotal.textContent = nombre_argent + "$";
 
                 // Mettre à jour prixEtBillets avec les nouvelles informations
                 updatePrixEtBillets(prix, valeur + 1);
-
-                if (voyage.PRIX_ECONO == prix) {
-                    updateBillets(voyage.ID_VOYAGE, "economique", valeur + 1);
-                } else if (voyage.PRIX_BUSINESS == prix) {
-                    updateBillets(voyage.ID_VOYAGE, "affaires", valeur + 1)
-                }
             });
         });
     }
 
-    function RetirerCompteur(voyage, prix) {
-        const moinsBtns = document.querySelectorAll(".moinsBtn" + voyage.ID_VOYAGE + "_prix" + prix);
+    function RetirerCompteur(id, prix) {
+        const moinsBtns = document.querySelectorAll(".moinsBtn" + id + "_prix" + prix);
         moinsBtns.forEach(function (btn) {
             btn.addEventListener("click", function () {
-                let input = this.closest(".row").querySelector(".compteurInput" + voyage.ID_VOYAGE + "_prix" + prix);
+                let input = this.closest(".row").querySelector(".compteurInput" + id + "_prix" + prix);
                 let valeur = parseInt(input.value);
                 if (valeur > 1) {
                     input.value = valeur - 1;
                     nombre_billets--;
                     billetsTotal.textContent = nombre_billets;
-                    nombre_argent -= parseInt(document.getElementById("prix_voyage_" + voyage.ID_VOYAGE + "_prix" + prix).textContent);
+                    nombre_argent -= parseInt(document.getElementById("prix_voyage_" + id + "_prix" + prix).textContent);
                     montantTotal.textContent = nombre_argent + "$";
 
                     // Mettre à jour prixEtBillets avec les nouvelles informations
                     updatePrixEtBillets(prix, valeur - 1);
-
-                    if (voyage.PRIX_ECONO == prix) {
-                        updateBillets(voyage.ID_VOYAGE, "economique", valeur - 1);
-                    } else if (voyage.PRIX_BUSINESS == prix) {
-                        updateBillets(voyage.ID_VOYAGE, "affaires", valeur - 1)
-                    }
                 }
             });
         });
@@ -267,15 +242,6 @@ document.addEventListener("DOMContentLoaded", function () {
             prixEtBillets[existingPriceIndex].billets = billets;
         } else {
             prixEtBillets.push({ prix: prix, billets: billets });
-        }
-    }
-
-    function updateBillets(id, classe, billets) {
-        const existingIDClasseIndex = dataPanier.findIndex(item => item.idVoyage === id && item.classeVoyage === classe);
-        if (existingIDClasseIndex !== -1) {
-            dataPanier[existingIDClasseIndex].quantiteBillet = billets;
-        } else {
-            dataPanier.push({ idVoyage: id, classeVoyage: classe, quantiteBillet: billets });
         }
     }
 });

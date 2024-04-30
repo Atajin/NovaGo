@@ -47,13 +47,10 @@
     </div>
     <script>
         function post_connexion(){
-            const mdp_regex = new RegExp(".{8,}");
+            const regex = new RegExp(".{8,}");
             const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})*$");
-            let message_erreur = "";
-            const courriel_valide = courriel_regex.test(document.getElementById("email").value);
-            const mdp_valide = mdp_regex.test(document.getElementById("mdp").value);
-
-            if (courriel_valide && mdp_valide){
+            console.log(regex.test(document.getElementById("mdp").value));
+            if (courriel_regex.test(document.getElementById("email").value) && regex.test(document.getElementById("mdp").value)){
                 const f = fetch("connexion", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json' },
@@ -74,14 +71,7 @@
                 }).catch((error) => {
                     console.error('Erreur:', error);
                 });
-            } else 
-            if (!courriel_valide){
-                message_erreur = "L'adresse courriel saisie est invalide. ";
-            }
-            if (!mdp_valide){
-                message_erreur += "Le mot de passe doit être plus de 8 caractères.";
-            }
-            document.getElementById("message_negatif").textContent = message_erreur;
+            } else document.getElementById("message_negatif").textContent = "L'adresse courriel doit être valide et le mot de passe doit être plus de 8 caractères.";
         }
       </script>
     <%- include ("../partials/footer.ejs") %>
