@@ -80,7 +80,11 @@ function getPool() {
 }
 
 function updateLocals(req, res, next) {
+<<<<<<< HEAD
+    if (req.session){
+=======
     if (req.session) {
+>>>>>>> Felix
         res.locals.est_connecte = req.session.email && req.session.mdp;
         res.locals.est_admin = req.session.est_admin;
         res.locals.planete_origine = req.session.planete_util;
@@ -301,7 +305,11 @@ async function demarrerServeur() {
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
+<<<<<<< HEAD
                         if (req.session.email != email){
+=======
+                        if (req.session.email != email) {
+>>>>>>> Felix
                             const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
                             if (planeteResult.rows.length > 0) {
@@ -334,7 +342,11 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
+<<<<<<< HEAD
                     if (req.session.email != email){
+=======
+                    if (req.session.email != email) {
+>>>>>>> Felix
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
                             //Ajout des informations nécessaires à la session
@@ -360,7 +372,11 @@ async function demarrerServeur() {
                     }
                 }   else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });                    
+<<<<<<< HEAD
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });                    
+=======
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'exise pas ou le mot de passe est incorrect." });
+>>>>>>> Felix
                 }
             } catch (err) {
                 console.error(err);
@@ -605,7 +621,11 @@ async function demarrerServeur() {
 
         .post(async (req, res) => {
             const montantArgents = req.body.montantArgents;
+<<<<<<< HEAD
+            const nombreTotalBillets =  req.body.nombreBillets;
+=======
             const nombreTotalBillets = req.body.nombreBillets;
+>>>>>>> Felix
             const prixEtBillets = req.body.prixEtBillets;
             // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
             console.log('Montant d\'argents reçu :', montantArgents);
