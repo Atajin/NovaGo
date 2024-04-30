@@ -629,6 +629,7 @@ async function demarrerServeur() {
         */
         .post(async (req, res) => {
             req.session.planete_destination = req.body.selection_planete;
+            req.session.message_positif = "Planète de destination sélectionnée!"
             updateLocals(req, res, () => {
                 res.redirect('/');
             });
