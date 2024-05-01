@@ -37,7 +37,7 @@
                             </div>
 
                             <!--Boutton submit pour se connecter à un compte-->
-                            <button type="button" onclick="post_connexion()"
+                            <button type="button" onclick="post_connexion()" id="bouton_connexion"
                                 class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
                                 Connexion au compte
                             </button>
@@ -54,6 +54,7 @@
             const mdp_valide = mdp_regex.test(document.getElementById("mdp").value);
 
             if (courriel_valide && mdp_valide){
+                document.getElementById("bouton_connexion").disabled = true;
                 const f = fetch("connexion", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json' },
@@ -70,7 +71,10 @@
                         } else {
                             window.location.href = "http://localhost:4000/";
                         }
-                    } else document.getElementById("message_negatif").textContent = data.message_negatif;
+                    } else {
+                        document.getElementById("bouton_connexion").disabled = false;
+                        document.getElementById("message_negatif").textContent = data.message_negatif;
+                    }
                 }).catch((error) => {
                     console.error('Erreur:', error);
                 });
