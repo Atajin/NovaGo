@@ -142,7 +142,7 @@ async function chercherNomPlaneteParId(connection, planetID) {
         { planetID: planetID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-    const planetNom = result.rows[0];
+    const planetNom = result.rows[0].NOM;
     return planetNom;
 }
 
@@ -263,13 +263,16 @@ async function demarrerServeur() {
             }
         })
 
-        // AFFICHE UNE ERREUR LORS DU DÉMARRAGE DU SERVEUR!!!!
         .post(async (req, res) => {
-            let reservation;
-            const { planete_origine, planete_destination, dateDepart, nombrePersonnes } = req.body;
-            const voyageDispo = await requeteBD(planete_origine, planete_destination, dateDepart, nombrePersonnes);
-            //pour tester si le post en tant que tel fonctionnait (*NE FONCTIONNE PAS*)
-            //res.render('pages/reservation', { voyageDispo });
+            req.session.planete_util = req.body.planete_origine;
+            req.session.planete_destination = req.body.planete_destination;
+            req.session.personnes = req.body.personnes;
+            req.session.date_aller = req.body.date_aller;
+            req.session.date_retour = req.body.date_retour;
+
+            updateLocals(req, res, () => {
+                res.redirect('/reservation');
+            });
         });
 
 
