@@ -221,12 +221,10 @@ async function demarrerServeur() {
                 /*if (!req.session.message_positif && req.session.message_positif != ""){
                     req.session.message_positif = "Déconnexion réussie!"
                 }*/
-                const message_positif = req.session.message_positif;
                 req.session.message_positif = "";
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
-                    planetes_bd: planetes_bd.rows,
-                    message_positif: message_positif
+                    planetes_bd: planetes_bd.rows
                 });
             } catch (err) {
                 console.error(err);
@@ -303,7 +301,7 @@ async function demarrerServeur() {
                                 req.session.est_admin = false;
                                 const planeteID = Number(planeteResult.rows[0]);
                                 req.session.planete_util = planeteID;
-                                const message_positif = "Connexion au compte effectuée avec succès!";
+                                req.session.message_positif = "Connexion au compte effectuée avec succès!";
 
                                 creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
                                 await connexion.commit();
@@ -333,7 +331,7 @@ async function demarrerServeur() {
                             req.session.est_admin = true;
                             req.session.est_connecte = true;
                             req.session.planete_util = null;
-                            req.session.message_positif = "Connexion au compte effectuée avec succès!";
+                            req.session.message_positif = "Connexion au compte admin effectuée avec succès!";
 
                             console.log("Session créée !");
                             return res.status(201).send({ message_positif: "Connexion au compte admin effectuée avec succès!" });
@@ -648,11 +646,10 @@ async function demarrerServeur() {
 
         } catch (err) {
             console.error("Erreur lors de la récupération des données de la base de données:", err);
-            res.render('pages/', {
-                message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
-                est_connecte: false,
-                est_admin: false
-            });
+            req.session.message_negatif = "Une erreur s'est produite lors de la récupération des données de la base de données."
+            req.session.est_connecte = false;
+            req.session.est_admin = false;
+            res.redirect('/');
         }
     });
 
@@ -751,18 +748,20 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
+                req.session.message_positif = "";
                 req.session.est_connecte = req.session.email && req.session.mdp;
                 if (req.session.est_connecte && req.session.est_admin) {
                     const connexion = await getPool().getConnection();
                     const result = await connexion.execute("SELECT table_name FROM user_tables");
                     await connexion.close();
                     res.render('pages/administrateur', { tables: result.rows });
-                } else res.render('pages/connexion', {
-                    message_negatif: "Connectez vous en tant qu'administrateur pour accéder à cette page",
-                });
+                } else {
+                    req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
+                    res.redirect('/connexion');
+                }
             } catch (err) {
                 console.error(err);
-                return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
+                return res.render('pages/administrateur', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
             }
         });
 
@@ -788,12 +787,13 @@ async function demarrerServeur() {
                 await connexion.close();
 
                 res.render('pages/voir-table', { data: dataObjets, tableName: tableName, colonnes: colonnes, });
-            } else res.render('pages/connexion', {
-                message_negatif: "Connectez vous en tant qu'administrateur pour accéder à cette page",
-            });
+            } else {
+                req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
+                res.redirect('/connexion');
+            }
         } catch (err) {
             console.error('Erreur lors de la requête:', err);
-            res.send('Erreur lors de la récupération des données');
+            res.status(401).send("Erreur lors de la récupération des données.");
         }
     });
 
