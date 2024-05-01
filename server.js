@@ -79,33 +79,6 @@ function getPool() {
     return pool;
 }
 
-function updateLocals(req, res, next) {
-    if (req.session){
-        res.locals.est_connecte = req.session.email && req.session.mdp;
-        res.locals.est_admin = req.session.est_admin;
-        res.locals.planete_origine = req.session.planete_util;
-        res.locals.planete_destination = req.session.planete_destination;
-        res.locals.message_positif = req.session.message_positif;
-        res.locals.message_negatif = req.session.message_negatif;
-
-        res.locals.date_aller = req.session.date_aller;
-        res.locals.date_retour = req.session.date_retour;
-        res.locals.personnes = req.session.personnes;
-    } else {
-        res.locals.est_connecte = false;
-        res.locals.est_admin = false;
-        res.locals.planete_origine = null;
-        res.locals.planete_destination = null;
-        res.locals.message_positif = "";
-        res.locals.message_negatif = "";
-        res.locals.personnes = 0;
-        res.locals.date_aller = null;
-        res.locals.date_retour = null;
-    }
-    next();
-}
-
-
 async function hashMotDePasse(mdp, saltRounds) {
     try {
         const hash = await bcrypt.hash(mdp, saltRounds);
@@ -251,11 +224,9 @@ async function demarrerServeur() {
                 const message_positif = req.session.message_positif;
                 req.session.message_positif = "";
                 // Passer les données obtenues au moteur de rendu
-                updateLocals(req, res, () => {
-                    res.render('pages/', {
-                        planetes_bd: planetes_bd.rows,
-                        message_positif: message_positif
-                    })
+                res.render('pages/', {
+                    planetes_bd: planetes_bd.rows,
+                    message_positif: message_positif
                 });
             } catch (err) {
                 console.error(err);
@@ -270,9 +241,7 @@ async function demarrerServeur() {
             req.session.date_aller = req.body.date_aller;
             req.session.date_retour = req.body.date_retour;
 
-            updateLocals(req, res, () => {
-                res.redirect('/reservation');
-            });
+            res.redirect('/reservation');
         });
 
 
@@ -334,14 +303,12 @@ async function demarrerServeur() {
                                 req.session.est_admin = false;
                                 const planeteID = Number(planeteResult.rows[0]);
                                 req.session.planete_util = planeteID;
-                                req.session.message_positif = "Connexion au compte effectuée avec succès!";
+                                const message_positif = "Connexion au compte effectuée avec succès!";
 
                                 creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
                                 await connexion.commit();
 
-                                updateLocals(req, res, () => {
-                                    return res.status(201).send({ message_positif: "Connexion au compte effectuée avec succès!" });
-                                });
+                                return res.status(201).send({ message_positif: "Connexion au compte effectuée avec succès!" });
                             } else {
                                 res.status(404).send({ message_negatif: "Aucune planète liée à l'utilisateur." });
                             }
@@ -369,9 +336,7 @@ async function demarrerServeur() {
                             req.session.message_positif = "Connexion au compte effectuée avec succès!";
 
                             console.log("Session créée !");
-                            updateLocals(req, res, () => {
-                                return res.status(201).send({ message_positif: "Connexion au compte admin effectuée avec succès!" });
-                            });
+                            return res.status(201).send({ message_positif: "Connexion au compte admin effectuée avec succès!" });
                         } else {
                             // Le mot de passe est incorrect
                             return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
@@ -433,6 +398,7 @@ async function demarrerServeur() {
             req.session.est_connecte = req.session.email && req.session.mdp;
             const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
             try {
+                console.log("hello");
                 const connexion = await getPool().getConnection();
                 const planetes_bd = await recupererPlanetes(connexion);
                 await connexion.close();
@@ -514,9 +480,7 @@ async function demarrerServeur() {
                         req.session.planete_util = planete;
                         req.session.message_positif = "Compte créé avec succès!";
 
-                        updateLocals(req, res, () => {
-                            return res.status(201).send({ message_positif: "Compte créé avec succès!" });
-                        });
+                        return res.status(201).send({ message_positif: "Compte créé avec succès!" });
 
                     } catch (err) {
                         console.error(err);
@@ -601,10 +565,8 @@ async function demarrerServeur() {
                         });
                     }
                 } else {
-                    req.session.message_negatif = "Connectez vous pour réserver un voyage."
-                    updateLocals(req, res, () => {
-                        res.redirect('/connexion');
-                    });
+                    req.session.message_negatif = "Connectez vous pour réserver un voyage.";
+                    res.redirect('/connexion');
                 } 
             } catch (err) {
                 console.error(err);
@@ -655,10 +617,8 @@ async function demarrerServeur() {
         */
         .post(async (req, res) => {
             req.session.planete_destination = req.body.selection_planete;
-            req.session.message_positif = "Planète de destination sélectionnée!"
-            updateLocals(req, res, () => {
-                res.redirect('/');
-            });
+            req.session.message_positif = "Planète de destination sélectionnée!";
+            res.redirect('/');
         });
 
     app.route('/recu-billet')
@@ -694,9 +654,7 @@ async function demarrerServeur() {
                         });
                     }
                     //req.session.message_positif = "Déconnexion réussie!";
-                    updateLocals(req, res, () => {
-                        res.redirect('/');
-                    });
+                    res.redirect('/');
                 });
             } else {
                 res.render('pages/', { planetes_bd: result.rows });

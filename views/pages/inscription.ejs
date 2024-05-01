@@ -139,27 +139,61 @@
                     });
                 }
             } else 
-            if (!prenom_valide){
-                message_erreur = "Le prénom saisi ne peut contenir que des lettres sans accents, des espaces et des traits d'union et être entre 2 et 50 caractères. ";
+            if (!prenom_valide && !nom_valide){
+                document.getElementById("prenom").classList.add('is-invalid');
+                document.getElementById("nom").classList.add('is-invalid');
+
+                message_erreur = "Le prénom et nom saisis ne peuvent contenir que des lettres sans accents, des espaces et des traits d'union et être entre 2 et 50 caractères. ";
+            } else {
+                if (!prenom_valide){
+                    document.getElementById("prenom").classList.add('is-invalid');
+                    message_erreur = "Le prénom saisi ne peut contenir que des lettres sans accents, des espaces et des traits d'union et être entre 2 et 50 caractères. ";
+
+                } else document.getElementById("prenom").classList.remove('is-invalid');
+
+                if (!nom_valide){
+                        document.getElementById("nom").classList.add('is-invalid');
+                    message_erreur += "Le nom saisi ne peut contenir que des lettres sans accents, des espaces et des traits d'union et être entre 2 et 50 caractères. ";
+
+                } else document.getElementById("nom").classList.remove('is-invalid');
             }
-            if (!nom_valide){
-                message_erreur += "Le nom saisi ne peut contenir que des lettres sans accents, des espaces et des traits d'union et être entre 2 et 50 caractères. ";
-            }
+
+
             if (!courriel_valide){
+                document.getElementById("email").classList.add('is-invalid');
                 message_erreur += "L'adresse courriel saisie est invalide. ";
-            }
+
+            } else document.getElementById("email").classList.remove('is-invalid');
+
+
             if (!telephone_valide && document.getElementById("telephone").value != ""){
+                document.getElementById("telephone").classList.add('is-invalid');
                 message_erreur += "Le numéro de téléphone saisi ne doit contenir que des chiffres et être entre 7 et 15 caractères. ";
-            }
+
+            } else document.getElementById("telephone").classList.remove('is-invalid');
+
+
             if (!mdp_valide){
+                document.getElementById("mdp").classList.add('is-invalid');
                 message_erreur += "Le mot de passe saisi doit être entre 8 et 30 caractères. ";
-            }
+
+            } else document.getElementById("mdp").classList.remove('is-invalid');
+
+
             if (!confirmation_valide){
+                document.getElementById("confirmation").classList.add('is-invalid');
                 message_erreur += "La copie du mot de passe saisi doit être entre 8 et 30 caractères. ";
-            }
+
+            } else document.getElementById("confirmation").classList.remove('is-invalid');
+
+
             if (!adresse_valide){
+                document.getElementById("adresse").classList.add('is-invalid');
                 message_erreur += "L'adresse saisie doit être moins de 128 caractères.";
-            }
+
+            } else document.getElementById("adresse").classList.remove('is-invalid');
+
+
             document.getElementById("message_negatif").textContent = message_erreur;
         }
     </script>
