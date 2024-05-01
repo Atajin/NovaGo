@@ -88,7 +88,7 @@
                     </div>
 
                     <!--Boutton submit pour se connecter à un compte-->
-                    <button type="button" onclick="post_inscription()"
+                    <button type="button" onclick="post_inscription()" id="bouton_inscription"
                         class="btn btn-outline-light btn-lg custom-font-planet-p mt-2 position-relative top-0 start-50 translate-middle-x">
                         Créer le compte</button>
                     </div>
@@ -100,7 +100,7 @@
         function post_inscription(){
             const noms_regex = new RegExp("^[a-zA-Z \-]{2,50}$");
             const mdp_regex = new RegExp(".{8,30}");
-            const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})*$");
+            const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})+$");
             const telephone_regex = new RegExp("^\\d{7,15}$");
             const adresse_regex = new RegExp("^.{0,128}$");
             let message_erreur = "";
@@ -115,6 +115,11 @@
 
             if (prenom_valide && nom_valide && courriel_valide && mdp_valide && confirmation_valide && adresse_valide){
                 if(telephone_valide || document.getElementById("telephone").value == ""){
+                    document.getElementById("bouton_connexion").disabled = true;
+                    document.getElementById("prenom").classList.remove('is-invalid');
+                    document.getElementById("nom").classList.remove('is-invalid');
+
+
                     const f = fetch("inscription", {
                         method: "POST",
                         headers: {'Content-Type': 'application/json' },
@@ -131,9 +136,31 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+                        if (typeof data.message_negatif !== 'undefined'){
+                            if (data.message_negatif.includes("courriel")){
+                                document.getElementById("bouton_connexion").disabled = false;
+
+                                document.getElementById("email").classList.add('is-invalid');
+
+                                if (data.message_negatif.includes("mot de passe")){
+                                    document.getElementById("mdp").classList.add('is-invalid');
+                                    document.getElementById("confirmation").classList.add('is-invalid');
+                                }
+                            } else {
+                                document.getElementById("bouton_connexion").disabled = false;
+
+                                document.getElementById("mdp").classList.add('is-invalid');
+                                document.getElementById("confirmation").classList.add('is-invalid');
+                            }
+                        }
                         if (typeof data.message_positif !== 'undefined'){
                             window.location.href = "http://localhost:4000/";
-                        } else document.getElementById("message_negatif").textContent = data.message_negatif;
+
+                        } else {
+                            document.getElementById("message_negatif").textContent = data.message_negatif;
+                            document.getElementById("bouton_connexion").disabled = false;
+                        }
+
                     }).catch((error) => {
                         console.error('Erreur:', error);
                     });
