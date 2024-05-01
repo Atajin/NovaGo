@@ -287,7 +287,9 @@ async function demarrerServeur() {
         */
         .get((req, res) => {
             try {
-                res.render('pages/connexion', {});
+                const message_negatif = req.session.message_negatif;
+                req.session.message_negatif = "";
+                res.render('pages/connexion', { message_negatif: message_negatif});
             } catch (err) {
                 res.render('pages/connexion', {
                     message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données."
@@ -598,9 +600,12 @@ async function demarrerServeur() {
                             voyages_bd: voyageResult.rows
                         });
                     }
-                } else res.render('pages/connexion', {
-                    message_negatif: 'Connectez vous pour réserver un voyage'
-                });
+                } else {
+                    req.session.message_negatif = "Connectez vous pour réserver un voyage."
+                    updateLocals(req, res, () => {
+                        res.redirect('/connexion');
+                    });
+                } 
             } catch (err) {
                 console.error(err);
                 return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
@@ -650,6 +655,7 @@ async function demarrerServeur() {
         */
         .post(async (req, res) => {
             req.session.planete_destination = req.body.selection_planete;
+            req.session.message_positif = "Planète de destination sélectionnée!"
             updateLocals(req, res, () => {
                 res.redirect('/');
             });

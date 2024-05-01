@@ -101,4 +101,9 @@
             <% } %>
 
     <script src="/javascript/exploration.js"></script>
+    <script>
+        function ajouter_commentaire(){
+            db.commentaires.insertOne( { name : document.getElementById("est_connecte"), comment : document.getElementById("commentaire") });
+        }
+    </script>
     <%- include ("../partials/footer.ejs") %>
