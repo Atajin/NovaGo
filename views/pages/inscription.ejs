@@ -115,7 +115,7 @@
 
             if (prenom_valide && nom_valide && courriel_valide && mdp_valide && confirmation_valide && adresse_valide){
                 if(telephone_valide || document.getElementById("telephone").value == ""){
-                    document.getElementById("bouton_connexion").disabled = true;
+                    document.getElementById("bouton_inscription").disabled = true;
                     document.getElementById("prenom").classList.remove('is-invalid');
                     document.getElementById("nom").classList.remove('is-invalid');
 
@@ -138,7 +138,7 @@
                     .then(data => {
                         if (typeof data.message_negatif !== 'undefined'){
                             if (data.message_negatif.includes("courriel")){
-                                document.getElementById("bouton_connexion").disabled = false;
+                                document.getElementById("bouton_inscription").disabled = false;
 
                                 document.getElementById("email").classList.add('is-invalid');
 
@@ -147,7 +147,7 @@
                                     document.getElementById("confirmation").classList.add('is-invalid');
                                 }
                             } else {
-                                document.getElementById("bouton_connexion").disabled = false;
+                                document.getElementById("bouton_inscription").disabled = false;
 
                                 document.getElementById("mdp").classList.add('is-invalid');
                                 document.getElementById("confirmation").classList.add('is-invalid');
@@ -158,7 +158,7 @@
 
                         } else {
                             document.getElementById("message_negatif").textContent = data.message_negatif;
-                            document.getElementById("bouton_connexion").disabled = false;
+                            document.getElementById("bouton_inscription").disabled = false;
                         }
 
                     }).catch((error) => {

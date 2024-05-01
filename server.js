@@ -398,9 +398,6 @@ async function demarrerServeur() {
             req.session.est_connecte = req.session.email && req.session.mdp;
             const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
             try {
-                const connexion = await getPool().getConnection();
-                const planetes_bd = await recupererPlanetes(connexion);
-                await connexion.close();
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
                     return res.status(401).send({ message_negatif: errors.array().map(error => error.msg).join(' ') });
