@@ -13,6 +13,8 @@ import bcrypt from "bcrypt";
 import { connect } from "http2";
 import Stripe from 'stripe';
 import { error } from "console";
+import { config } from "dotenv"; 
+import { MongoClient } from "mongodb";
 
 const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
