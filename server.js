@@ -80,7 +80,8 @@ function getPool() {
 }
 
 function updateLocals(req, res, next) {
-    if (req.session){
+    if (req.session) {
+        res.locals.id_connecte = req.session.id_connecte;
         res.locals.est_connecte = req.session.email && req.session.mdp;
         res.locals.est_admin = req.session.est_admin;
         res.locals.planete_origine = req.session.planete_util;
@@ -92,6 +93,7 @@ function updateLocals(req, res, next) {
         res.locals.date_retour = req.session.date_retour;
         res.locals.personnes = req.session.personnes;
     } else {
+        res.locals.id_connecte = 0;
         res.locals.est_connecte = false;
         res.locals.est_admin = false;
         res.locals.planete_origine = null;
@@ -197,6 +199,7 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+    res.locals.id_connecte = req.session.id_connecte;
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
@@ -318,11 +321,19 @@ async function demarrerServeur() {
                     { email: email },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
+
+                if (resultUser.rows.length > 0) {
+                    req.session.id_connecte = resultUser.rows[0].ID_UTILISATEUR;
+                }
+                else if (resultAdmin.rows.length > 0) {
+                    req.session.id_connecte = resultAdmin.rows[0].ID_ADMINISTRATEUR;
+                }
+
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        if (req.session.email != email){
-                            const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
+                        if (req.session.email != email) {
+                            const planeteResult = await trouverPlaneteUtil(connexion, res.locals.id_connecte);
 
                             if (planeteResult.rows.length > 0) {
                                 //Ajout des informations nécessaires à la session
@@ -354,7 +365,7 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
-                    if (req.session.email != email){
+                    if (req.session.email != email) {
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
                             //Ajout des informations nécessaires à la session
@@ -380,7 +391,7 @@ async function demarrerServeur() {
                     }
                 } else {
                     // L'utilisateur n'existe pas
-                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });                    
+                    return res.status(401).send({ message_negatif: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
                 }
             } catch (err) {
                 console.error(err);
@@ -607,24 +618,6 @@ async function demarrerServeur() {
             }
         });
 
-    /*
-        Confirmer la transaction de la page reservation
-    */
-
-    app.route('/confirmer-transaction')
-
-        .post(async (req, res) => {
-            const montantArgents = req.body.montantArgents;
-            const nombreTotalBillets =  req.body.nombreBillets;
-            const prixEtBillets = req.body.prixEtBillets;
-            // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
-            console.log('Montant d\'argents reçu :', montantArgents);
-            console.log(nombreTotalBillets);
-            console.log(prixEtBillets);
-            // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
-            res.sendStatus(200);
-        });
-
     app.route('/exploration')
         /*
             Accès à la page d'exploration
@@ -709,12 +702,14 @@ async function demarrerServeur() {
     app.post('/checkout', async (req, res) => {
         const { dataPanier } = req.body;
         console.log(dataPanier);
-
+        let prixTotal = 0;
+        let quantiteBilletPanier = [];
+        let prixPanier = [];
+        let billetData = {};
         try {
             let panier = [];
             for (let i = 0; i < dataPanier.length; i++) {
                 let found = false;
-
 
                 for await (const product of stripe.products.list({ limit: 100 })) {
                     if (product.metadata.id_voyage_db === dataPanier[i].idVoyage.toString() &&
@@ -723,20 +718,43 @@ async function demarrerServeur() {
                         let prix = await stripe.prices.list({ product: product.id });
 
                         if (prix.data.length > 0) {
+                            prixPanier.push(prix.data[0].unit_amount);
+                            quantiteBilletPanier.push(dataPanier[i].quantiteBillet);
+                            prixTotal += quantiteBillet * prix.data[0].unit_amount;
                             let item = {
                                 price: prix.data[0].id,
                                 quantity: quantiteBillet
                             };
-
                             panier.push(item);
                             found = true;
                             break;
                         }
+
                     }
                 }
 
                 if (!found) {
                     console.log(`Aucun résultat pour l'item ${i} avec ID voyage: ${dataPanier[i].idVoyage} et classe: ${dataPanier[i].classeVoyage}`);
+                }
+            }
+
+            for (let i = 0; i < quantiteBilletPanier.length; i++) {
+
+                for (let j = 0; j < quantiteBilletPanier[i]; j++) {
+
+                    // Générer un numéro de siège aléatoire pour chaque billet
+                    let siege = genererNumeroSiege();
+
+                    // Créer l'objet billetData pour chaque billet
+                    billetData = {
+                        classe: dataPanier[i].classeVoyage,
+                        siege: siege,
+                        voyage_id_voyage: dataPanier[i].idVoyage,
+                        prix: prixPanier[i],
+                        utilisateur_id_utilisateur: req.session.id_connecte,
+                        transaction_id_transaction: null
+                    };
+                    console.log(billetData);
                 }
             }
 
@@ -754,6 +772,23 @@ async function demarrerServeur() {
                 success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: 'http://localhost:4000/reservation',
             });
+
+            const transactionData = {
+                date_transaction: new Date(),
+                prix_total: prixTotal
+            };
+
+            // Générer un numéro de siège aléatoire
+            function genererNumeroSiege() {
+                // Définir la plage de sièges (par exemple, de 'A1' à 'Z99')
+                const lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const chiffres = '0123456789';
+
+                const lettreAleatoire = lettres[Math.floor(Math.random() * lettres.length)];
+                const chiffreAleatoire = chiffres[Math.floor(Math.random() * chiffres.length)];
+
+                return lettreAleatoire + chiffreAleatoire;
+            }
 
             return res.json({ url: session.url });
         } catch (err) {
