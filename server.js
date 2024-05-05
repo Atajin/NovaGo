@@ -333,7 +333,7 @@ async function demarrerServeur() {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
                         if (req.session.email != email) {
-                            const planeteResult = await trouverPlaneteUtil(connexion, res.locals.id_connecte);
+                            const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
 
                             if (planeteResult.rows.length > 0) {
                                 //Ajout des informations nécessaires à la session
@@ -769,25 +769,15 @@ async function demarrerServeur() {
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}',
+                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}&prixTotal=' + prixTotal,
                 cancel_url: 'http://localhost:4000/reservation',
             });
 
-            const transactionData = {
-                date_transaction: new Date(),
-                prix_total: prixTotal
-            };
-
             // Générer un numéro de siège aléatoire
             function genererNumeroSiege() {
-                // Définir la plage de sièges (par exemple, de 'A1' à 'Z99')
-                const lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 const chiffres = '0123456789';
-
-                const lettreAleatoire = lettres[Math.floor(Math.random() * lettres.length)];
                 const chiffreAleatoire = chiffres[Math.floor(Math.random() * chiffres.length)];
-
-                return lettreAleatoire + chiffreAleatoire;
+                return chiffreAleatoire;
             }
 
             return res.json({ url: session.url });
@@ -799,7 +789,14 @@ async function demarrerServeur() {
 
     app.get('/success', (req, res) => {
         const sessionId = req.query.session_id;
-        res.render('pages/success', { sessionId: sessionId });
+        const prixTotal = req.query.prixTotal;
+
+        const transactionData = {
+            date_transaction: new Date(),
+            prix_total: prixTotal
+        };
+
+        res.render('pages/success', { sessionId: sessionId});
     });
 
     app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {

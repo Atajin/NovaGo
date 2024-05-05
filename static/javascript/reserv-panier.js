@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let dataPanier = [];
 
     document.getElementById('confirmer-btn').addEventListener('click', function () {
+        // Disable the button to prevent multiple clicks
+        this.disabled = true;
+    
         // Utiliser AJAX pour envoyer les données au serveur
         fetch('/checkout', {
             method: 'POST',
@@ -24,19 +27,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 dataPanier: dataPanier
             }),
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.url) {
-                    window.location.href = data.url;
-                } else {
-                    console.error('Erreur lors de la transaction:', data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Erreur:', error);
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                console.error('Erreur lors de la transaction:', data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Erreur:', error);
+        });
     });
-
 
     voyagesData.forEach(voyage => {
         const addBtns = document.querySelectorAll("#add_btn_" + voyage.ID_VOYAGE);
