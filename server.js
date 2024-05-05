@@ -738,25 +738,43 @@ async function demarrerServeur() {
                 }
             }
 
-            for (let i = 0; i < quantiteBilletPanier.length; i++) {
+                const connection = await getPool().getConnection();
 
-                for (let j = 0; j < quantiteBilletPanier[i]; j++) {
+                for (let i = 0; i < quantiteBilletPanier.length; i++) {
+                    for (let j = 0; j < quantiteBilletPanier[i]; j++) {
 
-                    // Générer un numéro de siège aléatoire pour chaque billet
-                    let siege = genererNumeroSiege();
+                        // Générer un numéro de siège aléatoire pour chaque billet
+                        let siege = genererNumeroSiege();
 
-                    // Créer l'objet billetData pour chaque billet
-                    billetData = {
-                        classe: dataPanier[i].classeVoyage,
-                        siege: siege,
-                        voyage_id_voyage: dataPanier[i].idVoyage,
-                        prix: prixPanier[i],
-                        utilisateur_id_utilisateur: req.session.id_connecte,
-                        transaction_id_transaction: null
-                    };
-                    console.log(billetData);
+                        // Créer l'objet billetData pour chaque billet
+                        billetData = {
+                            classe: dataPanier[i].classeVoyage,
+                            siege: siege,
+                            voyage_id_voyage: dataPanier[i].idVoyage,
+                            prix: prixPanier[i]/100,
+                            utilisateur_id_utilisateur: req.session.id_connecte,
+                            transaction_id_transaction: null
+                        };
+
+                        // Insérer les données du billet dans la base de données
+                        await connection.execute(
+                            `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
+                            VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
+                            {
+                                classe: billetData.classe,
+                                siege: billetData.siege,
+                                voyage_id_voyage: billetData.voyage_id_voyage,
+                                prix: billetData.prix,
+                                utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
+                                transaction_id_transaction: billetData.transaction_id_transaction
+                            }
+                        );
+                        console.log('Nouveau billet inséré avec succès');
+                        console.log(billetData);
+                        await connection.commit();
+                    }
                 }
-            }
+            await connection.close();
 
             if (panier.length === 0) {
                 console.error("Le panier est vide. La session de checkout ne peut pas être ouverte.");
@@ -796,7 +814,7 @@ async function demarrerServeur() {
             prix_total: prixTotal
         };
 
-        res.render('pages/success', { sessionId: sessionId});
+        res.render('pages/success', { sessionId: sessionId });
     });
 
     app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
