@@ -702,7 +702,6 @@ async function demarrerServeur() {
     app.post('/checkout', async (req, res) => {
         const { dataPanier } = req.body;
         console.log(dataPanier);
-        let prixTotal = 0;
         let quantiteBilletPanier = [];
         let prixPanier = [];
         let billetData = {};
@@ -720,7 +719,6 @@ async function demarrerServeur() {
                         if (prix.data.length > 0) {
                             prixPanier.push(prix.data[0].unit_amount);
                             quantiteBilletPanier.push(dataPanier[i].quantiteBillet);
-                            prixTotal += quantiteBillet * prix.data[0].unit_amount;
                             let item = {
                                 price: prix.data[0].id,
                                 quantity: quantiteBillet
@@ -738,42 +736,42 @@ async function demarrerServeur() {
                 }
             }
 
-                const connection = await getPool().getConnection();
+            const connection = await getPool().getConnection();
 
-                for (let i = 0; i < quantiteBilletPanier.length; i++) {
-                    for (let j = 0; j < quantiteBilletPanier[i]; j++) {
+            for (let i = 0; i < quantiteBilletPanier.length; i++) {
+                for (let j = 0; j < quantiteBilletPanier[i]; j++) {
 
-                        // Générer un numéro de siège aléatoire pour chaque billet
-                        let siege = genererNumeroSiege();
+                    // Générer un numéro de siège aléatoire pour chaque billet
+                    let siege = genererNumeroSiege();
 
-                        // Créer l'objet billetData pour chaque billet
-                        billetData = {
-                            classe: dataPanier[i].classeVoyage,
-                            siege: siege,
-                            voyage_id_voyage: dataPanier[i].idVoyage,
-                            prix: prixPanier[i]/100,
-                            utilisateur_id_utilisateur: req.session.id_connecte,
-                            transaction_id_transaction: null
-                        };
+                    // Créer l'objet billetData pour chaque billet
+                    billetData = {
+                        classe: dataPanier[i].classeVoyage,
+                        siege: siege,
+                        voyage_id_voyage: dataPanier[i].idVoyage,
+                        prix: prixPanier[i] / 100,
+                        utilisateur_id_utilisateur: req.session.id_connecte,
+                        transaction_id_transaction: null
+                    };
 
-                        // Insérer les données du billet dans la base de données
-                        await connection.execute(
-                            `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
+                    // Insérer les données du billet dans la base de données
+                    await connection.execute(
+                        `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
                             VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
-                            {
-                                classe: billetData.classe,
-                                siege: billetData.siege,
-                                voyage_id_voyage: billetData.voyage_id_voyage,
-                                prix: billetData.prix,
-                                utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
-                                transaction_id_transaction: billetData.transaction_id_transaction
-                            }
-                        );
-                        console.log('Nouveau billet inséré avec succès');
-                        console.log(billetData);
-                        await connection.commit();
-                    }
+                        {
+                            classe: billetData.classe,
+                            siege: billetData.siege,
+                            voyage_id_voyage: billetData.voyage_id_voyage,
+                            prix: billetData.prix,
+                            utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
+                            transaction_id_transaction: billetData.transaction_id_transaction
+                        }
+                    );
+                    console.log('Nouveau billet inséré avec succès');
+                    console.log(billetData);
+                    await connection.commit();
                 }
+            }
             await connection.close();
 
             if (panier.length === 0) {
@@ -787,7 +785,7 @@ async function demarrerServeur() {
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}&prixTotal=' + prixTotal,
+                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url: 'http://localhost:4000/reservation',
             });
 
@@ -805,17 +803,100 @@ async function demarrerServeur() {
         }
     });
 
-    app.get('/success', (req, res) => {
+    app.get('/success', async (req, res) => {
         const sessionId = req.query.session_id;
-        const prixTotal = req.query.prixTotal;
-
-        const transactionData = {
-            date_transaction: new Date(),
-            prix_total: prixTotal
-        };
-
-        res.render('pages/success', { sessionId: sessionId });
+        const userId = req.session.id_connecte; // Supposons que cela contient l'identifiant de l'utilisateur
+    
+        try {
+            // Début d'une transaction
+            const connexion = await getPool().getConnection();
+    
+            // Récupération des billets de l'utilisateur avec une transaction nulle
+            const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId, connexion);
+            console.log(billetsUtilisateur);
+    
+            // Calcul du prix total des billets
+            const prixTotal = calculerPrixTotalBillets(billetsUtilisateur);
+            console.log(prixTotal);
+    
+            // Création d'une nouvelle transaction dans la base de données
+            const idTransaction = await creerNouvelleTransaction(connexion, prixTotal);
+            console.log(idTransaction);
+    
+            // Mise à jour de chaque billet avec l'identifiant de transaction
+            await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId, connexion);
+    
+            // Fermeture de la connexion
+            await connexion.close();
+    
+            // Rendu d'une page de succès ou redirection vers une URL de succès avec le prix total
+            res.render('pages/success', { sessionId: sessionId });
+        } catch (erreur) {
+            console.error('Erreur lors de la finalisation du paiement :', erreur);
+            res.status(500).send('Erreur lors de la finalisation du paiement');
+    
+            // Début d'une transaction
+            const connexion = await getPool().getConnection();
+    
+            // Récupération des billets de l'utilisateur avec une transaction nulle
+            const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId, connexion);
+            // Si une erreur survient, annulez l'insertion des billets
+            // Supprimez les billets qui ont été insérés avant l'erreur
+            // Vous devez implémenter la logique pour supprimer les billets insérés si nécessaire
+            if (billetsUtilisateur) {
+                for (const billet of billetsUtilisateur) {
+                    await connexion.execute(
+                        `DELETE FROM billet WHERE id_billet = :idBillet`,
+                        { idBillet: billet.ID_BILLET }
+                    );
+                    await connexion.commit();
+                }
+            }
+            await connexion.close();
+        }
     });
+
+    async function recupererBilletsAvecTransactionNulle(idUtilisateur, connexion) {
+        const resultat = await connexion.execute(
+            `SELECT * FROM billet 
+             WHERE utilisateur_id_utilisateur = :idUtilisateur 
+             AND transaction_id_transaction IS NULL`,
+            { idUtilisateur },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return resultat.rows;
+    }
+
+    function calculerPrixTotalBillets(billets) {
+        let prixTotal = 0;
+        for (const billet of billets) {
+            prixTotal += billet.PRIX;
+        }
+        return prixTotal;
+    }
+
+    async function creerNouvelleTransaction(connexion, prixTotal) {
+        const resultat = await connexion.execute(
+            `INSERT INTO transaction (date_transaction, prix_total) 
+             VALUES (SYSDATE, :prixTotal) 
+             RETURNING id_transaction INTO :idTransaction`,
+            { prixTotal, idTransaction: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT } }
+        );
+        await connexion.commit();
+        return resultat.outBinds.idTransaction[0];
+    }
+
+    async function mettreAJourBilletsAvecTransaction(billets, idTransaction, sessionId, connexion) {
+        for (const billet of billets) {
+            await connexion.execute(
+                `UPDATE billet 
+                 SET transaction_id_transaction = :idTransaction 
+                 WHERE id_billet = :idBillet`,
+                { idTransaction: idTransaction, idBillet: billet.ID_BILLET }
+            );
+            await connexion.commit();
+        }
+    }
 
     app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
         let event;
