@@ -3,7 +3,7 @@ Dans command prompt (en tant qu'admin):
 Pull l'image oracle:
 docker pull gvenzl/oracle-xe:21
 
-Run l'image dans docker:
+Run l'image oracle dans docker:
 docker run -d -p 1521:1521 --name oracle-xe -e ORACLE_PASSWORD=oracle gvenzl/oracle-xe:21
 
 Copier le script de creation dans le container docker:
@@ -18,7 +18,7 @@ docker cp /chemin/vers/nom_script_insertion.ddl oracle-xe:/home/nom_script_inser
 Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_3.0.ddl oracle-xe:/home/script_insertion_novago_3.0.ddl
 
 
-Dans docker exec:
+Dans docker exec pour la BD oracle:
 
 Se connecter en tant qu'admin:
 sqlplus sys/oracle as sysdba
