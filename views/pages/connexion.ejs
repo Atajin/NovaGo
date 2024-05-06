@@ -1,6 +1,6 @@
 <%- include ("../partials/header.ejs") %>
 <!--Champ d'affichage des erreurs lors de connexion-->
-    <div class="custom-message-negatif" id="message_negatif">
+    <div class="custom-message-negatif" id="message_negatif" style="background-color: black;">
         <% if (typeof message_negatif !== 'undefined') { %>
             <%= message_negatif %>
         <% } %>

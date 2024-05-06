@@ -115,7 +115,7 @@ async function chercherNomPlaneteParId(connection, planetID) {
         { planetID: planetID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-    const planetNom = result.rows[0].NOM;
+    const planetNom = result.rows[0];
     return planetNom;
 }
 
