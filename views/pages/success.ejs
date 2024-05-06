@@ -13,24 +13,25 @@
                     </div>
                     <div class="row mt-1 rounded custom-bg-rvt p-1 px-3">
                         <div class="p-1">
+                            <% transactionData.forEach(transaction=> { %>
                             <div class="row custom-bg-rvt rounded mt-1 custom-white-btn" style="cursor: pointer;"
-                                onclick="" id="">
+                                onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>')" id="info_<%= transaction.ID_TRANSACTION %>">
                                 <div class="row m-0 p-0">
                                     <div class="col">
                                         <p class="custom-font-rvt m-0">
-                                            Transaction 1
+                                            Transaction <%= transaction.ID_TRANSACTION %>
                                         </p>
                                     </div>
                                     <div class="col text-end">
                                         <p class="custom-font-rvt m-0">
-                                            Date
+                                            <%= transaction.DATE_TRANSACTION %>
                                         </p>
                                     </div>
                                 </div>
                                 <div class="row m-0 p-0">
                                     <div class="col">
                                         <p class="custom-font-rvt m-0">
-                                            Prix Total
+                                            <%= transaction.PRIX_TOTAL %> $
                                         </p>
                                     </div>
                                     <div class="col text-end">
@@ -40,6 +41,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <% }); %>
                         </div>
                     </div>
                     <div class="row mt-2">
@@ -56,7 +58,7 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col">
-                                            <p class="custom-font-labels m-0 px-2">
+                                            <p class="custom-font-labels m-0 px-2" id="nomBillet">
                                                 Transaction 1 - Date Transaction
                                             </p>
                                         </div>

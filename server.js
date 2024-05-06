@@ -199,7 +199,6 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    res.locals.id_connecte = req.session.id_connecte;
     res.locals.est_connecte = req.session.email && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
@@ -804,55 +803,61 @@ async function demarrerServeur() {
     });
 
     app.get('/success', async (req, res) => {
-        const sessionId = req.query.session_id;
-        const userId = req.session.id_connecte; // Supposons que cela contient l'identifiant de l'utilisateur
-    
+        req.session.est_connecte = req.session.email && req.session.mdp;
+
         try {
-            // Début d'une transaction
-            const connexion = await getPool().getConnection();
-    
-            // Récupération des billets de l'utilisateur avec une transaction nulle
-            const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId, connexion);
-            console.log(billetsUtilisateur);
-    
-            // Calcul du prix total des billets
-            const prixTotal = calculerPrixTotalBillets(billetsUtilisateur);
-            console.log(prixTotal);
-    
-            // Création d'une nouvelle transaction dans la base de données
-            const idTransaction = await creerNouvelleTransaction(connexion, prixTotal);
-            console.log(idTransaction);
-    
-            // Mise à jour de chaque billet avec l'identifiant de transaction
-            await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId, connexion);
-    
-            // Fermeture de la connexion
-            await connexion.close();
-    
-            // Rendu d'une page de succès ou redirection vers une URL de succès avec le prix total
-            res.render('pages/success', { sessionId: sessionId });
+            if (req.session.est_connecte) {
+                const email = req.session.email;
+                const sessionId = req.query.session_id;
+                const userId = req.session.id_connecte; 
+
+                // Début d'une transaction
+                const connexion = await getPool().getConnection();
+
+                // Exécution de la requête pour vérifier l'email
+                const result = await connexion.execute(
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
+                    { email: email },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+
+                // Récupération des billets de l'utilisateur avec une transaction nulle
+                const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId, connexion);
+                console.log(billetsUtilisateur);
+
+                // Calcul du prix total des billets
+                const prixTotal = calculerPrixTotalBillets(billetsUtilisateur);
+                console.log(prixTotal);
+
+                if (prixTotal != 0) {
+                    // Création d'une nouvelle transaction dans la base de données
+                    const idTransaction = await creerNouvelleTransaction(connexion, prixTotal);
+
+                    // Mise à jour de chaque billet avec l'identifiant de transaction
+                    await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId, connexion);
+                }
+
+                const billetData = await recupererBilletsIdUser(userId, connexion);
+                const billetTotalParIdTransaction = 0;
+                const transactionData = await recupererTransactionsIdUser(userId, connexion);
+
+                for (const billet of billetData) {
+
+                }
+
+                // Fermeture de la connexion
+                await connexion.close();
+
+                if (result.rows.length > 0) {
+                    // Rendu d'une page de succès ou redirection vers une URL de succès avec le prix total
+                    res.render('pages/success', { est_connecte: req.session.est_connecte, sessionId: sessionId, transactionData: transactionData, billetData: billetData });
+                }
+            } else res.render('pages/connexion', {
+                message_negatif: 'Connectez vous pour réserver un voyage'
+            });
         } catch (erreur) {
             console.error('Erreur lors de la finalisation du paiement :', erreur);
             res.status(500).send('Erreur lors de la finalisation du paiement');
-    
-            // Début d'une transaction
-            const connexion = await getPool().getConnection();
-    
-            // Récupération des billets de l'utilisateur avec une transaction nulle
-            const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId, connexion);
-            // Si une erreur survient, annulez l'insertion des billets
-            // Supprimez les billets qui ont été insérés avant l'erreur
-            // Vous devez implémenter la logique pour supprimer les billets insérés si nécessaire
-            if (billetsUtilisateur) {
-                for (const billet of billetsUtilisateur) {
-                    await connexion.execute(
-                        `DELETE FROM billet WHERE id_billet = :idBillet`,
-                        { idBillet: billet.ID_BILLET }
-                    );
-                    await connexion.commit();
-                }
-            }
-            await connexion.close();
         }
     });
 
@@ -861,6 +866,36 @@ async function demarrerServeur() {
             `SELECT * FROM billet 
              WHERE utilisateur_id_utilisateur = :idUtilisateur 
              AND transaction_id_transaction IS NULL`,
+            { idUtilisateur },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return resultat.rows;
+    }
+
+    async function recupererBilletsIdUser(idUtilisateur, connexion) {
+        const resultat = await connexion.execute(
+            `SELECT * FROM billet 
+             WHERE utilisateur_id_utilisateur = :idUtilisateur`,
+            { idUtilisateur },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return resultat.rows;
+    }
+
+    async function recupererBilletsIdTransaction(idTransaction, connexion) {
+        const resultat = await connexion.execute(
+            `SELECT * FROM billet 
+             WHERE transaction_id_transaction = :idTransaction`,
+            { idTransaction },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return resultat.rows;
+    }
+
+    async function recupererTransactionsIdUser(idUtilisateur, connexion) {
+        const resultat = await connexion.execute(
+            `SELECT * FROM transaction WHERE id_transaction IN (SELECT transaction_id_transaction FROM billet 
+             WHERE utilisateur_id_utilisateur = :idUtilisateur)`,
             { idUtilisateur },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
