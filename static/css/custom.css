@@ -34,7 +34,7 @@
     }
 
     .custom-background {
-        background-image: url('../images/spacebg.jpg');
+        background-image: url('../images/spacebg.webp');
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
