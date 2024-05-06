@@ -6,8 +6,8 @@
     </script>
 <!--Champ d'affichage des erreurs lors de connexion à la BD-->
 <% if (typeof message_negatif !== 'undefined') { %>
-    <div class="custom-message-negatif">
-        <span style="background-color: black;">
+    <div>
+        <span class="custom-message-negatif">
             <%= message_negatif %>
         </span>
     </div>
@@ -17,8 +17,8 @@
         <div class="row">
             <div class="col" style="max-width: 30%;">
                 <!--Champ d'affichage des erreurs lors d'inscription-->
-                <div class="custom-message-negatif">
-                    <p id="message_negatif" style="background-color: black;white-space: pre-line;"></p>
+                <div>
+                    <span id="message_negatif" class="custom-message-negatif" style="white-space: pre-line;"></span>
                 </div>
             </div>
                 <div class="col">

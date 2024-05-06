@@ -61,12 +61,14 @@
     .custom-message-negatif {
         font-family: 'PPStellar', sans-serif;
         color: red;
+        background-color: black;
         font-size: 20px;
     }
 
     .custom-message-positif {
         font-family: 'PPStellar', sans-serif;
         color: lime;
+        background-color: black;
         font-size: 20px;
     }
 
