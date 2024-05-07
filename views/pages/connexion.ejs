@@ -37,7 +37,7 @@
                             </div>
 
                             <!--Boutton submit pour se connecter à un compte-->
-                            <button type="button" onclick="post_connexion()"
+                            <button type="button" onclick="post_connexion()" id="bouton_connexion"
                                 class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
                                 Connexion au compte
                             </button>
@@ -48,12 +48,13 @@
     <script>
         function post_connexion(){
             const mdp_regex = new RegExp(".{8,}");
-            const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})*$");
+            const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})+$");
             let message_erreur = "";
             const courriel_valide = courriel_regex.test(document.getElementById("email").value);
             const mdp_valide = mdp_regex.test(document.getElementById("mdp").value);
 
             if (courriel_valide && mdp_valide){
+                document.getElementById("bouton_connexion").disabled = true;
                 const f = fetch("connexion", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json' },
@@ -70,17 +71,27 @@
                         } else {
                             window.location.href = "http://localhost:4000/";
                         }
-                    } else document.getElementById("message_negatif").textContent = data.message_negatif;
+                    } else {
+                        document.getElementById("email").classList.add('is-invalid');
+                        document.getElementById("mdp").classList.add('is-invalid');
+                        
+                        document.getElementById("bouton_connexion").disabled = false;
+                        document.getElementById("message_negatif").textContent = data.message_negatif;
+                    }
                 }).catch((error) => {
                     console.error('Erreur:', error);
                 });
             } else 
             if (!courriel_valide){
+                document.getElementById("email").classList.add('is-invalid');
                 message_erreur = "L'adresse courriel saisie est invalide. ";
-            }
+            } else document.getElementById("email").classList.remove('is-invalid');
+            
             if (!mdp_valide){
+                document.getElementById("mdp").classList.add('is-invalid');
                 message_erreur += "Le mot de passe doit être plus de 8 caractères.";
-            }
+            } else document.getElementById("mdp").classList.remove('is-invalid');
+
             document.getElementById("message_negatif").textContent = message_erreur;
         }
       </script>
