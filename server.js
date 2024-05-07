@@ -7,6 +7,7 @@ const store = new session.MemoryStore();
 import path from "path";
 import { fileURLToPath } from "url";
 import oracledb from "oracledb";
+import { MongoClient } from "mongodb";
 import { body, check, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 import bcrypt from "bcrypt";
@@ -14,6 +15,7 @@ import { connect } from "http2";
 import Stripe from 'stripe';
 import { error } from "console";
 
+const MONGO_DB_URI = "mongodb://localhost:27017"
 const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
 
@@ -45,8 +47,14 @@ async function initialiserBaseDeDonnees() {
         console.log("Connexion à la base de données Oracle réussie !");
 
         await connexion.close();
+
+        let mongoClient;
+
+        mongoClient = await connectToMongo(MONGO_DB_URI);
+
+        await mongoClient.close();
     } catch (err) {
-        console.error("Impossible de se connecter à la base de données Oracle:", err);
+        console.error("Impossible de se connecter à la base de données Oracle ou MongoDB:", err);
     }
 }
 
@@ -77,6 +85,21 @@ async function fermer_session(connexion, token) {
 
 function getPool() {
     return pool;
+}
+
+async function connectToMongo(uri) {
+    let mongoClient;
+
+    try {
+        mongoClient = new MongoClient(uri)
+
+        await mongoClient.connect();
+        console.log("Connexion à la base de données MongoDB réussie !");
+
+        return mongoClient;
+    } catch (error) {
+        console.error("Impossible de se connecter à la base de données MongoDB:", err);
+    }
 }
 
 async function hashMotDePasse(mdp, saltRounds) {
@@ -256,7 +279,7 @@ async function demarrerServeur() {
             try {
                 const message_negatif = req.session.message_negatif;
                 req.session.message_negatif = "";
-                res.render('pages/connexion', { message_negatif: message_negatif});
+                res.render('pages/connexion', { message_negatif: message_negatif });
             } catch (err) {
                 res.render('pages/connexion', {
                     message_negatif: "Une erreur s'est produite lors de la récupération des données de la base de données."
@@ -559,11 +582,29 @@ async function demarrerServeur() {
                 } else {
                     req.session.message_negatif = "Connectez vous pour réserver un voyage.";
                     res.redirect('/connexion');
-                } 
+                }
             } catch (err) {
                 console.error(err);
                 return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
             }
+        });
+
+    /*
+        Confirmer la transaction de la page reservation
+    */
+
+    app.route('/confirmer-transaction')
+
+        .post(async (req, res) => {
+            const montantArgents = req.body.montantArgents;
+            const nombreTotalBillets = req.body.nombreBillets;
+            const prixEtBillets = req.body.prixEtBillets;
+            // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
+            console.log('Montant d\'argents reçu :', montantArgents);
+            console.log(nombreTotalBillets);
+            console.log(prixEtBillets);
+            // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
+            res.sendStatus(200);
         });
 
     app.route('/exploration')
