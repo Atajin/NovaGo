@@ -99,33 +99,33 @@ async function recupererPlanetes(connexion) {
     }
 }
 
-async function recupererVoyages(connection, planetID) {
+async function recupererVoyages(connection, planeteID) {
     const voyageResult = await connection.execute(
-        `SELECT * FROM voyage WHERE planete_id_planete = :planetID`,
-        { planetID: planetID },
+        `SELECT * FROM voyage WHERE planete_id_planete = :planeteID`,
+        { planeteID: planeteID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     await connection.close();
     return voyageResult;
 }
 
-async function chercherNomPlaneteParId(connection, planetID) {
+async function chercherNomPlaneteParId(connection, planeteID) {
     const result = await connection.execute(
-        `SELECT NOM FROM PLANETE WHERE id_planete = :planetID`,
-        { planetID: planetID },
+        `SELECT NOM FROM PLANETE WHERE id_planete = :planeteID`,
+        { planeteID: planeteID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-    const planetNom = result.rows[0];
-    return planetNom;
+    const planeteNom = result.rows[0];
+    return planeteNom;
 }
 
-async function obtenirDonneesPlaneteParId(connection, planetID) {
-    const planetResult = await connection.execute(
-        `SELECT * FROM PLANETE WHERE id_planete = :planetID`,
-        { planetID: planetID },
+async function obtenirDonneesPlaneteParId(connection, planeteID) {
+    const planeteResult = await connection.execute(
+        `SELECT * FROM PLANETE WHERE id_planete = :planeteID`,
+        { planeteID: planeteID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-    return planetResult;
+    return planeteResult;
 }
 
 async function obtenirDonneesVaisseauParId(connection, vaisseauID) {
@@ -140,12 +140,12 @@ async function obtenirDonneesVaisseauParId(connection, vaisseauID) {
 async function trouverPlaneteUtil(connexion, id_util) {
     try {
         // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
-        const planetUtil = await connexion.execute(
+        const planeteUtil = await connexion.execute(
             `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
             { utilID: id_util },
             { outFormat: oracledb.OUT_FORMAT_ARRAY }
         );
-        return planetUtil;
+        return planeteUtil;
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle:", err);
         return null;
@@ -510,8 +510,8 @@ async function demarrerServeur() {
                     );
 
                     const rechercheData = {
-                        planetOrigine: await chercherNomPlaneteParId(connection, req.session.planete_util),
-                        planetDestination: await chercherNomPlaneteParId(connection, req.session.planete_destination),
+                        planeteOrigine: await chercherNomPlaneteParId(connection, req.session.planete_util),
+                        planeteDestination: await chercherNomPlaneteParId(connection, req.session.planete_destination),
                         dateDepart: req.session.date_aller,
                         dateRetour: req.session.date_retour,
                         nombrePersonnes: req.session.personnes
@@ -522,18 +522,18 @@ async function demarrerServeur() {
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {
-                        const planetId = voyage.PLANETE_ID_PLANETE2;
+                        const planeteId = voyage.PLANETE_ID_PLANETE2;
                         const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
 
                         let connection;
                         try {
                             connection = await pool.getConnection();
 
-                            const planetResult = await obtenirDonneesPlaneteParId(connection, planetId);
+                            const planeteResult = await obtenirDonneesPlaneteParId(connection, planeteId);
                             const vaisseauResult = await obtenirDonneesVaisseauParId(connection, vaisseauId);
 
                             // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
-                            voyage.planetData = planetResult.rows[0];
+                            voyage.planeteData = planeteResult.rows[0];
                             voyage.vaisseauData = vaisseauResult.rows[0];
 
                         } catch (error) {
