@@ -809,7 +809,7 @@ async function demarrerServeur() {
             if (req.session.est_connecte) {
                 const email = req.session.email;
                 const sessionId = req.query.session_id;
-                const userId = req.session.id_connecte; 
+                const userId = req.session.id_connecte;
 
                 // Début d'une transaction
                 const connexion = await getPool().getConnection();
@@ -838,11 +838,13 @@ async function demarrerServeur() {
                 }
 
                 const billetData = await recupererBilletsIdUser(userId, connexion);
-                const billetTotalParIdTransaction = 0;
                 const transactionData = await recupererTransactionsIdUser(userId, connexion);
 
-                for (const billet of billetData) {
-
+                for (const transaction of transactionData) {
+                    // Récupère le total des billets pour cette transaction
+                    const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION, connexion);
+                    // Ajoute le total des billets à l'objet transaction
+                    transaction.billetTotal = totalBillets;
                 }
 
                 // Fermeture de la connexion
@@ -882,14 +884,32 @@ async function demarrerServeur() {
         return resultat.rows;
     }
 
-    async function recupererBilletsIdTransaction(idTransaction, connexion) {
-        const resultat = await connexion.execute(
-            `SELECT * FROM billet 
-             WHERE transaction_id_transaction = :idTransaction`,
-            { idTransaction },
+    // Fonction pour récupérer le total des billets pour une transaction donnée
+    async function recupererTotalBilletsParTransaction(idTransaction, connexion) {
+        const result = await connexion.execute(
+            `SELECT COUNT(*) AS total_billets FROM billet WHERE transaction_id_transaction = :idTransaction`,
+            { idTransaction: idTransaction },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
-        return resultat.rows;
+        // Retourne le total des billets pour la transaction
+        return result.rows[0].TOTAL_BILLETS;
+    }
+
+    async function recupererBilletsParTransaction(idTransaction, connexion) {
+        try {
+            // Exécution de la requête SQL pour récupérer les billets associés à la transaction spécifiée
+            const result = await connexion.execute(
+                `SELECT * FROM billet WHERE transaction_id_transaction = :idTransaction`,
+                { idTransaction: idTransaction },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+    
+            // Renvoyer les résultats de la requête
+            return result.rows;
+        } catch (error) {
+            console.error('Erreur lors de la récupération des billets par transaction :', error);
+            throw error;
+        }
     }
 
     async function recupererTransactionsIdUser(idUtilisateur, connexion) {

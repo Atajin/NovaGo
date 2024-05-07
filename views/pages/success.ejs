@@ -11,37 +11,52 @@
                     <div class="row">
                         <h1 class="custom-font-titles text-center">Voyages Réservés</h1>
                     </div>
-                    <div class="row mt-1 rounded custom-bg-rvt p-1 px-3">
+                    <div class="row mt-1 rounded custom-bg-rvt p-1 px-3" style="overflow: auto; height: 300px;">
                         <div class="p-1">
                             <% transactionData.forEach(transaction=> { %>
-                            <div class="row custom-bg-rvt rounded mt-1 custom-white-btn" style="cursor: pointer;"
-                                onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>')" id="info_<%= transaction.ID_TRANSACTION %>">
-                                <div class="row m-0 p-0">
-                                    <div class="col">
-                                        <p class="custom-font-rvt m-0">
-                                            Transaction <%= transaction.ID_TRANSACTION %>
-                                        </p>
+                                <div class="row custom-bg-rvt rounded mt-1 custom-white-btn" style="cursor: pointer;"
+                                    onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>', '<%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>')"
+                                    id="info_<%= transaction.ID_TRANSACTION %>">
+
+                                    <div class="row m-0 p-0">
+                                        <div class="col">
+                                            <p class="custom-font-rvt m-0">
+                                                Transaction <%= transaction.ID_TRANSACTION %>
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-rvt m-0">
+
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="col text-end">
-                                        <p class="custom-font-rvt m-0">
-                                            <%= transaction.DATE_TRANSACTION %>
-                                        </p>
+                                    <div class="row m-0 p-0">
+                                        <div class="col">
+                                            <p class="custom-font-rvt m-0">
+                                                <%= transaction.billetTotal %> billets
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-rvt m-0">
+                                                <%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0 p-0">
+                                        <div class="col">
+                                            <p class="custom-font-rvt m-0">
+                                                <%= transaction.PRIX_TOTAL %> $
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-rvt m-0">
+                                                <%=transaction.DATE_TRANSACTION.toLocaleTimeString('fr-CA', { hour12:
+                                                    false }) %>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row m-0 p-0">
-                                    <div class="col">
-                                        <p class="custom-font-rvt m-0">
-                                            <%= transaction.PRIX_TOTAL %> $
-                                        </p>
-                                    </div>
-                                    <div class="col text-end">
-                                        <p class="custom-font-rvt m-0">
-                                            Billets Total
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <% }); %>
+                                <% }); %>
                         </div>
                     </div>
                     <div class="row mt-2">
@@ -59,7 +74,9 @@
                                     <div class="row">
                                         <div class="col">
                                             <p class="custom-font-labels m-0 px-2" id="nomBillet">
-                                                Transaction 1 - Date Transaction
+                                                Transaction <%= transactionData[0].ID_TRANSACTION %> - <%=
+                                                        transactionData[0].DATE_TRANSACTION.toISOString().slice(0, 10)
+                                                        %>
                                             </p>
                                         </div>
                                         <div class="col text-end">
@@ -175,5 +192,19 @@
             </div>
         </div>
     </div>
+
+    <div id="billetData" data-billet='<%- JSON.stringify(billetData) %>'></div>
+
+    <script src="/javascript/success.js"></script>
+    <script>
+        // Récupérer les données JSON stockées dans l'attribut data-billet
+        const billetDataElement = document.getElementById('billetData');
+        const billetDataString = billetDataElement.getAttribute('data-billet');
+
+        // Convertir les données JSON en objet JavaScript   
+        const billetData = JSON.parse(billetDataString);
+
+        console.log(billetData); // Pour vérifier si les données sont correctement récupérées
+    </script>
 
     <%- include ("../partials/footer.ejs") %>
