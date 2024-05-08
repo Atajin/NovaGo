@@ -47,7 +47,7 @@
                                     de départ</label>
                                 <br>
                                 <input type="date" id="date_aller" name="date_aller" class="form-control" placeholder="Date aller"
-                                    required>
+                                    required <% if (typeof date_aller !== 'undefined') { %> value="<%=date_aller%>" <% } %>>
                             </div>
                 
                             <!-- Champ de texte pour la date de fin du voyage -->
@@ -55,7 +55,8 @@
                                 <label for="date_retour" class="form-label custom-font-labels">Entrez la
                                     date de retour</label>
                                 <br>
-                                <input type="date" id="date_retour" name="date_retour" class="form-control" placeholder="Date retour">
+                                <input type="date" id="date_retour" name="date_retour" class="form-control" placeholder="Date retour"
+                                <% if (typeof date_retour !== 'undefined') { %> value="<%=date_retour%>" <% } %>>
                             </div>
                 
                         </div>

@@ -196,6 +196,10 @@ app.use((req, res, next) => {
     res.locals.planete_destination = req.session.planete_destination;
     res.locals.message_positif = req.session.message_positif;
     res.locals.message_negatif = req.session.message_negatif;
+
+    res.locals.date_aller = req.session.date_aller;
+    res.locals.date_retour = req.session.date_retour;
+    res.locals.personnes = req.session.personnes;
     next();
 });
 
