@@ -245,7 +245,7 @@ async function demarrerServeur() {
                 });
             } catch (err) {
                 console.error(err);
-                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_admin: req.session.est_admin });
+                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
             }
         })
 
