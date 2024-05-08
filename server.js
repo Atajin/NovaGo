@@ -632,7 +632,6 @@ async function demarrerServeur() {
                             est_admin: false
                         });
                     }
-                    //req.session.message_positif = "Déconnexion réussie!";
                     res.redirect('/');
                 });
             } else {
