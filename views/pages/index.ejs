@@ -126,19 +126,42 @@
     </div>
     <script>
         function post_index() {
-            const regex_personnes = new RegExp("\d+");
+            const regex_personnes = new RegExp("\\d+");
+            const personnes_valides = regex_personnes.test(document.getElementById("personnes").value);
             let aller_retour = true;
-            if (document.getElementById("date_retour").required){
-                if (!document.getElementById("date_aller")){
-                    if (document.getElementById("date_aller").value >= document.getElementById("date_retour").value) {
-                        aller_retour = false;
-                    }
-                }
-            }
-            
             let message_erreur = "";
 
-            if (regex_personnes && aller_retour) {
+            if (document.getElementById("date_retour").required){
+
+                if (!document.getElementById("date_retour").value){
+                message_erreur = "Veuillez remplir le champ de date de retour.\r\n";
+
+                document.getElementById("date_retour").classList.add('is-invalid');
+
+                aller_retour = false;
+                }
+            } else document.getElementById("date_retour").classList.remove('is-invalid');
+
+            if (!document.getElementById("date_aller").value){
+                message_erreur += "Veuillez remplir le champ de date de départ.\r\n";
+
+                document.getElementById("date_aller").classList.add('is-invalid');
+
+                aller_retour = false;
+            } else document.getElementById("date_aller").classList.remove('is-invalid');
+
+            if (document.getElementById("date_aller").value >= document.getElementById("date_retour").value
+                && message_erreur == "" && document.getElementById("date_retour").required) {
+                message_erreur += "La date de retour doit être après la date d'aller.\r\n";
+
+                document.getElementById("date_aller").classList.add('is-invalid');
+                document.getElementById("date_retour").classList.add('is-invalid');
+
+                aller_retour = false;
+            }
+            
+
+            if (personnes_valides && aller_retour) {
                 const f = fetch("connexion", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
@@ -157,16 +180,12 @@
                         console.error('Erreur:', error);
                     });
             } else {
-                if (!regex_personnes) {
+                if (!personnes_valides) {
                     document.getElementById("personnes").classList.add('is-invalid');
-                    message_erreur = "Le nombre de passagers saisi est invalide.\r\n";
+                    message_erreur += "Le nombre de passagers saisi est invalide.\r\n";
                 } else document.getElementById("personnes").classList.remove('is-invalid');
 
-                if (!aller_retour){
-                    message_erreur += "La date de retour doit être après la date d'aller.";
-                    document.getElementById("date_aller").classList.add('is-invalid');
-                    document.getElementById("date_retour").classList.add('is-invalid');
-                } else {
+                if (aller_retour){
                     document.getElementById("date_aller").classList.remove('is-invalid');
                     document.getElementById("date_retour").classList.remove('is-invalid');
                 }
