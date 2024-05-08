@@ -15,7 +15,7 @@ import { connect } from "http2";
 import Stripe from 'stripe';
 import { error } from "console";
 
-const MONGO_DB_URI = "mongodb://localhost:27017"
+const MONGO_DB_URI = "mongodb://novago:mongo@localhost:27017"
 const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
 
@@ -28,6 +28,7 @@ const saltRounds = 10;
 let pool;
 let oracleConnexion;
 let mongoConnexion;
+let dbMongo;
 let deconnecte = false;
 
 //Permet de comparer deux champs différents d'express-validator
@@ -49,7 +50,10 @@ async function initialiserBaseDeDonnees() {
         oracleConnexion = await pool.getConnection();
         console.log("Connexion à la base de données Oracle réussie !");
 
+
         mongoConnexion = await connectToMongo(MONGO_DB_URI);
+        dbMongo = mongoConnexion.db("test");
+        console.log("Connexion à la base de données MongoDB réussie !");
 
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle ou MongoDB:", err);
@@ -592,6 +596,11 @@ async function demarrerServeur() {
             try {
                 req.session.est_connecte = req.session.courriel && req.session.mdp;
                 const result = await oracleConnexion.execute("SELECT * FROM PLANETE");
+
+                const commentaires = dbMongo.collection("commentaires");
+                const listeCommentaires = commentaires.find().toArray();
+                console.log("listeCommentaires");
+                console.log(listeCommentaires);
 
                 res.render('pages/exploration', {
                     planetes_bd: result.rows,
