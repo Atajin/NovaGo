@@ -651,7 +651,7 @@ async function demarrerServeur() {
             res.render('exploration.ejs', { comments: comments });
         } catch (err) {
             console.error(err);
-            res.render('exploration.ejs', { error: 'Une erreur s\'est produite lors de la récupération des commentaires.' });
+            res.render('exploration.ejs', { error: 'Erreur produite lors de la récupération des commentaires.' });
         }
     });
 
