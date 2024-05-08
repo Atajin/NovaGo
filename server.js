@@ -28,6 +28,7 @@ const saltRounds = 10;
 let pool;
 let oracleConnexion;
 let mongoConnexion;
+let deconnecte = false;
 
 //Permet de comparer deux champs différents d'express-validator
 const validationMdpEgal = (value, { req }) => {
@@ -235,13 +236,16 @@ async function demarrerServeur() {
             try {
                 const planetes_bd = await recupererPlanetes();
 
-                /*if (!req.session.message_positif && req.session.message_positif != ""){
-                    req.session.message_positif = "Déconnexion réussie!"
-                }*/
+                let message_positif = req.session.message_positif;
                 req.session.message_positif = "";
+                if (deconnecte){
+                    message_positif = "Déconnexion réussie!";
+                    deconnecte = false;
+                }
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
-                    planetes_bd: planetes_bd.rows
+                    planetes_bd: planetes_bd.rows,
+                    message_positif: message_positif
                 });
             } catch (err) {
                 console.error(err);
@@ -632,6 +636,7 @@ async function demarrerServeur() {
                             est_admin: false
                         });
                     }
+                    deconnecte = true;
                     res.redirect('/');
                 });
             } else {
