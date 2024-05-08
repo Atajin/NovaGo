@@ -1,5 +1,6 @@
 const titrePage = document.getElementById('titrePage').innerText;
 const tableName = titrePage.split(': ')[1];
+const table = document.getElementById("dbTable");
 
 window.addEventListener('resize', setTailleBoutonAjouter);
 
@@ -76,10 +77,17 @@ function gestionModifier() {
     const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`);
     const dataCells = row.querySelectorAll('td:not(:last-child)');
 
-    dataCells.forEach((cell) => {
-        const valeurInitiale = cell.innerText;
-        cell.setAttribute('data-original-value', valeurInitiale);
-        cell.innerHTML = `<input type="text" class="form-control" value="${valeurInitiale}">`;
+    dataCells.forEach((cell, i) => {
+        let nomColonne = getNomColonne(table, i);
+        if (nomColonne.includes("ID_" + tableName) || nomColonne.includes("TOKEN")) {
+            const valeurInitiale = cell.innerText;
+            cell.setAttribute('data-original-value', valeurInitiale);
+        } else {
+            const valeurInitiale = cell.innerText;
+            cell.setAttribute('data-original-value', valeurInitiale);
+            cell.innerHTML = `<input type="text" class="form-control" value="${valeurInitiale}">`;
+        }
+
     });
 
     const buttonsCell = row.querySelector('td:last-child');
@@ -120,12 +128,22 @@ function gestionConfirmerModification(event) {
     const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`);
     const dataCells = row.querySelectorAll('td:not(:last-child) input.form-control');
 
-    const sqlRowIndex = parseInt(rowIndex, 10) + 1;
+    const firstCell = row.querySelector('td');
+    const sqlRowIndex = parseInt(firstCell.textContent, 10);
 
     let dataUpdate = {};
     dataCells.forEach((input) => {
         let nomColonne = input.closest('td').getAttribute('data-column-name');
         let valeur = input.value;
+
+        if (!isNaN(valeur)) {
+            valeur = Number(valeur);
+        }
+        else if (nomColonne.includes("DATE")) {
+            const date = new Date(valeur);
+            valeur = date.toISOString().replace('T', ' ').substring(0, 19);
+        }
+
         dataUpdate[nomColonne] = valeur;
     });
 
@@ -204,7 +222,6 @@ function gestionSupprimer() {
 }
 
 function gestionAjouter() {
-    const table = document.getElementById("dbTable");
     const lastRow = table.rows[table.rows.length - 1];
     const nextRowIndex = parseInt(lastRow.getAttribute('data-row-index'), 10) + 1;
 
@@ -217,7 +234,7 @@ function gestionAjouter() {
         let newCell = newRow.insertCell(i);
         let nomColonne = getNomColonne(table, i);
 
-        if (nomColonne.includes("ID_")) {
+        if (nomColonne.includes("ID_" + tableName)) {
             sqlRowIndex = nextRowIndex + 1;
             newCell.setAttribute('class', 'wrap-text');
             newCell.setAttribute('data-column-name', nomColonne);
@@ -248,9 +265,18 @@ function gestionConfirmerAjout(event) {
     dataCells.forEach((input) => {
         let nomColonne = input.closest('td').getAttribute('data-column-name');
         let valeur = input.value;
-        if (!nomColonne.includes("ID_")) {
+        if (!nomColonne.includes("ID_" + tableName)) {
             dataInsert[nomColonne] = valeur;
         }
+        if (!isNaN(valeur)) {
+            valeur = Number(valeur);
+        }
+        else if (nomColonne.includes("DATE")) {
+            const date = new Date(valeur);
+            valeur = date.toISOString().replace('T', ' ').substring(0, 19);
+        }
+
+        dataInsert[nomColonne] = valeur;
     });
 
     fetch('/administrateur/ajouter', {

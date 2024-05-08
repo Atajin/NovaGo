@@ -1,35 +1,35 @@
 <%- include ("../partials/header.ejs") %>
-<!--Gestion des messages d'erreur-->
-<% if (typeof message_negatif !== 'undefined') { %>
-    <div class="custom-message-negatif" id="message_negatif">
-        <%= message_negatif %>
-    </div>
-    <% } %>
-<!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
-<% if (typeof message_positif !== 'undefined') { %>
-    <div class="custom-message-positif" id="message_positif">
-        <%= message_positif %>
-    </div>
-    <% } %>
-
-    <div class="container-fluid" style="margin-top: 2%;">
-        <div class="row justify-content-center">
-            <div class="col-md-3">
-                <ul class="list-group">
-                    <% if (typeof tables !== 'undefined') {  
-                        tables.forEach(function(table) { %>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <%= table %>
-                                <form action="/administrateur/voirTable" method="POST" style="margin-bottom:0;">
-                                    <input type="hidden" name="tableName" value="<%= table %>">
-                                    <button type="submit" class="btn btn-primary">Voir la table</button>
-                                </form>
-                        </li>
-                        <% }) %>
-                    <% } %>
-                </ul>
-            </div>
+    <!--Gestion des messages d'erreur-->
+    <% if (typeof message_negatif !=='undefined' ) { %>
+        <div class="custom-message-negatif" id="message_negatif">
+            <%= message_negatif %>
         </div>
-    </div>
+        <% } %>
+            <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
+            <% if (typeof message_positif !=='undefined' ) { %>
+                <div class="custom-message-positif" id="message_positif">
+                    <%= message_positif %>
+                </div>
+                <% } %>
 
-    <%- include ("../partials/footer.ejs") %>
+                    <div class="container-fluid">
+                        <div class="row justify-content-center">
+                            <div class="col-md-3">
+                                <ul class="list-group scrollable-list">
+                                    <% if (typeof tables !=='undefined' ) { tables.forEach(function(table) { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <%= table %>
+                                                <form action="/administrateur/voirTable" method="POST"
+                                                    style="margin-bottom:0;">
+                                                    <input type="hidden" name="tableName" value="<%= table %>">
+                                                    <button type="submit" class="btn btn-primary">Voir la table</button>
+                                                </form>
+                                        </li>
+                                        <% }) %>
+                                            <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <%- include ("../partials/footer.ejs") %>
