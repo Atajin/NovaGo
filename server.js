@@ -256,7 +256,7 @@ async function demarrerServeur() {
             req.session.date_aller = req.body.date_aller;
             req.session.date_retour = req.body.date_retour;
 
-            res.redirect('/reservation');
+            res.status(201).send({});
         });
 
 

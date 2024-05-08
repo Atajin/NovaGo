@@ -89,7 +89,7 @@
                             passagers</label>
                         <br>
                         <input type="number" name="personnes" id="personnes" class="form-control" placeholder="Nombre de personnes"
-                            required min="0">
+                            required min="0" <% if (typeof personnes !== 'undefined') { %> value="<%=personnes%>" <%  }%>>
                     </div>
                 
                 </div>
@@ -159,7 +159,7 @@
             
 
             if (personnes_valides && aller_retour) {
-                const f = fetch("connexion", {
+                const f = fetch("/", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
