@@ -645,6 +645,16 @@ async function demarrerServeur() {
             });
         });
 
+    app.get('/exploration', async (req, res) => {
+        try {
+            const comments = await getComments();
+            res.render('exploration.ejs', { comments: comments });
+        } catch (err) {
+            console.error(err);
+            res.render('exploration.ejs', { error: 'Une erreur s\'est produite lors de la récupération des commentaires.' });
+        }
+    });
+
     app.route('/recu-billet')
         /*
             Accès à la page de reçu
