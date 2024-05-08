@@ -97,3 +97,7 @@ Pour initialiser un serveur dans Visual Studio Code en utilisant nodemon :
 4. Ouvrir le terminal intégré dans Visual Studio Code en utilisant Affichage > Terminal
 6. Si "nodemon" n'est pas installé, installe-le : Executer dans le terminal : npm install -g nodemon
 5. Executer dans le terminal : npx nodemon server.js
+
+Pour se connecter à un compte admin: 
+Courriel: odrolest@gmail.com
+Mot de passe: novago2034730
