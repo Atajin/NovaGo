@@ -1,9 +1,11 @@
 <%- include ("../partials/header.ejs") %>
 <!--Champ d'affichage des erreurs lors de connexion-->
-    <div class="custom-message-negatif" id="message_negatif">
-        <% if (typeof message_negatif !== 'undefined') { %>
-            <%= message_negatif %>
-        <% } %>
+    <div>
+        <span id="message_negatif" class="custom-message-negatif">
+            <% if (typeof message_negatif !== 'undefined') { %>
+                <%= message_negatif %>
+            <% } %>
+        </span>
     </div>
     
     <!--Affichage du nom de la page dans le titre du navigateur web-->

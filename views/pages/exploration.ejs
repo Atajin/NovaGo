@@ -10,8 +10,10 @@
 <% if (typeof planetes_bd === 'undefined' || planetes_bd.length===0) { %>
     <!--Champ d'affichage des erreurs lors de connexion-->
     <% if (typeof message_negatif !== 'undefined') { %>
-        <div class="custom-message-negatif">
-            <%= message_negatif %>
+        <div>
+            <span id="message_negatif" class="custom-message-negatif">
+                <%= message_negatif %>
+            </span>
         </div>
         <% } %>
 
