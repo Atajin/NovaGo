@@ -1,0 +1,210 @@
+<%- include ("../partials/header.ejs") %>
+
+    <p>
+        Session ID: <%= sessionId %>
+    </p>
+
+    <div class="container-fluid mt-2">
+        <div class="container">
+            <div class="row text-white">
+                <div class="col-sm-4 m-1">
+                    <div class="row">
+                        <h1 class="custom-font-titles text-center">Voyages Réservés</h1>
+                    </div>
+                    <div class="row mt-1 rounded custom-bg-rvt p-1 px-3" style="overflow: auto; height: 300px;">
+                        <div class="p-1">
+                            <% transactionData.forEach(transaction=> { %>
+                                <div class="row custom-bg-rvt rounded mt-1 custom-white-btn" style="cursor: pointer;"
+                                    onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>', '<%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>')"
+                                    id="info_<%= transaction.ID_TRANSACTION %>">
+
+                                    <div class="row m-0 p-0">
+                                        <div class="col">
+                                            <p class="custom-font-rvt m-0">
+                                                Transaction <%= transaction.ID_TRANSACTION %>
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-rvt m-0">
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0 p-0">
+                                        <div class="col">
+                                            <p class="custom-font-rvt m-0">
+                                                <%= transaction.billetTotal %> billets
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-rvt m-0">
+                                                <%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0 p-0">
+                                        <div class="col">
+                                            <p class="custom-font-rvt m-0">
+                                                <%= transaction.PRIX_TOTAL %> $
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-rvt m-0">
+                                                <%=transaction.DATE_TRANSACTION.toLocaleTimeString('fr-CA', { hour12:
+                                                    false }) %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+
+                    </div>
+                </div>
+                <div class="col m-1">
+                    <div class="row">
+                        <h1 class="custom-font-titles text-center">Détails du voyage</h1>
+                    </div>
+                    <div class="row mt-1 rounded p-1 custom-bg-rvt">
+                        <div class="p-1">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="custom-font-labels m-0 px-2" id="nomBillet">
+                                                Transaction <%= transactionData[0].ID_TRANSACTION %> - <%=
+                                                        transactionData[0].DATE_TRANSACTION.toISOString().slice(0, 10)
+                                                        %>
+                                            </p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <p class="custom-font-labels m-0 px-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                                    fill="currentColor"
+                                                    class="bi bi-circle bg-success text-success rounded-circle"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                </svg>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="rounded custom-bg-rvt mt-1 p-1 px-3"
+                                        style="overflow: auto; height: 200px;">
+                                        <div class="row">
+                                            <div class="col p-0 px-1">
+                                                <h2 class="custom-font-labels m-0">
+                                                    Billets <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                        height="16" fill="currentColor" class="bi bi-ticket"
+                                                        viewBox="0 0 16 16" style="transform: rotate(90deg);">
+                                                        <path
+                                                            d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
+                                                    </svg>
+                                                </h2>
+                                            </div>
+                                            <div class="col text-end">
+
+                                            </div>
+                                        </div>
+                                        <div class="row p-1">
+                                            <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded px-3 border text-black"
+                                                style="width: 150px;">
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0 text-center">Ship name</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0 text-center">Planete</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0 text-center"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-rocket mt-1"
+                                                            viewBox="0 0 16 16" style=" margin-bottom: 5px;">
+                                                            <path
+                                                                d="M8 8c.828 0 1.5-.895 1.5-2S8.828 4 8 4s-1.5.895-1.5 2S7.172 8 8 8" />
+                                                            <path
+                                                                d="M11.953 8.81c-.195-3.388-.968-5.507-1.777-6.819C9.707 1.233 9.23.751 8.857.454a3.5 3.5 0 0 0-.463-.315A2 2 0 0 0 8.25.064.55.55 0 0 0 8 0a.55.55 0 0 0-.266.073 2 2 0 0 0-.142.08 4 4 0 0 0-.459.33c-.37.308-.844.803-1.31 1.57-.805 1.322-1.577 3.433-1.774 6.756l-1.497 1.826-.004.005A2.5 2.5 0 0 0 2 12.202V15.5a.5.5 0 0 0 .9.3l1.125-1.5c.166-.222.42-.4.752-.57.214-.108.414-.192.625-.281l.198-.084c.7.428 1.55.635 2.4.635s1.7-.207 2.4-.635q.1.044.196.083c.213.09.413.174.627.282.332.17.586.348.752.57l1.125 1.5a.5.5 0 0 0 .9-.3v-3.298a2.5 2.5 0 0 0-.548-1.562zM12 10.445v.055c0 .866-.284 1.585-.75 2.14.146.064.292.13.425.199.39.197.8.46 1.1.86L13 14v-1.798a1.5 1.5 0 0 0-.327-.935zM4.75 12.64C4.284 12.085 4 11.366 4 10.5v-.054l-.673.82a1.5 1.5 0 0 0-.327.936V14l.225-.3c.3-.4.71-.664 1.1-.861.133-.068.279-.135.425-.199M8.009 1.073q.096.06.226.163c.284.226.683.621 1.09 1.28C10.137 3.836 11 6.237 11 10.5c0 .858-.374 1.48-.943 1.893C9.517 12.786 8.781 13 8 13s-1.517-.214-2.057-.607C5.373 11.979 5 11.358 5 10.5c0-4.182.86-6.586 1.677-7.928.409-.67.81-1.082 1.096-1.32q.136-.113.236-.18Z" />
+                                                            <path
+                                                                d="M9.479 14.361c-.48.093-.98.139-1.479.139s-.999-.046-1.479-.139L7.6 15.8a.5.5 0 0 0 .8 0z" />
+                                                        </svg> </p>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0 text-center">Planete</p>
+                                                </div>
+                                            </div>
+                                            <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded px-3 border text-black"
+                                                style="width: 440px;">
+                                                <div class="row p-0">
+                                                    <p class="navbar-brand m-0"
+                                                        style="font-size: xx-large;  line-height: 0.8;">NovaGo</p>
+                                                </div>
+                                                <div class="row p-0">
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <p class="custom-font-rvt m-0" style="font-size: small;">
+                                                                Destination : Planete</p>
+                                                        </div>
+                                                        <div class="row">
+                                                            <p class="custom-font-rvt m-0" style="font-size: small;">
+                                                                Date de
+                                                                départ : 10/02/1221</p>
+                                                        </div>
+                                                        <div class="row">
+                                                            <p class="custom-font-rvt m-0" style="font-size: small;">
+                                                                Date de
+                                                                Retour : 10/02/1221</p>
+                                                        </div>
+                                                        <div class="row">
+                                                            <p class="custom-font-rvt m-0" style="font-size: small;">
+                                                                Siege :
+                                                                2</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <!--QR Code-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col m-2 px-2">
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <button type="button" class="btn btn-outline-light custom-font-planete-p"
+                                                    style="font-size: small;">Voir Reçu</button>
+                                                <button type="button" class="btn btn-outline-light custom-font-planete-p"
+                                                    style="font-size: small;">Annuler Voyage</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="billetData" data-billet='<%- JSON.stringify(billetData) %>'></div>
+
+    <script src="/javascript/success.js"></script>
+    <script>
+        // Récupérer les données JSON stockées dans l'attribut data-billet
+        const billetDataElement = document.getElementById('billetData');
+        const billetDataString = billetDataElement.getAttribute('data-billet');
+
+        // Convertir les données JSON en objet JavaScript   
+        const billetData = JSON.parse(billetDataString);
+
+        console.log(billetData); // Pour vérifier si les données sont correctement récupérées
+    </script>
+
+    <%- include ("../partials/footer.ejs") %>
