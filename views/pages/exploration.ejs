@@ -221,15 +221,17 @@
                                             </div>
 
                                             <!--à faire : foreach pour chaque commentaire-->
-                                            <div class="card mb-3" style="width: 75%; position: relative; left: 12%;">
-                                                <div class="card-body">
-                                                    <h5 class="card-title"><!--commentaire.nom-->></h5>
-                                                    <hr>
-                                                    <p class="card-text"><!--commentaire.contenu-->></p>
-                                                    <!--commentaire.planete-->
+                                            <% comments.forEach(comment=> { %>
+                                                <div class="card mb-3"
+                                                    style="width: 75%; position: relative; left: 12%;">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title"><!--<"% commentaire.nom">--></h5>
+                                                        <hr>
+                                                        <p class="card-text"><!--<"% commentaire.contenu">--></p>
+                                                        <!--<"% commentaire.planete">-->
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <% } %>
+                                                <% }); %>
 
-                                                <script src="/javascript/exploration.js"></script>
-                                                <%- include ("../partials/footer.ejs") %>
+                                                    <script src="/javascript/exploration.js"></script>
+                                                    <%- include ("../partials/footer.ejs") %>
