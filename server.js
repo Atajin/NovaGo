@@ -189,7 +189,7 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    res.locals.est_connecte = req.session.email && req.session.mdp;
+    res.locals.est_connecte = req.session.courriel && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
     res.locals.planete_destination = req.session.planete_destination;
@@ -285,19 +285,19 @@ async function demarrerServeur() {
         */
         .post(async (req, res) => {
             try {
-                req.session.est_connecte = req.session.email && req.session.mdp;
-                const { email, mdp } = req.body;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
+                const { courriel, mdp } = req.body;
 
-                // Exécution de la requête pour vérifier l'email
+                // Exécution de la requête pour vérifier le courriel
                 const resultUser = await oracleConnexion.execute(
-                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                    { email: email },
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
                 const resultAdmin = await oracleConnexion.execute(
-                    `SELECT * FROM ADMINISTRATEUR WHERE EMAIL = :email`,
-                    { email: email },
+                    `SELECT * FROM ADMINISTRATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
@@ -311,12 +311,12 @@ async function demarrerServeur() {
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        if (req.session.email != email) {
+                        if (req.session.courriel != courriel) {
                             const planeteResult = await trouverPlaneteUtil(resultUser.rows[0].ID_UTILISATEUR);
 
                             if (planeteResult.rows.length > 0) {
                                 //Ajout des informations nécessaires à la session
-                                req.session.email = email;
+                                req.session.courriel = courriel;
                                 req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
                                 req.session.est_connecte = true;
                                 req.session.est_admin = false;
@@ -342,13 +342,13 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
-                    if (req.session.email != email) {
+                    if (req.session.courriel != courriel) {
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
                             //Ajout des informations nécessaires à la session
-                            req.session.email = email;
+                            req.session.courriel = courriel;
                             req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
-                            req.session.est_connecte = req.session.email && req.session.mdp;
+                            req.session.est_connecte = req.session.courriel && req.session.mdp;
                             req.session.est_admin = true;
                             req.session.est_connecte = true;
                             req.session.planete_util = null;
@@ -386,7 +386,7 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                req.session.est_connecte = req.session.email && req.session.mdp;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
                 const planetes_bd = await recupererPlanetes();
                 res.render('pages/inscription', {
                     planetes_bd: planetes_bd.rows,
@@ -402,14 +402,14 @@ async function demarrerServeur() {
             POST du formulaire de la page d'inscription
         */
         .post([
-            check('email')
+            check('courriel')
                 .isEmail()
                 .withMessage("L'adresse courriel saisie est invalide."),
             check('mdp')
                 .custom(validationMdpEgal),
         ], async (req, res) => {
-            req.session.est_connecte = req.session.email && req.session.mdp;
-            const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
+            const { prenom, nom, courriel, mdp, adresse, telephone, planete } = req.body;
             try {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
@@ -422,10 +422,10 @@ async function demarrerServeur() {
 
 
             try {
-                // Exécution de la requête pour vérifier si l'email est utilisé
+                // Exécution de la requête pour vérifier si le courriel est utilisé
                 const result = await oracleConnexion.execute(
-                    `SELECT * FROM utilisateur WHERE email = :email`,
-                    { email: email },
+                    `SELECT * FROM utilisateur WHERE email = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
@@ -447,9 +447,9 @@ async function demarrerServeur() {
                         // Exécution de l'insertion de données dans la BD
                         await oracleConnexion.execute(
                             `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
-                        VALUES ( :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
+                        VALUES ( :courriel, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
                             {
-                                email: email,
+                                courriel: courriel,
                                 mot_de_passe: hashedMdp,
                                 nom: nom,
                                 prenom: prenom,
@@ -469,9 +469,9 @@ async function demarrerServeur() {
                         const planetes_bd = await recupererPlanetes();
                         await oracleConnexion.close();
 
-                        req.session.email = email;
+                        req.session.courriel = courriel;
                         req.session.mdp = hashedMdp;
-                        req.session.est_connecte = req.session.email && req.session.mdp;
+                        req.session.est_connecte = req.session.courriel && req.session.mdp;
                         req.session.planete_util = planete;
                         req.session.message_positif = "Compte créé avec succès!";
 
@@ -500,13 +500,13 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                const email = req.session.email;
-                req.session.est_connecte = req.session.email && req.session.mdp;
+                const courriel = req.session.courriel;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
                 if (req.session.est_connecte) {
-                    // Exécution de la requête pour vérifier l'email
+                    // Exécution de la requête pour vérifier le courriel
                     const result = await oracleConnexion.execute(
-                        `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                        { email: email },
+                        `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                        { courriel: courriel },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
 
@@ -582,7 +582,7 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                req.session.est_connecte = req.session.email && req.session.mdp;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
                 const result = await oracleConnexion.execute("SELECT * FROM PLANETE");
 
                 res.render('pages/exploration', {
@@ -750,19 +750,19 @@ async function demarrerServeur() {
     });
 
     app.get('/success', async (req, res) => {
-        req.session.est_connecte = req.session.email && req.session.mdp;
+        req.session.est_connecte = req.session.courriel && req.session.mdp;
 
         try {
             if (req.session.est_connecte) {
-                const email = req.session.email;
+                const courriel = req.session.courriel;
                 const sessionId = req.query.session_id;
                 const userId = req.session.id_connecte;
 
                 // Début d'une transaction
-                // Exécution de la requête pour vérifier l'email
+                // Exécution de la requête pour vérifier le courriel
                 const result = await oracleConnexion.execute(
-                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                    { email: email },
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
@@ -903,7 +903,7 @@ async function demarrerServeur() {
         .get(async (req, res) => {
             try {
                 req.session.message_positif = "";
-                req.session.est_connecte = req.session.email && req.session.mdp;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
                 if (req.session.est_connecte && req.session.est_admin) {
                     const result = await oracleConnexion.execute("SELECT table_name FROM user_tables");
                     res.render('pages/administrateur', { tables: result.rows });
@@ -921,7 +921,7 @@ async function demarrerServeur() {
         const { tableName } = req.body;
 
         try {
-            req.session.est_connecte = req.session.email && req.session.mdp;
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
             if (req.session.est_connecte && req.session.est_admin) {
                 const result = await oracleConnexion.execute(`SELECT * FROM ${tableName}`);
                 let colonnes = result.metaData.map(col => col.name);

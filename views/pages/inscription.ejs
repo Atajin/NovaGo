@@ -45,9 +45,9 @@
 
 
                             <!--Champ d'entrée du courriel de l'utilisateur-->
-                            <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
+                            <label for="courriel" class="form-label custom-font-labels">Entrez votre courriel</label>
                             <br>
-                            <input type="text" id="email" name="email" class="form-control"
+                            <input type="email" id="courriel" name="courriel" class="form-control"
                                    pattern="^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})*$" placeholder="Courriel" required>
 
 
@@ -112,7 +112,7 @@
 
             const prenom_valide = noms_regex.test(document.getElementById("prenom").value);
             const nom_valide = noms_regex.test(document.getElementById("nom").value);
-            const courriel_valide = courriel_regex.test(document.getElementById("email").value);
+            const courriel_valide = courriel_regex.test(document.getElementById("courriel").value);
             const telephone_valide = telephone_regex.test(document.getElementById("telephone").value);
             const mdp_valide = mdp_regex.test(document.getElementById("mdp").value);
             const confirmation_valide = mdp_regex.test(document.getElementById("confirmation").value);
@@ -131,7 +131,7 @@
                         body: JSON.stringify({
                             prenom: document.getElementById("prenom").value,
                             nom: document.getElementById("nom").value,
-                            email: document.getElementById("email").value,
+                            courriel: document.getElementById("courriel").value,
                             telephone: document.getElementById("telephone").value,
                             mdp: document.getElementById("mdp").value,
                             confirmation: document.getElementById("confirmation").value,
@@ -145,7 +145,7 @@
                             if (data.message_negatif.includes("courriel")){
                                 document.getElementById("bouton_inscription").disabled = false;
 
-                                document.getElementById("email").classList.add('is-invalid');
+                                document.getElementById("courriel").classList.add('is-invalid');
 
                                 if (data.message_negatif.includes("mot de passe")){
                                     document.getElementById("mdp").classList.add('is-invalid');
@@ -192,10 +192,10 @@
 
 
             if (!courriel_valide){
-                document.getElementById("email").classList.add('is-invalid');
+                document.getElementById("courriel").classList.add('is-invalid');
                 message_erreur += "L'adresse courriel saisie est invalide.\r\n";
 
-            } else document.getElementById("email").classList.remove('is-invalid');
+            } else document.getElementById("courriel").classList.remove('is-invalid');
 
 
             if (!telephone_valide && document.getElementById("telephone").value != ""){

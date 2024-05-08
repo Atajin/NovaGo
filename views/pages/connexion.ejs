@@ -26,9 +26,9 @@
 
                             <!--Champ d'entrée du courriel de l'utilisateur-->
                             <div class="row-md-auto">
-                                <label for="email" class="form-label custom-font-labels">Entrez votre courriel</label>
+                                <label for="courriel" class="form-label custom-font-labels">Entrez votre courriel</label>
                                 <br>
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Courriel" required>
+                                <input type="email" id="courriel" name="courriel" class="form-control" placeholder="Courriel" required>
                             </div>
 
                             <!--Champ d'entrée du mot de passe de l'utilisateur-->
@@ -52,7 +52,7 @@
             const mdp_regex = new RegExp(".{8,}");
             const courriel_regex = new RegExp("^([a-zA-Z0-9._%-]+@+[a-zA-Z0-9.-]+\\.+[a-zA-Z]{2,4})+$");
             let message_erreur = "";
-            const courriel_valide = courriel_regex.test(document.getElementById("email").value);
+            const courriel_valide = courriel_regex.test(document.getElementById("courriel").value);
             const mdp_valide = mdp_regex.test(document.getElementById("mdp").value);
 
             if (courriel_valide && mdp_valide){
@@ -61,7 +61,7 @@
                     method: "POST",
                     headers: {'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        email: document.getElementById("email").value,
+                        courriel: document.getElementById("courriel").value,
                         mdp: document.getElementById("mdp").value,
                     }),
                 })
@@ -74,7 +74,7 @@
                             window.location.href = "http://localhost:4000/";
                         }
                     } else {
-                        document.getElementById("email").classList.add('is-invalid');
+                        document.getElementById("courriel").classList.add('is-invalid');
                         document.getElementById("mdp").classList.add('is-invalid');
                         
                         document.getElementById("bouton_connexion").disabled = false;
@@ -85,9 +85,9 @@
                 });
             } else 
             if (!courriel_valide){
-                document.getElementById("email").classList.add('is-invalid');
+                document.getElementById("courriel").classList.add('is-invalid');
                 message_erreur = "L'adresse courriel saisie est invalide. ";
-            } else document.getElementById("email").classList.remove('is-invalid');
+            } else document.getElementById("courriel").classList.remove('is-invalid');
             
             if (!mdp_valide){
                 document.getElementById("mdp").classList.add('is-invalid');
