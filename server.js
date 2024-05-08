@@ -26,6 +26,8 @@ const __dirname = path.dirname(__filename);
 const saltRounds = 10;
 
 let pool;
+let oracleConnexion;
+let mongoConnexion;
 
 //Permet de comparer deux champs différents d'express-validator
 const validationMdpEgal = (value, { req }) => {
@@ -43,16 +45,11 @@ async function initialiserBaseDeDonnees() {
             connectString: "localhost:1521/xe"
         });
 
-        const connexion = await pool.getConnection();
+        oracleConnexion = await pool.getConnection();
         console.log("Connexion à la base de données Oracle réussie !");
 
-        await connexion.close();
+        mongoConnexion = await connectToMongo(MONGO_DB_URI);
 
-        let mongoClient;
-
-        mongoClient = await connectToMongo(MONGO_DB_URI);
-
-        await mongoClient.close();
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle ou MongoDB:", err);
     }
@@ -889,7 +886,7 @@ async function demarrerServeur() {
                 { idTransaction: idTransaction },
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-    
+
             // Renvoyer les résultats de la requête
             return result.rows;
         } catch (error) {
@@ -938,33 +935,6 @@ async function demarrerServeur() {
             await connexion.commit();
         }
     }
-
-    app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-        let event;
-
-        // Vérifier la signature de l'événement reçu
-        const signature = req.headers['stripe-signature'];
-
-        try {
-            event = stripe.webhooks.constructEvent(req.body, signature, stripeWebhookSecret);
-
-            // Traiter l'événement reçu
-            switch (event.type) {
-                case 'checkout.session.completed':
-                    const session = event.data.object;
-                    // Logique pour traiter le paiement réussi
-                    console.log(`Paiement réussi pour la session ${session.id}`);
-                    // Mettre à jour la BD ici
-                    break;
-            }
-
-            // Renvoie une réponse à Stripe pour confirmer la réception de l'événement
-            res.status(200).json({ received: true });
-        } catch (err) {
-            console.log(`Webhook Error: ${err.message}`);
-            res.status(400).send(`Webhook Error: ${err.message}`);
-        }
-    });
 
     app.route('/administrateur')
         /*
