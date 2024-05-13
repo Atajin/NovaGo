@@ -116,7 +116,7 @@
                 
                 <!--Boutton submit pour rechercher un voyage-->
                 <div class="text-center">
-                    <button type="button" onclick="post_index()" class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
+                    <button type="button" id="bouton_post_index" onclick="post_index()" class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
                 </div>
                 </form>
             </div>
@@ -124,6 +124,10 @@
     </div>
     <script>
         function post_index() {
+            if (typeof planete_util === 'undefined') {
+                document.getElementById("bouton_post_index").disabled = true;
+                document.getElementById("message_negatif").textContent = "Vous ne pouvez pas réserver de voyage en tant qu'administrateur."
+            } else {
             const regex_personnes = new RegExp("\\d+");
             const personnes_valides = regex_personnes.test(document.getElementById("personnes").value);
 
@@ -206,6 +210,7 @@
                 }
 
                 document.getElementById("message_negatif").textContent = message_erreur;
+            }
             }
         }
     </script>
