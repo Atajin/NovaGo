@@ -140,7 +140,7 @@ async function chercherNomPlaneteParId(planeteID) {
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     const planeteNom = result.rows[0];
-    return planeteNom;
+    return planeteNom.NOM;
 }
 
 async function obtenirDonneesPlaneteParId(planeteID) {
@@ -551,7 +551,9 @@ async function demarrerServeur() {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
-                            voyages_bd: voyageResult.rows
+                            voyages_bd: voyageResult.rows,
+                            message_negatif: 
+                            "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
                         });
                     }
                 } else {

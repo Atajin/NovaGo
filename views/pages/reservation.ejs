@@ -1,4 +1,9 @@
 <%- include ("../partials/header.ejs") %>
+<% if (message_negatif != "") { %>
+    <span id="message_negatif" class="custom-message-negatif">
+        <%= message_negatif %>
+    </span>
+<% } %>
 
     <script>
         var nomPage = " | Réserver";
