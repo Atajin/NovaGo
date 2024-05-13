@@ -124,10 +124,10 @@
     </div>
     <script>
         function post_index() {
-            if (typeof planete_util === 'undefined') {
+            /*if (typeof planete_util === 'undefined') {
                 document.getElementById("bouton_post_index").disabled = true;
                 document.getElementById("message_negatif").textContent = "Vous ne pouvez pas réserver de voyage en tant qu'administrateur."
-            } else {
+            } else {*/
             const regex_personnes = new RegExp("\\d+");
             const personnes_valides = regex_personnes.test(document.getElementById("personnes").value);
 
@@ -211,7 +211,7 @@
 
                 document.getElementById("message_negatif").textContent = message_erreur;
             }
-            }
+            //}
         }
     </script>
     <script src="/javascript/index.js"></script>

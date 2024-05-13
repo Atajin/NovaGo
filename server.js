@@ -51,8 +51,8 @@ async function initialiserBaseDeDonnees() {
         console.log("Connexion à la base de données Oracle réussie !");
 
 
-        mongoConnexion = await connectToMongo(MONGO_DB_URI);
-        dbMongo = mongoConnexion.db("test");
+        //mongoConnexion = await connectToMongo(MONGO_DB_URI);
+        //dbMongo = mongoConnexion.db("test");
         console.log("Connexion à la base de données MongoDB réussie !");
 
     } catch (err) {
@@ -589,10 +589,10 @@ async function demarrerServeur() {
                 req.session.est_connecte = req.session.courriel && req.session.mdp;
                 const result = await oracleConnexion.execute("SELECT * FROM PLANETE");
 
-                const commentaires = dbMongo.collection("commentaires");
-                const listeCommentaires = commentaires.find().toArray();
+                //const commentaires = dbMongo.collection("commentaires");
+                //const listeCommentaires = commentaires.find().toArray();
                 console.log("listeCommentaires");
-                console.log(listeCommentaires);
+                //console.log(listeCommentaires);
 
                 res.render('pages/exploration', {
                     planetes_bd: result.rows,
