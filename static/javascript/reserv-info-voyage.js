@@ -16,7 +16,6 @@ function afficherDetails(idVoyage) {
     const voyage = voyagesData.find(v => v.ID_VOYAGE == idVoyage);
 
     if (voyage) {
-        console.log("Détails du voyage : ", voyage);
         document.getElementById("codeVoyage").innerHTML = "Code " + voyage.ID_VOYAGE;
 
         document.getElementById("nomDestination").innerHTML = voyage.planeteData.NOM;

@@ -139,6 +139,16 @@ async function chercherNomPlaneteParId(connection, planeteID) {
     return planeteNom;
 }
 
+async function chercherNomVaisseauParId(connection, vaisseauID) {
+    const result = await connection.execute(
+        `SELECT NOM FROM VAISSEAU WHERE id_vaisseau = :vaisseauID`,
+        { vaisseauID: vaisseauID },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+    const vaisseauNom = result.rows[0];
+    return vaisseauNom;
+}
+
 async function obtenirDonneesPlaneteParId(connection, planeteID) {
     const planeteResult = await connection.execute(
         `SELECT * FROM PLANETE WHERE id_planete = :planeteID`,
@@ -802,12 +812,48 @@ async function demarrerServeur() {
                     await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId, connexion);
                 }
 
-                const billetData = await recupererBilletsIdUser(userId, connexion);
                 const transactionData = await recupererTransactionsIdUser(userId, connexion);
 
                 for (const transaction of transactionData) {
                     // Récupère le total des billets pour cette transaction
                     const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION, connexion);
+                
+                    // Récupère les billets pour cette transaction
+                    const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION, connexion);
+                
+                    // Pour chaque billet dans la transaction
+                    for (const billet of billetsTransaction) {
+                        // Récupère les détails du voyage associé à ce billet
+                        const result = await connexion.execute(
+                            `SELECT *
+                             FROM voyage 
+                             WHERE id_voyage = :idVoyage`,
+                            { idVoyage: billet.VOYAGE_ID_VOYAGE },
+                            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                        );
+                        let voyageDetails = result.rows[0];
+                        
+                        if (voyageDetails) {
+                            // Accès aux propriétés de voyageDetails ici...
+                            const planeteNom1 = await chercherNomPlaneteParId(connexion, voyageDetails.PLANETE_ID_PLANETE);
+                            voyageDetails.planete_nom = planeteNom1.NOM;
+                        
+                            const planeteNom2 = await chercherNomPlaneteParId(connexion, voyageDetails.PLANETE_ID_PLANETE2);
+                            voyageDetails.planete2_nom = planeteNom2.NOM;
+                        
+                            const vaisseauNom = await chercherNomVaisseauParId(connexion, voyageDetails.VAISSEAU_ID_VAISSEAU);
+                            voyageDetails.vaisseau_nom = vaisseauNom.NOM;
+                        
+                            // Ajoute les détails du voyage au billet
+                            billet.voyage = voyageDetails;
+                        } else {
+                            console.error("Aucun détail de voyage trouvé pour l'ID de voyage :", billet.voyage_id_voyage);
+                        }
+                    }
+
+                    // Ajoute les billets à l'objet transaction
+                    transaction.billets = billetsTransaction;
+                
                     // Ajoute le total des billets à l'objet transaction
                     transaction.billetTotal = totalBillets;
                 }
@@ -817,7 +863,7 @@ async function demarrerServeur() {
 
                 if (result.rows.length > 0) {
                     // Rendu d'une page de succès ou redirection vers une URL de succès avec le prix total
-                    res.render('pages/success', { est_connecte: req.session.est_connecte, sessionId: sessionId, transactionData: transactionData, billetData: billetData });
+                    res.render('pages/success', { est_connecte: req.session.est_connecte, sessionId: sessionId, transactionData: transactionData });
                 }
             } else res.render('pages/connexion', {
                 message_negatif: 'Connectez vous pour réserver un voyage'
@@ -861,20 +907,12 @@ async function demarrerServeur() {
     }
 
     async function recupererBilletsParTransaction(idTransaction, connexion) {
-        try {
-            // Exécution de la requête SQL pour récupérer les billets associés à la transaction spécifiée
-            const result = await connexion.execute(
-                `SELECT * FROM billet WHERE transaction_id_transaction = :idTransaction`,
-                { idTransaction: idTransaction },
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
-
-            // Renvoyer les résultats de la requête
-            return result.rows;
-        } catch (error) {
-            console.error('Erreur lors de la récupération des billets par transaction :', error);
-            throw error;
-        }
+        const result = await connexion.execute(
+            `SELECT * FROM billet WHERE transaction_id_transaction = :idTransaction`,
+            { idTransaction: idTransaction },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return result.rows;
     }
 
     async function recupererTransactionsIdUser(idUtilisateur, connexion) {
