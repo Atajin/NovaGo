@@ -17,116 +17,30 @@
 					<li class="nav-item">
 						<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
 					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle custom-font-navbar" href="#" id="navbarDropdownMenuLink"
-							role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
-						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-							<li><a class="dropdown-item custom-font-dropdown" href="/reservation">Reservation</a>
-							</li>
-							<li><a class="dropdown-item custom-font-dropdown" href="/recu-billet">Transactions</a>
-							</li>
-							<li><a class="dropdown-item custom-font-dropdown" href="#">À propos de nous</a></li>
-							<li><a class="dropdown-item custom-font-dropdown" href="/administrateur">Page Admin</a></li>
-						</ul>
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="/administrateur">Page Admin</a>
 					</li>
-					<% } else if (est_connecte) { %>
-						<!-- Navbar pour les utilisateurs connectés -->
-						<li class="nav-item">
-							<a class="nav-link custom-font-navbar" href="deconnexion">Se déconnecter</a>
-						</li>
-						<script>
-						function deconnexion(url, data, callback) {
-							/*var req = new XMLHttpRequest();
-							req.open("POST", url, true);
-							req.send(data);
-							req.onload = function(e) {
-							  if (this.status == 200) { 
-								callback(e.responseText);  
-							  }
-							};
-							const url = "/deconnexion";
-        					function post_deconnexion(){
-            					const f = fetch(url, {
-                					method: "POST"
-            				});
-        					};
-        					f.then(function(res) {
-								return res.json();
-							});
-							let pool;
-							try {
-								const connexion = await pool.getConnection();
-								const result = await recupererPlanetes(connexion);
-								await connexion.close();
-
-								req.session.destroy(function (err) {
-									if (err) {
-										console.error("Erreur lors de la destruction de la session:", err);
-										return res.render('pages/', {
-											message_negatif: "Erreur lors de la déconnexion.",
-											planetes_bd: result.rows,
-											est_connecte: false,
-											est_admin: false
-										});
-									}
-									res.render('pages/', {
-										message_positif: "Déconnexion réussie!",
-										planetes_bd: result.rows,
-										est_connecte: false,
-										est_admin: false,
-										planete_origine : null
-									});
-								});
-							} catch (err) {
-								console.error("Erreur lors de la récupération des données de la base de données:", err);
-								res.render('pages/', {
-									message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données',
-									est_connecte: false,
-									est_admin: false
-								});
-						  }*/
-						}
-						  </script>
+					
+				<% } else if (est_connecte) { %>
+					<!-- Navbar pour les utilisateurs connectés -->
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="deconnexion">Se déconnecter</a>
+					</li>
 						
-						<li class="nav-item">
-							<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle custom-font-navbar" href="#" id="navbarDropdownMenuLink"
-								role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
-							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-								<li><a class="dropdown-item custom-font-dropdown" href="/reservation">Reservation</a>
-								</li>
-								<li><a class="dropdown-item custom-font-dropdown" href="/recu-billet">Transactions</a>
-								</li>
-								<li><a class="dropdown-item custom-font-dropdown" href="#">À propos de nous</a></li>
-							</ul>
-						</li>
-						<% } else { %>
-							<!-- Navbar pour les visiteurs -->
-							<a class="nav-link custom-font-navbar" href="/inscription">S'inscrire</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link custom-font-navbar" href="/connexion">Se connecter</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
-							</li>
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle custom-font-navbar" href="#"
-									id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
-									aria-expanded="false">Menu</a>
-								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item custom-font-dropdown"
-											href="/reservation">Reservation</a>
-									</li>
-									<li><a class="dropdown-item custom-font-dropdown"
-											href="/recu-billet">Transactions</a>
-									</li>
-									<li><a class="dropdown-item custom-font-dropdown" href="#">À propos de nous</a></li>
-								</ul>
-							</li>
-							<% } %>
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
+					</li>
+				<% } else { %>
+					<!-- Navbar pour les visiteurs -->
+					<a class="nav-link custom-font-navbar" href="/inscription">S'inscrire</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="/connexion">Se connecter</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link custom-font-navbar" href="/exploration">Exploration</a>
+					</li>
+				<% } %>
 			</ul>
 		</div>
 	</div>
