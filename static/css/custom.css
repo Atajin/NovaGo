@@ -12,7 +12,8 @@
         font-style: normal;
     }
 
-    body, html {
+    body,
+    html {
         height: 100vh;
     }
 
@@ -72,7 +73,7 @@
         font-size: 20px;
     }
 
-    .custom-font-planet-t {
+    .custom-font-planete-t {
         text-align: left;
         font-family: 'Iceland', sans-serif;
         color: white;
@@ -89,7 +90,7 @@
         font-size: 3.2rem;
     }
 
-    .custom-font-planet-p {
+    .custom-font-planete-p {
         font-family: 'PPStellar', sans-serif;
         color: white;
         font-size: 125%;
@@ -157,6 +158,16 @@
 
     .compteur-container input {
         margin-top: -5px;
+    }
+
+    .scrollable-list {
+        overflow-y: auto;
+        max-height: 80vh;
+    }
+
+    .scrollable-table {
+        overflow-y: auto;
+        max-height: 70vh;
     }
 
     .wrap-text {

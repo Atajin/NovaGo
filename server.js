@@ -569,24 +569,6 @@ async function demarrerServeur() {
             }
         });
 
-    /*
-        Confirmer la transaction de la page reservation
-    */
-
-    app.route('/confirmer-transaction')
-
-        .post(async (req, res) => {
-            const montantArgents = req.body.montantArgents;
-            const nombreTotalBillets = req.body.nombreBillets;
-            const prixEtBillets = req.body.prixEtBillets;
-            // Traitez le montantArgents comme requis (par exemple, enregistrez-le dans la base de données, etc.)
-            console.log('Montant d\'argents reçu :', montantArgents);
-            console.log(nombreTotalBillets);
-            console.log(prixEtBillets);
-            // Envoyez une réponse au client pour indiquer que la confirmation a été traitée
-            res.sendStatus(200);
-        });
-
     app.route('/exploration')
         /*
             Accès à la page d'exploration
@@ -940,7 +922,7 @@ async function demarrerServeur() {
         try {
             req.session.est_connecte = req.session.courriel && req.session.mdp;
             if (req.session.est_connecte && req.session.est_admin) {
-                const result = await oracleConnexion.execute(`SELECT * FROM ${tableName}`);
+                const result = await connexion.execute(`SELECT * FROM ${tableName} ORDER BY 1`);
                 let colonnes = result.metaData.map(col => col.name);
 
                 // Ce code transforme les rows en objets afin de faciliter la manipulation
@@ -971,7 +953,11 @@ async function demarrerServeur() {
 
             let partiesClause = [];
             for (const [key, value] of Object.entries(data)) {
-                partiesClause.push(`${key} = :${key}`);
+                if (key.includes("DATE")) {
+                    partiesClause.push(`${key} = TO_TIMESTAMP(:${key}, 'YYYY-MM-DD HH24:MI:SS')`);
+                } else {
+                    partiesClause.push(`${key} = :${key}`);
+                }
             }
             let clauseMiseAJour = partiesClause.join(', ');
 
@@ -1001,7 +987,11 @@ async function demarrerServeur() {
 
             for (const [key, value] of Object.entries(data)) {
                 partiesClauseCles.push(`${key}`);
-                partiesClauseValeurs.push(`:${key}`);
+                if (key.includes("DATE")) {
+                    partiesClauseValeurs.push(`TO_TIMESTAMP(:${key}, 'YYYY-MM-DD HH24:MI:SS')`);
+                } else {
+                    partiesClauseValeurs.push(`:${key}`);
+                }
             }
             let clauseInsertionCles = partiesClauseCles.join(', ');
             let clauseInsertionValeurs = partiesClauseValeurs.join(', ');
