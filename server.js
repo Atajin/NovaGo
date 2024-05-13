@@ -99,7 +99,7 @@ async function connectToMongo(uri) {
         console.log("Connexion à la base de données MongoDB réussie !");
 
         return mongoClient;
-    } catch (error) {
+    } catch (err) {
         console.error("Impossible de se connecter à la base de données MongoDB:", err);
     }
 }
