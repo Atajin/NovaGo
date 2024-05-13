@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("nomVaisseau").innerHTML = premierVoyage.vaisseauData.NOM;
     document.getElementById("typeVaisseau").innerHTML = premierVoyage.vaisseauData.TYPE_DE_PROPULSION;
     document.getElementById("capaciteVaisseau").innerHTML = premierVoyage.vaisseauData.CAPACITE;
+    document.getElementById("dateDepartVoyage").innerHTML = new Date(premierVoyage.DATE_DEPART).toISOString().split('T')[0];
 });
 
 function afficherDetails(idVoyage) {
@@ -26,6 +27,7 @@ function afficherDetails(idVoyage) {
         document.getElementById("nomVaisseau").innerHTML = voyage.vaisseauData.NOM;
         document.getElementById("typeVaisseau").innerHTML = voyage.vaisseauData.TYPE_DE_PROPULSION;
         document.getElementById("capaciteVaisseau").innerHTML = voyage.vaisseauData.CAPACITE;
+        document.getElementById("dateDepartVoyage").innerHTML = new Date(voyage.DATE_DEPART).toISOString().split('T')[0];
     } else {
         console.error("Voyage non trouvé pour l'ID : ", idVoyage);
     }
