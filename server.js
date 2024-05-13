@@ -882,7 +882,7 @@ async function demarrerServeur() {
         return resultat.outBinds.idTransaction[0];
     }
 
-    async function mettreAJourBilletsAvecTransaction(billets, idTransaction, sessionId, connexion) {
+    async function mettreAJourBilletsAvecTransaction(billets, idTransaction, sessionId) {
         for (const billet of billets) {
             await oracleConnexion.execute(
                 `UPDATE billet 
@@ -922,7 +922,7 @@ async function demarrerServeur() {
         try {
             req.session.est_connecte = req.session.courriel && req.session.mdp;
             if (req.session.est_connecte && req.session.est_admin) {
-                const result = await connexion.execute(`SELECT * FROM ${tableName} ORDER BY 1`);
+                const result = await oracleConnexion.execute(`SELECT * FROM ${tableName} ORDER BY 1`);
                 let colonnes = result.metaData.map(col => col.name);
 
                 // Ce code transforme les rows en objets afin de faciliter la manipulation
