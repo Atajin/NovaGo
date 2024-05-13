@@ -124,12 +124,22 @@ async function recupererPlanetes() {
     }
 }
 
-async function recupererVoyages(planeteID) {
-    const voyageResult = await oracleConnexion.execute(
-        `SELECT * FROM voyage WHERE planete_id_planete = :planeteID`,
-        { planeteID: planeteID },
-        { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
+async function recupererVoyages(planeteAller, planeteRetour) {
+    let voyageResult;
+    if (planeteRetour){
+        voyageResult = await oracleConnexion.execute(
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
+            { planeteAller: planeteAller,
+              planeteRetour: planeteRetour },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+    } else {
+        voyageResult = await oracleConnexion.execute(
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
+            { planeteAller: planeteAller },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+    }
     return voyageResult;
 }
 
@@ -526,7 +536,10 @@ async function demarrerServeur() {
                     };
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
-                    const voyageResult = await recupererVoyages(req.session.planete_util);
+                    let voyageResult;
+                    if (req.session.date_retour){
+                        voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination);
+                    } else voyageResult = await recupererVoyages(req.session.planete_util, null);
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {
