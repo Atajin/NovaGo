@@ -476,11 +476,6 @@ async function demarrerServeur() {
                         const id_nouvel_util = Number(nouvel_util.rows);
                         const planete_util = await trouverPlaneteUtil(id_nouvel_util);
 
-                        const planete_id = Number(planete_util.rows[0]);
-
-                        const planetes_bd = await recupererPlanetes();
-                        await oracleConnexion.close();
-
                         req.session.courriel = courriel;
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.courriel && req.session.mdp;
