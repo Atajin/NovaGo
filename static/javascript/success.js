@@ -1,13 +1,20 @@
-function afficherTransaction(idTransaction, dateTransaction) {
-    // Construct the content string
-    var content = "Transaction " + idTransaction + " - " + dateTransaction;
+window.onload = function() {
+    // Si vous avez au moins une transaction dans votre ensemble de données
+    if (transactionData.length > 0) {
+        // Appelez afficherTransaction avec l'ID de la première transaction
+        afficherTransaction(transactionData[0].ID_TRANSACTION);
+    }
+};
 
-    // Update the content of the element with ID 'nomBillet'
-    document.getElementById("nomBillet").innerHTML = content;
-
+function afficherTransaction(idTransaction) {
     var transactionSelectionnee = transactionData.find(function (transaction) {
         return transaction.ID_TRANSACTION == idTransaction;
     });
+
+    // Construct the content string
+    var content = "Transaction " + transactionSelectionnee.ID_TRANSACTION + " - " + transactionSelectionnee.DATE_TRANSACTION.split("T")[0]; 
+    
+    document.getElementById("nomBillet").innerHTML = content;
 
     var transactionDetailsHTML = ""; // Initialisez la variable
 
@@ -18,10 +25,10 @@ function afficherTransaction(idTransaction, dateTransaction) {
             transactionDetailsHTML += `<div class='row p-1'>
                                             <div class='shadow-sm p-3 mb-5 bg-body-tertiary rounded px-3 border text-black' style='width: 150px;'>
                                                 <div class='col'>
-                                                    <p class='custom-font-rvt m-0 text-center'>${billet.voyage.vaisseau_nom}</p>
+                                                    <p class='custom-font-rvt m-0 text-center' style='font-size: small;'><b>${billet.voyage.vaisseau_nom}</b></p>
                                                 </div>
                                                 <div class='col'>
-                                                    <p class='custom-font-rvt m-0 text-center'>${billet.voyage.planete_nom}</p>
+                                                    <p class='custom-font-rvt m-0 text-center'>${billet.voyage.ORIGINE}</p>
                                                 </div>
                                                 <div class='col'>
                                                     <p class='custom-font-rvt m-0 text-center'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-rocket mt-1' viewBox='0 0 16 16' style=' margin-bottom: 5px;'>
@@ -31,7 +38,7 @@ function afficherTransaction(idTransaction, dateTransaction) {
                                                     </svg></p>
                                                 </div>
                                                 <div class='col'>
-                                                    <p class='custom-font-rvt m-0 text-center'>${billet.voyage.planete2_nom}</p>
+                                                    <p class='custom-font-rvt m-0 text-center'>${billet.voyage.DESTINATION}</p>
                                                 </div>
                                             </div>
                                             <div class='shadow-sm p-3 mb-5 bg-body-tertiary rounded px-3 border text-black' style='width: 440px;'>
@@ -41,10 +48,10 @@ function afficherTransaction(idTransaction, dateTransaction) {
                                                 <div class='row p-0'>
                                                     <div class='col'>
                                                         <div class='row'>
-                                                            <p class='custom-font-rvt m-0' style='font-size: small;'>Destination : ${billet.voyage.planete2_nom}</p>
+                                                            <p class='custom-font-rvt m-0' style='font-size: small;'>Destination : ${billet.voyage.DESTINATION}</p>
                                                         </div>
                                                         <div class='row'>
-                                                            <p class='custom-font-rvt m-0' style='font-size: small;'>Date de départ : ${billet.voyage.DATE_DEPART}</p>
+                                                            <p class='custom-font-rvt m-0' style='font-size: small;'>Date de départ : ${billet.voyage.DATE_DEPART.split("T")[0]}</p>
                                                         </div>
                                                         <div class='row'>
                                                             <p class='custom-font-rvt m-0' style='font-size: small;'>Date de Retour : </p>

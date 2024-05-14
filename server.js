@@ -153,8 +153,8 @@ async function chercherNomPlaneteParId(planeteID) {
     return planeteNom.NOM;
 }
 
-async function chercherNomVaisseauParId(connection, vaisseauID) {
-    const result = await connection.execute(
+async function chercherNomVaisseauParId(vaisseauID) {
+    const result = await oracleConnexion.execute(
         `SELECT NOM FROM VAISSEAU WHERE id_vaisseau = :vaisseauID`,
         { vaisseauID: vaisseauID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
@@ -163,8 +163,8 @@ async function chercherNomVaisseauParId(connection, vaisseauID) {
     return vaisseauNom;
 }
 
-async function obtenirDonneesPlaneteParId(connection, planeteID) {
-    const planeteResult = await connection.execute(
+async function obtenirDonneesPlaneteParId(planeteID) {
+    const planeteResult = await oracleConnexion.execute(
         `SELECT * FROM PLANETE WHERE id_planete = :planeteID`,
         { planeteID: planeteID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
@@ -801,36 +801,29 @@ async function demarrerServeur() {
                     await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId);
                 }
 
-                const transactionData = await recupererTransactionsIdUser(userId, connexion);
+                const transactionData = await recupererTransactionsIdUser(userId);
 
                 for (const transaction of transactionData) {
                     // Récupère le total des billets pour cette transaction
-                    const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION, connexion);
+                    const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION);
                 
                     // Récupère les billets pour cette transaction
-                    const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION, connexion);
+                    const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION);
                 
                     // Pour chaque billet dans la transaction
                     for (const billet of billetsTransaction) {
                         // Récupère les détails du voyage associé à ce billet
-                        const result = await connexion.execute(
+                        const result = await oracleConnexion.execute(
                             `SELECT *
-                             FROM voyage 
-                             WHERE id_voyage = :idVoyage`,
+                             FROM VOYAGE
+                             WHERE ID_VOYAGE = :idVoyage`,
                             { idVoyage: billet.VOYAGE_ID_VOYAGE },
                             { outFormat: oracledb.OUT_FORMAT_OBJECT }
                         );
                         let voyageDetails = result.rows[0];
                         
                         if (voyageDetails) {
-                            // Accès aux propriétés de voyageDetails ici...
-                            const planeteNom1 = await chercherNomPlaneteParId(connexion, voyageDetails.PLANETE_ID_PLANETE);
-                            voyageDetails.planete_nom = planeteNom1.NOM;
-                        
-                            const planeteNom2 = await chercherNomPlaneteParId(connexion, voyageDetails.PLANETE_ID_PLANETE2);
-                            voyageDetails.planete2_nom = planeteNom2.NOM;
-                        
-                            const vaisseauNom = await chercherNomVaisseauParId(connexion, voyageDetails.VAISSEAU_ID_VAISSEAU);
+                            const vaisseauNom = await chercherNomVaisseauParId(voyageDetails.VAISSEAU_ID_VAISSEAU);
                             voyageDetails.vaisseau_nom = vaisseauNom.NOM;
                         
                             // Ajoute les détails du voyage au billet
@@ -892,8 +885,8 @@ async function demarrerServeur() {
         return result.rows[0].TOTAL_BILLETS;
     }
 
-    async function recupererBilletsParTransaction(idTransaction, connexion) {
-        const result = await connexion.execute(
+    async function recupererBilletsParTransaction(idTransaction) {
+        const result = await oracleConnexion.execute(
             `SELECT * FROM billet WHERE transaction_id_transaction = :idTransaction`,
             { idTransaction: idTransaction },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }

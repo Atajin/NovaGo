@@ -15,8 +15,7 @@
                         <div class="p-1">
                             <% transactionData.forEach(transaction=> { %>
                                 <div class="row custom-bg-rvt rounded mt-1 custom-white-btn" style="cursor: pointer;"
-                                    onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>', '<%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>')"
-                                    id="info_<%= transaction.ID_TRANSACTION %>">
+                                    onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>')">
 
                                     <div class="row m-0 p-0">
                                         <div class="col">
@@ -74,9 +73,6 @@
                                     <div class="row">
                                         <div class="col">
                                             <p class="custom-font-labels m-0 px-2" id="nomBillet">
-                                                Transaction <%= transactionData[0].ID_TRANSACTION %> - <%=
-                                                        transactionData[0].DATE_TRANSACTION.toISOString().slice(0, 10)
-                                                        %>
                                             </p>
                                         </div>
                                         <div class="col text-end">
