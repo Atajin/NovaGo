@@ -31,14 +31,14 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <% if (planete[1].length < 10) { %>
-                                                            <h2 class="custom-font-planet-t">
+                                                            <h2 class="custom-font-planete-t">
                                                                 <% } else { %>
-                                                                    <h1 class="custom-font-planet-t petit-titre">
+                                                                    <h1 class="custom-font-planete-t petit-titre">
                                                                         <% } %>
                                                                             <%= planete[1] %>
                                                                     </h1>
                                                     </div>
-                                                    <div class="col-sm-6 mt-4 custom-font-planet-p"
+                                                    <div class="col-sm-6 mt-4 custom-font-planete-p"
                                                         style="text-align: right;">
                                                         <div class="row-sm-4">
                                                             <h1 class="form-label custom-font-labels">Type d'objet
@@ -54,7 +54,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="bg-black d-flex p-2 ">
-                                                    <h5 class="custom-font-planet-p" style="text-align: justify;">
+                                                    <h5 class="custom-font-planete-p" style="text-align: justify;">
                                                         <%= planete[4] %>
                                                     </h5>
                                                 </div>
@@ -62,7 +62,7 @@
                                                     <form method="POST" action="/exploration">
                                                         <button type="submit" id="selection_planete"
                                                             name="selection_planete" value="<%=planete[0]%>"
-                                                            class="btn btn-outline-light btn-lg custom-font-planet-p position-relative top-0 start-50 translate-middle-x">
+                                                            class="btn btn-outline-light btn-lg custom-font-planete-p position-relative top-0 start-50 translate-middle-x">
                                                             Chercher un voyage</button>
                                                     </form>
                                                 </div>
@@ -78,9 +78,9 @@
                                         <br>
                                     </div>
                                     <div class="card mb-3" style="width: 75%; position: relative; left: 12%;">
+                                        <!-- Commentaire -->
                                         <div class="card-body">
                                             <h5 class="card-title"><i>[Nom utilisateur]</i></h5>
-                                            <!-- Peut-être insérer une note sur ★★★★★ aussi-->
                                             <hr>
                                             <p class="card-text"><i>[Commentaire utilisateur]</i></p>
                                         </div>

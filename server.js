@@ -15,7 +15,7 @@ import { connect } from "http2";
 import Stripe from 'stripe';
 import { error } from "console";
 
-const MONGO_DB_URI = "mongodb://localhost:27017"
+const MONGO_DB_URI = "mongodb://novago:mongo@localhost:27017"
 const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
 const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
 
@@ -28,6 +28,8 @@ const saltRounds = 10;
 let pool;
 let oracleConnexion;
 let mongoConnexion;
+let dbMongo;
+let deconnecte = false;
 
 //Permet de comparer deux champs différents d'express-validator
 const validationMdpEgal = (value, { req }) => {
@@ -48,15 +50,18 @@ async function initialiserBaseDeDonnees() {
         oracleConnexion = await pool.getConnection();
         console.log("Connexion à la base de données Oracle réussie !");
 
-        mongoConnexion = await connectToMongo(MONGO_DB_URI);
+
+        //mongoConnexion = await connectToMongo(MONGO_DB_URI);
+        //dbMongo = mongoConnexion.db("test");
+        console.log("Connexion à la base de données MongoDB réussie !");
 
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle ou MongoDB:", err);
     }
 }
 
-async function creer_session(connexion, token, date_creation, date_expiration, id_util) {
-    await connexion.execute(
+async function creer_session(token, date_creation, date_expiration, id_util) {
+    await oracleConnexion.execute(
         `INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur)
     VALUES ( :token, :date_creation, :date_expiration, :utilisateur_id_utilisateur)`,
         {
@@ -69,8 +74,8 @@ async function creer_session(connexion, token, date_creation, date_expiration, i
     console.log("Session créée !");
 }
 
-async function fermer_session(connexion, token) {
-    await connexion.execute(
+async function fermer_session(token) {
+    await oracleConnexion.execute(
         `UPDATE session_util SET date_expiration = :date_SQL WHERE token = :token`,
         {
             token: token,
@@ -94,7 +99,7 @@ async function connectToMongo(uri) {
         console.log("Connexion à la base de données MongoDB réussie !");
 
         return mongoClient;
-    } catch (error) {
+    } catch (err) {
         console.error("Impossible de se connecter à la base de données MongoDB:", err);
     }
 }
@@ -109,9 +114,9 @@ async function hashMotDePasse(mdp, saltRounds) {
     }
 }
 
-async function recupererPlanetes(connexion) {
+async function recupererPlanetes() {
     try {
-        const result = await connexion.execute("SELECT * FROM PLANETE");
+        const result = await oracleConnexion.execute("SELECT * FROM PLANETE");
         return result;
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle:", err);
@@ -119,24 +124,33 @@ async function recupererPlanetes(connexion) {
     }
 }
 
-async function recupererVoyages(connection, planeteID) {
-    const voyageResult = await connection.execute(
-        `SELECT * FROM voyage WHERE planete_id_planete = :planeteID`,
-        { planeteID: planeteID },
-        { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
-    await connection.close();
+async function recupererVoyages(planeteAller, planeteRetour) {
+    let voyageResult;
+    if (planeteRetour){
+        voyageResult = await oracleConnexion.execute(
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
+            { planeteAller: planeteAller,
+              planeteRetour: planeteRetour },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+    } else {
+        voyageResult = await oracleConnexion.execute(
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
+            { planeteAller: planeteAller },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+    }
     return voyageResult;
 }
 
-async function chercherNomPlaneteParId(connection, planeteID) {
-    const result = await connection.execute(
+async function chercherNomPlaneteParId(planeteID) {
+    const result = await oracleConnexion.execute(
         `SELECT NOM FROM PLANETE WHERE id_planete = :planeteID`,
         { planeteID: planeteID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     const planeteNom = result.rows[0];
-    return planeteNom;
+    return planeteNom.NOM;
 }
 
 async function chercherNomVaisseauParId(connection, vaisseauID) {
@@ -158,8 +172,8 @@ async function obtenirDonneesPlaneteParId(connection, planeteID) {
     return planeteResult;
 }
 
-async function obtenirDonneesVaisseauParId(connection, vaisseauID) {
-    const vaisseauResult = await connection.execute(
+async function obtenirDonneesVaisseauParId(vaisseauID) {
+    const vaisseauResult = await oracleConnexion.execute(
         `SELECT * FROM vaisseau WHERE id_vaisseau = :vaisseauID`,
         { vaisseauID: vaisseauID },
         { outFormat: oracledb.OUT_FORMAT_OBJECT }
@@ -167,10 +181,10 @@ async function obtenirDonneesVaisseauParId(connection, vaisseauID) {
     return vaisseauResult;
 }
 
-async function trouverPlaneteUtil(connexion, id_util) {
+async function trouverPlaneteUtil(id_util) {
     try {
         // Exécution de la requête pour récupérer l'ID de la planète associée à l'utilisateur
-        const planeteUtil = await connexion.execute(
+        const planeteUtil = await oracleConnexion.execute(
             `SELECT planete_id_planete FROM utilisateur WHERE id_utilisateur = :utilID`,
             { utilID: id_util },
             { outFormat: oracledb.OUT_FORMAT_ARRAY }
@@ -200,12 +214,16 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    res.locals.est_connecte = req.session.email && req.session.mdp;
+    res.locals.est_connecte = req.session.courriel && req.session.mdp;
     res.locals.est_admin = req.session.est_admin;
     res.locals.planete_origine = req.session.planete_util;
     res.locals.planete_destination = req.session.planete_destination;
     res.locals.message_positif = req.session.message_positif;
     res.locals.message_negatif = req.session.message_negatif;
+
+    res.locals.date_aller = req.session.date_aller;
+    res.locals.date_retour = req.session.date_retour;
+    res.locals.personnes = req.session.personnes;
     next();
 });
 
@@ -244,21 +262,22 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                const connexion = await getPool().getConnection();
-                const planetes_bd = await recupererPlanetes(connexion);
-                await connexion.close();
+                const planetes_bd = await recupererPlanetes();
 
-                /*if (!req.session.message_positif && req.session.message_positif != ""){
-                    req.session.message_positif = "Déconnexion réussie!"
-                }*/
+                let message_positif = req.session.message_positif;
                 req.session.message_positif = "";
+                if (deconnecte){
+                    message_positif = "Déconnexion réussie!";
+                    deconnecte = false;
+                }
                 // Passer les données obtenues au moteur de rendu
                 res.render('pages/', {
-                    planetes_bd: planetes_bd.rows
+                    planetes_bd: planetes_bd.rows,
+                    message_positif: message_positif
                 });
             } catch (err) {
                 console.error(err);
-                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données', est_admin: req.session.est_admin });
+                res.render('pages/', { message_negatif: 'Une erreur s\'est produite lors de la récupération des données de la base de données' });
             }
         })
 
@@ -269,7 +288,7 @@ async function demarrerServeur() {
             req.session.date_aller = req.body.date_aller;
             req.session.date_retour = req.body.date_retour;
 
-            res.redirect('/reservation');
+            res.status(201).send({});
         });
 
 
@@ -297,24 +316,20 @@ async function demarrerServeur() {
             POST du formulaire de la page de connexion
         */
         .post(async (req, res) => {
-            let connexion;
             try {
-                req.session.est_connecte = req.session.email && req.session.mdp;
-                const { email, mdp } = req.body;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
+                const { courriel, mdp } = req.body;
 
-                // Obtention d'une connexion à partir du pool
-                connexion = await getPool().getConnection();
-
-                // Exécution de la requête pour vérifier l'email
-                const resultUser = await connexion.execute(
-                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                    { email: email },
+                // Exécution de la requête pour vérifier le courriel
+                const resultUser = await oracleConnexion.execute(
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
-                const resultAdmin = await connexion.execute(
-                    `SELECT * FROM ADMINISTRATEUR WHERE EMAIL = :email`,
-                    { email: email },
+                const resultAdmin = await oracleConnexion.execute(
+                    `SELECT * FROM ADMINISTRATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
@@ -328,12 +343,12 @@ async function demarrerServeur() {
                 if (resultUser.rows.length > 0) {
                     const mdp_valide = await bcrypt.compare(mdp, resultUser.rows[0].MOT_DE_PASSE);
                     if (mdp_valide) {
-                        if (req.session.email != email) {
-                            const planeteResult = await trouverPlaneteUtil(connexion, resultUser.rows[0].ID_UTILISATEUR);
+                        if (req.session.courriel != courriel) {
+                            const planeteResult = await trouverPlaneteUtil(resultUser.rows[0].ID_UTILISATEUR);
 
                             if (planeteResult.rows.length > 0) {
                                 //Ajout des informations nécessaires à la session
-                                req.session.email = email;
+                                req.session.courriel = courriel;
                                 req.session.mdp = resultUser.rows[0].MOT_DE_PASSE;
                                 req.session.est_connecte = true;
                                 req.session.est_admin = false;
@@ -341,8 +356,8 @@ async function demarrerServeur() {
                                 req.session.planete_util = planeteID;
                                 req.session.message_positif = "Connexion au compte effectuée avec succès!";
 
-                                creer_session(connexion, req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
-                                await connexion.commit();
+                                creer_session(req.session.id, new Date(), req.session.cookie.expires, resultUser.rows[0].ID_UTILISATEUR);
+                                await oracleConnexion.commit();
 
                                 return res.status(201).send({ message_positif: "Connexion au compte effectuée avec succès!" });
                             } else {
@@ -359,13 +374,13 @@ async function demarrerServeur() {
                     }
 
                 } else if (resultAdmin.rows.length > 0) {
-                    if (req.session.email != email) {
+                    if (req.session.courriel != courriel) {
                         const mdp_valide = await bcrypt.compare(mdp, resultAdmin.rows[0].MOT_DE_PASSE);
                         if (mdp_valide) {
                             //Ajout des informations nécessaires à la session
-                            req.session.email = email;
+                            req.session.courriel = courriel;
                             req.session.mdp = resultAdmin.rows[0].MOT_DE_PASSE;
-                            req.session.est_connecte = req.session.email && req.session.mdp;
+                            req.session.est_connecte = req.session.courriel && req.session.mdp;
                             req.session.est_admin = true;
                             req.session.est_connecte = true;
                             req.session.planete_util = null;
@@ -388,10 +403,6 @@ async function demarrerServeur() {
             } catch (err) {
                 console.error(err);
                 return res.status(404).send({ message_negatif: "Erreur lors de la connexion à la base de données." });
-            } finally {
-                if (connexion) {
-                    await connexion.close();
-                }
             }
         });
 
@@ -407,10 +418,8 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                req.session.est_connecte = req.session.email && req.session.mdp;
-                const connexion = await getPool().getConnection();
-                const planetes_bd = await recupererPlanetes(connexion);
-                await connexion.close();
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
+                const planetes_bd = await recupererPlanetes();
                 res.render('pages/inscription', {
                     planetes_bd: planetes_bd.rows,
                 });
@@ -425,14 +434,14 @@ async function demarrerServeur() {
             POST du formulaire de la page d'inscription
         */
         .post([
-            check('email')
+            check('courriel')
                 .isEmail()
                 .withMessage("L'adresse courriel saisie est invalide."),
             check('mdp')
                 .custom(validationMdpEgal),
         ], async (req, res) => {
-            req.session.est_connecte = req.session.email && req.session.mdp;
-            const { prenom, nom, email, mdp, adresse, telephone, planete } = req.body;
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
+            const { prenom, nom, courriel, mdp, adresse, telephone, planete } = req.body;
             try {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
@@ -445,21 +454,17 @@ async function demarrerServeur() {
 
 
             try {
-                // Obtention d'une connexion à partir du pool
-                const connexion = await getPool().getConnection();
-
-                // Exécution de la requête pour vérifier si l'email est utilisé
-                const result = await connexion.execute(
-                    `SELECT * FROM utilisateur WHERE email = :email`,
-                    { email: email },
+                // Exécution de la requête pour vérifier si le courriel est utilisé
+                const result = await oracleConnexion.execute(
+                    `SELECT * FROM utilisateur WHERE email = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
 
 
                 if (result.rows.length > 0) {
-                    const planetes_bd = await recupererPlanetes(connexion);
-                    await connexion.close();
+                    const planetes_bd = await recupererPlanetes();
                     // L'utilisateur existe
                     return res.status(401).send({ message_negatif: "Cette adresse courriel est déjà utilisée." });
                 } else {
@@ -472,11 +477,11 @@ async function demarrerServeur() {
                         const telephone_numerique = telephone.replace(/\D/g, "");
 
                         // Exécution de l'insertion de données dans la BD
-                        await connexion.execute(
+                        await oracleConnexion.execute(
                             `INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete)
-                        VALUES ( :email, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
+                        VALUES ( :courriel, :mot_de_passe, :nom, :prenom, :adresse, :telephone, :planete_id_planete)`,
                             {
-                                email: email,
+                                courriel: courriel,
                                 mot_de_passe: hashedMdp,
                                 nom: nom,
                                 prenom: prenom,
@@ -485,20 +490,15 @@ async function demarrerServeur() {
                                 planete_id_planete: planete
                             }
                         );
-                        await connexion.commit();
+                        await oracleConnexion.commit();
 
-                        const nouvel_util = await connexion.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
+                        const nouvel_util = await oracleConnexion.execute("SELECT MAX(ID_UTILISATEUR) FROM utilisateur");
                         const id_nouvel_util = Number(nouvel_util.rows);
-                        const planete_util = await trouverPlaneteUtil(connexion, id_nouvel_util);
+                        const planete_util = await trouverPlaneteUtil(id_nouvel_util);
 
-                        const planete_id = Number(planete_util.rows[0]);
-
-                        const planetes_bd = await recupererPlanetes(connexion);
-                        await connexion.close();
-
-                        req.session.email = email;
+                        req.session.courriel = courriel;
                         req.session.mdp = hashedMdp;
-                        req.session.est_connecte = req.session.email && req.session.mdp;
+                        req.session.est_connecte = req.session.courriel && req.session.mdp;
                         req.session.planete_util = planete;
                         req.session.message_positif = "Compte créé avec succès!";
 
@@ -527,40 +527,39 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                const email = req.session.email;
-                req.session.est_connecte = req.session.email && req.session.mdp;
+                const courriel = req.session.courriel;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
                 if (req.session.est_connecte) {
-                    const connection = await getPool().getConnection();
-
-                    // Exécution de la requête pour vérifier l'email
-                    const result = await connection.execute(
-                        `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                        { email: email },
+                    // Exécution de la requête pour vérifier le courriel
+                    const result = await oracleConnexion.execute(
+                        `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                        { courriel: courriel },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
 
                     const rechercheData = {
-                        planeteOrigine: await chercherNomPlaneteParId(connection, req.session.planete_util),
-                        planeteDestination: await chercherNomPlaneteParId(connection, req.session.planete_destination),
+                        planeteOrigine: await chercherNomPlaneteParId(req.session.planete_util),
+                        planeteDestination: await chercherNomPlaneteParId(req.session.planete_destination),
                         dateDepart: req.session.date_aller,
                         dateRetour: req.session.date_retour,
                         nombrePersonnes: req.session.personnes
                     };
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
-                    const voyageResult = await recupererVoyages(connection, req.session.planete_util);
+                    let voyageResult;
+                    if (req.session.date_retour){
+                        voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination);
+                    } else voyageResult = await recupererVoyages(req.session.planete_util, null);
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {
                         const planeteId = voyage.PLANETE_ID_PLANETE2;
                         const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
 
-                        let connection;
                         try {
-                            connection = await pool.getConnection();
 
-                            const planeteResult = await obtenirDonneesPlaneteParId(connection, planeteId);
-                            const vaisseauResult = await obtenirDonneesVaisseauParId(connection, vaisseauId);
+                            const planeteResult = await obtenirDonneesPlaneteParId(planeteId);
+                            const vaisseauResult = await obtenirDonneesVaisseauParId(vaisseauId);
 
                             // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
                             voyage.planeteData = planeteResult.rows[0];
@@ -568,14 +567,6 @@ async function demarrerServeur() {
 
                         } catch (error) {
                             console.error("Une erreur s'est produite lors de la récupération des données :", error);
-                        } finally {
-                            if (connection) {
-                                try {
-                                    await connection.close();
-                                } catch (error) {
-                                    console.error("Erreur lors de la fermeture de la connexion :", error);
-                                }
-                            }
                         }
                     }
 
@@ -583,7 +574,9 @@ async function demarrerServeur() {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
-                            voyages_bd: voyageResult.rows
+                            voyages_bd: voyageResult.rows,
+                            message_negatif: 
+                            "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
                         });
                     }
                 } else {
@@ -603,10 +596,13 @@ async function demarrerServeur() {
         */
         .get(async (req, res) => {
             try {
-                req.session.est_connecte = req.session.email && req.session.mdp;
-                const connexion = await getPool().getConnection();
-                const result = await connexion.execute("SELECT * FROM PLANETE");
-                await connexion.close();
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
+                const result = await oracleConnexion.execute("SELECT * FROM PLANETE");
+
+                //const commentaires = dbMongo.collection("commentaires");
+                //const listeCommentaires = commentaires.find().toArray();
+                console.log("listeCommentaires");
+                //console.log(listeCommentaires);
 
                 res.render('pages/exploration', {
                     planetes_bd: result.rows,
@@ -639,13 +635,11 @@ async function demarrerServeur() {
     */
     app.get('/deconnexion', async (req, res) => {
         try {
-            const connexion = await getPool().getConnection();
-            const result = await recupererPlanetes(connexion);
+            const result = await recupererPlanetes();
             if (req.session.est_connecte) {
 
-                fermer_session(connexion, req.session.id);
-                await connexion.commit();
-                await connexion.close();
+                fermer_session(req.session.id);
+                await oracleConnexion.commit();
 
                 req.session.destroy(function (err) {
                     if (err) {
@@ -657,7 +651,7 @@ async function demarrerServeur() {
                             est_admin: false
                         });
                     }
-                    //req.session.message_positif = "Déconnexion réussie!";
+                    deconnecte = true;
                     res.redirect('/');
                 });
             } else {
@@ -710,8 +704,6 @@ async function demarrerServeur() {
                 }
             }
 
-            const connection = await getPool().getConnection();
-
             for (let i = 0; i < quantiteBilletPanier.length; i++) {
                 for (let j = 0; j < quantiteBilletPanier[i]; j++) {
 
@@ -729,7 +721,7 @@ async function demarrerServeur() {
                     };
 
                     // Insérer les données du billet dans la base de données
-                    await connection.execute(
+                    await oracleConnexion.execute(
                         `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
                             VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
                         {
@@ -743,10 +735,9 @@ async function demarrerServeur() {
                     );
                     console.log('Nouveau billet inséré avec succès');
                     console.log(billetData);
-                    await connection.commit();
+                    await oracleConnexion.commit();
                 }
             }
-            await connection.close();
 
             if (panier.length === 0) {
                 console.error("Le panier est vide. La session de checkout ne peut pas être ouverte.");
@@ -778,26 +769,24 @@ async function demarrerServeur() {
     });
 
     app.get('/success', async (req, res) => {
-        req.session.est_connecte = req.session.email && req.session.mdp;
+        req.session.est_connecte = req.session.courriel && req.session.mdp;
 
         try {
             if (req.session.est_connecte) {
-                const email = req.session.email;
+                const courriel = req.session.courriel;
                 const sessionId = req.query.session_id;
                 const userId = req.session.id_connecte;
 
                 // Début d'une transaction
-                const connexion = await getPool().getConnection();
-
-                // Exécution de la requête pour vérifier l'email
-                const result = await connexion.execute(
-                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :email`,
-                    { email: email },
+                // Exécution de la requête pour vérifier le courriel
+                const result = await oracleConnexion.execute(
+                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
 
                 // Récupération des billets de l'utilisateur avec une transaction nulle
-                const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId, connexion);
+                const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId);
                 console.log(billetsUtilisateur);
 
                 // Calcul du prix total des billets
@@ -806,10 +795,10 @@ async function demarrerServeur() {
 
                 if (prixTotal != 0) {
                     // Création d'une nouvelle transaction dans la base de données
-                    const idTransaction = await creerNouvelleTransaction(connexion, prixTotal);
+                    const idTransaction = await creerNouvelleTransaction(prixTotal);
 
                     // Mise à jour de chaque billet avec l'identifiant de transaction
-                    await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId, connexion);
+                    await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId);
                 }
 
                 const transactionData = await recupererTransactionsIdUser(userId, connexion);
@@ -858,9 +847,6 @@ async function demarrerServeur() {
                     transaction.billetTotal = totalBillets;
                 }
 
-                // Fermeture de la connexion
-                await connexion.close();
-
                 if (result.rows.length > 0) {
                     // Rendu d'une page de succès ou redirection vers une URL de succès avec le prix total
                     res.render('pages/success', { est_connecte: req.session.est_connecte, sessionId: sessionId, transactionData: transactionData });
@@ -874,8 +860,8 @@ async function demarrerServeur() {
         }
     });
 
-    async function recupererBilletsAvecTransactionNulle(idUtilisateur, connexion) {
-        const resultat = await connexion.execute(
+    async function recupererBilletsAvecTransactionNulle(idUtilisateur) {
+        const resultat = await oracleConnexion.execute(
             `SELECT * FROM billet 
              WHERE utilisateur_id_utilisateur = :idUtilisateur 
              AND transaction_id_transaction IS NULL`,
@@ -885,8 +871,8 @@ async function demarrerServeur() {
         return resultat.rows;
     }
 
-    async function recupererBilletsIdUser(idUtilisateur, connexion) {
-        const resultat = await connexion.execute(
+    async function recupererBilletsIdUser(idUtilisateur) {
+        const resultat = await oracleConnexion.execute(
             `SELECT * FROM billet 
              WHERE utilisateur_id_utilisateur = :idUtilisateur`,
             { idUtilisateur },
@@ -896,8 +882,8 @@ async function demarrerServeur() {
     }
 
     // Fonction pour récupérer le total des billets pour une transaction donnée
-    async function recupererTotalBilletsParTransaction(idTransaction, connexion) {
-        const result = await connexion.execute(
+    async function recupererTotalBilletsParTransaction(idTransaction) {
+        const result = await oracleConnexion.execute(
             `SELECT COUNT(*) AS total_billets FROM billet WHERE transaction_id_transaction = :idTransaction`,
             { idTransaction: idTransaction },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
@@ -915,8 +901,8 @@ async function demarrerServeur() {
         return result.rows;
     }
 
-    async function recupererTransactionsIdUser(idUtilisateur, connexion) {
-        const resultat = await connexion.execute(
+    async function recupererTransactionsIdUser(idUtilisateur) {
+        const resultat = await oracleConnexion.execute(
             `SELECT * FROM transaction WHERE id_transaction IN (SELECT transaction_id_transaction FROM billet 
              WHERE utilisateur_id_utilisateur = :idUtilisateur)`,
             { idUtilisateur },
@@ -933,26 +919,26 @@ async function demarrerServeur() {
         return prixTotal;
     }
 
-    async function creerNouvelleTransaction(connexion, prixTotal) {
-        const resultat = await connexion.execute(
+    async function creerNouvelleTransaction(prixTotal) {
+        const resultat = await oracleConnexion.execute(
             `INSERT INTO transaction (date_transaction, prix_total) 
              VALUES (SYSDATE, :prixTotal) 
              RETURNING id_transaction INTO :idTransaction`,
             { prixTotal, idTransaction: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT } }
         );
-        await connexion.commit();
+        await oracleConnexion.commit();
         return resultat.outBinds.idTransaction[0];
     }
 
-    async function mettreAJourBilletsAvecTransaction(billets, idTransaction, sessionId, connexion) {
+    async function mettreAJourBilletsAvecTransaction(billets, idTransaction, sessionId) {
         for (const billet of billets) {
-            await connexion.execute(
+            await oracleConnexion.execute(
                 `UPDATE billet 
                  SET transaction_id_transaction = :idTransaction 
                  WHERE id_billet = :idBillet`,
                 { idTransaction: idTransaction, idBillet: billet.ID_BILLET }
             );
-            await connexion.commit();
+            await oracleConnexion.commit();
         }
     }
 
@@ -964,11 +950,9 @@ async function demarrerServeur() {
         .get(async (req, res) => {
             try {
                 req.session.message_positif = "";
-                req.session.est_connecte = req.session.email && req.session.mdp;
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
                 if (req.session.est_connecte && req.session.est_admin) {
-                    const connexion = await getPool().getConnection();
-                    const result = await connexion.execute("SELECT table_name FROM user_tables");
-                    await connexion.close();
+                    const result = await oracleConnexion.execute("SELECT table_name FROM user_tables");
                     res.render('pages/administrateur', { tables: result.rows });
                 } else {
                     req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
@@ -984,10 +968,9 @@ async function demarrerServeur() {
         const { tableName } = req.body;
 
         try {
-            req.session.est_connecte = req.session.email && req.session.mdp;
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
             if (req.session.est_connecte && req.session.est_admin) {
-                const connexion = await getPool().getConnection();
-                const result = await connexion.execute(`SELECT * FROM ${tableName} ORDER BY 1`);
+                const result = await oracleConnexion.execute(`SELECT * FROM ${tableName} ORDER BY 1`);
                 let colonnes = result.metaData.map(col => col.name);
 
                 // Ce code transforme les rows en objets afin de faciliter la manipulation
@@ -998,8 +981,6 @@ async function demarrerServeur() {
                     });
                     return objet;
                 });
-
-                await connexion.close();
 
                 res.render('pages/voir-table', { data: dataObjets, tableName: tableName, colonnes: colonnes, });
             } else {
@@ -1018,8 +999,6 @@ async function demarrerServeur() {
         try {
             console.log("Requête de mise à jour reçue:", req.body);
 
-            const connexion = await getPool().getConnection();
-
             let partiesClause = [];
             for (const [key, value] of Object.entries(data)) {
                 if (key.includes("DATE")) {
@@ -1036,9 +1015,7 @@ async function demarrerServeur() {
 
             console.log("SQL query:", sqlQuery);
 
-            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
-
-            await connexion.close();
+            await oracleConnexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
 
             res.json({ success: true, message: 'Mise à jour réussie.' });
         } catch (err) {
@@ -1052,8 +1029,6 @@ async function demarrerServeur() {
 
         try {
             console.log("Requête d'insertion reçue':", req.body);
-
-            const connexion = await getPool().getConnection();
 
             let partiesClauseCles = [];
             let partiesClauseValeurs = [];
@@ -1077,9 +1052,7 @@ async function demarrerServeur() {
 
             console.log("SQL query:", sqlQuery);
 
-            await connexion.execute(sqlQuery, { ...data }, { autoCommit: true });
-
-            await connexion.close();
+            await oracleConnexion.execute(sqlQuery, { ...data }, { autoCommit: true });
 
             res.json({ success: true, message: 'Insertion réussie.' });
         } catch (err) {
@@ -1094,12 +1067,9 @@ async function demarrerServeur() {
         try {
             console.log("Requête de suppression reçue:", req.body);
 
-            const connexion = await getPool().getConnection();
             const sqlQuery = `DELETE FROM ${tableName} WHERE ID_${tableName} = :sqlRowIndex`;
 
-            await connexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
-
-            await connexion.close();
+            await oracleConnexion.execute(sqlQuery, { ...data, sqlRowIndex: sqlRowIndex }, { autoCommit: true });
 
             res.json({ success: true, message: 'Suppression réussie.' });
         } catch (err) {

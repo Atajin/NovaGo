@@ -47,7 +47,7 @@
                                     de départ</label>
                                 <br>
                                 <input type="date" id="date_aller" name="date_aller" class="form-control" placeholder="Date aller"
-                                    required>
+                                    required <% if (typeof date_aller !== 'undefined') { %> value="<%=date_aller%>" <% } %>>
                             </div>
                 
                             <!-- Champ de texte pour la date de fin du voyage -->
@@ -55,7 +55,8 @@
                                 <label for="date_retour" class="form-label custom-font-labels">Entrez la
                                     date de retour</label>
                                 <br>
-                                <input type="date" id="date_retour" name="date_retour" class="form-control" placeholder="Date retour">
+                                <input type="date" id="date_retour" name="date_retour" class="form-control" placeholder="Date retour"
+                                <% if (typeof date_retour !== 'undefined') { %> value="<%=date_retour%>" <% } %>>
                             </div>
                 
                         </div>
@@ -89,7 +90,7 @@
                             passagers</label>
                         <br>
                         <input type="number" name="personnes" id="personnes" class="form-control" placeholder="Nombre de personnes"
-                            required min="0">
+                            required min="0" <% if (typeof personnes !== 'undefined') { %> value="<%=personnes%>" <%  }%>>
                     </div>
                 
                 </div>
@@ -115,7 +116,7 @@
                 
                 <!--Boutton submit pour rechercher un voyage-->
                 <div class="text-center">
-                    <button type="button" onclick="post_index()" class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
+                    <button type="button" id="bouton_post_index" onclick="post_index()" class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
                 </div>
                 </form>
             </div>
@@ -123,9 +124,20 @@
     </div>
     <script>
         function post_index() {
+            /*if (typeof planete_util === 'undefined') {
+                document.getElementById("bouton_post_index").disabled = true;
+                document.getElementById("message_negatif").textContent = "Vous ne pouvez pas réserver de voyage en tant qu'administrateur."
+            } else {*/
             const regex_personnes = new RegExp("\\d+");
             const personnes_valides = regex_personnes.test(document.getElementById("personnes").value);
-            let aller_retour = true;
+
+            let deplacement_origine_destination = true;
+
+            if (document.getElementById("planete_origine").value == document.getElementById("planete_destination").value){
+                deplacement_origine_destination = false;
+            }
+
+            let aller_retour_possible = true;
             let message_erreur = "";
 
             if (document.getElementById("date_retour").required){
@@ -135,7 +147,7 @@
 
                 document.getElementById("date_retour").classList.add('is-invalid');
 
-                aller_retour = false;
+                aller_retour_possible = false;
                 }
             } else document.getElementById("date_retour").classList.remove('is-invalid');
 
@@ -144,7 +156,7 @@
 
                 document.getElementById("date_aller").classList.add('is-invalid');
 
-                aller_retour = false;
+                aller_retour_possible = false;
             } else document.getElementById("date_aller").classList.remove('is-invalid');
 
             if (document.getElementById("date_aller").value >= document.getElementById("date_retour").value
@@ -154,12 +166,12 @@
                 document.getElementById("date_aller").classList.add('is-invalid');
                 document.getElementById("date_retour").classList.add('is-invalid');
 
-                aller_retour = false;
+                aller_retour_possible = false;
             }
             
 
-            if (personnes_valides && aller_retour) {
-                const f = fetch("connexion", {
+            if (personnes_valides && aller_retour_possible && deplacement_origine_destination) {
+                const f = fetch("/", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -182,13 +194,24 @@
                     message_erreur += "Le nombre de passagers saisi est invalide.\r\n";
                 } else document.getElementById("personnes").classList.remove('is-invalid');
 
-                if (aller_retour){
+                if (aller_retour_possible){
                     document.getElementById("date_aller").classList.remove('is-invalid');
                     document.getElementById("date_retour").classList.remove('is-invalid');
                 }
 
+                if (deplacement_origine_destination){
+                    document.getElementById("planete_origine").classList.remove('is-invalid');
+                    document.getElementById("planete_destination").classList.remove('is-invalid');
+                } else {
+                    document.getElementById("planete_origine").classList.add('is-invalid');
+                    document.getElementById("planete_destination").classList.add('is-invalid');
+
+                    message_erreur += "L'astre d'origine et de destination ne peuvent pas être le même.\r\n";
+                }
+
                 document.getElementById("message_negatif").textContent = message_erreur;
             }
+            //}
         }
     </script>
     <script src="/javascript/index.js"></script>
