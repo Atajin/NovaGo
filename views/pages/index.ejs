@@ -1,141 +1,218 @@
 <%- include ("../partials/header.ejs") %>
 <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
-<% if (typeof message_negatif !== 'undefined') { %>
-    <div class="custom-message-negatif">
-        <%= message_negatif %>
-    </div>
+<div>
+    <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
+    <% if (message_positif != "") { %>
+        <span id="message_positif" class="custom-message-positif">
+            <%= message_positif %>
+        </span>
+        <br>
     <% } %>
-<!--Gestion des messages d'erreur-->
-<% if (typeof message_positif !== 'undefined') { %>
-    <div class="custom-message-positif">
-        <%= message_positif %>
-    </div>
-    <% } %>
+    <!--Gestion des messages d'erreur-->
+            <span id="message_negatif" class="custom-message-negatif" style="white-space: pre-line;">
+                <%= message_negatif %>
+            </span>
+</div>
     
     <div class="container-fluid" style="margin-top: 10%;">
         <div class="row justify-content-center">
             <div class="col-md-8">
-
-                <!--Action complétée lors du submit de ce formulaire-->
-                <form action="/" method="POST">
-
-                    
-
-                                    <div class="row mb-3">
-
-                                        <!--Champ de texte pour l'origine du voyage-->
-                                        <div class="col">
-                                            <label for="planete_origine" class="form-label custom-font-labels">Entrez
-                                                l'astre d'origine</label>
-                                            <br>
-                                            <select id="planete_origine" name="planete_origine" class="form-control"
-                                                required>
-                                                <% if (typeof planetes_bd !=='undefined' && planetes_bd.length> 0) { %>
-                                                    <% planetes_bd.forEach(function(planete, i) { %>
-                                                        <option value="<%= planete[0] %>" <%if (typeof planete_origine
-                                                            !=='undefined' && i + 1==planete_origine) { %>selected <% }
-                                                                %> >
-                                                                <%= planete[1] %>
-                                                        </option>
-                                                        <% }); %>
-                                                            <% } else { %>
-                                                                <option selected>Aucune planète disponible</option>
-                                                                <% } %>
-                                            </select>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="row">
-                                                <!-- Champ de texte pour la date du début du voyage -->
-                                                <div class="col" id="date-aller-col">
-                                                    <label for="date-aller" class="form-label custom-font-labels">Entrez
-                                                        la date
-                                                        de départ</label>
-                                                    <br>
-                                                    <input type="date" id="date-aller" name="date-aller"
-                                                        class="form-control" placeholder="Date aller" required>
-                                                </div>
-
-                                                <!-- Champ de texte pour la date de fin du voyage -->
-                                                <div class="col" id="date-retour-col" style="display: none;">
-                                                    <label for="date-retour"
-                                                        class="form-label custom-font-labels">Entrez la
-                                                        date de retour</label>
-                                                    <br>
-                                                    <input type="date" id="date-retour" name="date-retour"
-                                                        class="form-control" placeholder="Date retour">
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-
-                                        <!--Champ de texte pour la destination du voyage-->
-                                        <div class="col">
-                                            <label for="planete_destination"
-                                                class="form-label custom-font-labels">Entrez l'astre de
-                                                destination</label>
-                                            <br>
-                                            <select id="planete_destination" name="planete_destination"
-                                                class="form-control" required>
-                                                <% if (typeof planetes_bd !=='undefined' && planetes_bd.length> 0) { %>
-                                                    <% planetes_bd.forEach(function(planete, i) { %>
-                                                        <option value="<%= planete[0] %>" <%if (typeof
-                                                            planete_destination !=='undefined' && i +
-                                                            1==planete_destination) { %>selected <% } %> >
-                                                                <%= planete[1] %>
-                                                        </option>
-                                                        <% }); %>
-                                                            <% } else { %>
-                                                                <option selected>Aucune planète disponible</option>
-                                                                <% } %>
-                                            </select>
-                                        </div>
-
-                                        <!--Champ de texte pour le nombre de billets dans le voyage-->
-                                        <div class=" col">
-                                            <label for="personnes" class="form-label custom-font-labels">Entrez le
-                                                nombre de
-                                                passagers</label>
-                                            <br>
-                                            <input type="number" name="personnes" id="personnes" class="form-control"
-                                                placeholder="Nombre de personnes" required min="0">
-                                        </div>
-
-                                    </div>
-                                    <div class="row mb-3">
-
-                                        <!--Champ de sélection entre "aller simple" et "aller retour"-->
-                                        <div class="col text-center">
-                                            <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
-                                                <!--Aller simple-->
-                                                <label for="aller-simple"
-                                                    class="form-label custom-font-labels-radio">Aller
-                                                    simple</label>
-                                                <input type="radio" id="aller-simple" value="aller-simple"
-                                                    name="type-billet" checked>
-                                            </div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
-                                                <!--Aller simple-->
-                                                <label for="aller-retour"
-                                                    class="form-label custom-font-labels-radio">Aller-retour</label>
-                                                <input type="radio" id="aller-retour" value="aller-retour"
-                                                    name="type-billet">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!--Boutton submit pour rechercher un voyage-->
-                                    <div class="text-center">
-                                        <button type="submit"
-                                            class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
-                                    </div>
+                <div class="row mb-3">
+                
+                    <!--Champ de texte pour l'origine du voyage-->
+                    <div class="col">
+                        <label for="planete_origine" class="form-label custom-font-labels">Entrez
+                            l'astre d'origine</label>
+                        <br>
+                        <select id="planete_origine" name="planete_origine" class="form-control" required>
+                            <% if (typeof planetes_bd !=='undefined' && planetes_bd.length> 0) { %>
+                                <% planetes_bd.forEach(function(planete, i) { %>
+                                    <option value="<%= planete[0] %>" <%if (typeof planete_origine !=='undefined' && i +
+                                        1==planete_origine) { %>selected <% } %> >
+                                            <%= planete[1] %>
+                                    </option>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <option selected>Aucune planète disponible</option>
+                                            <% } %>
+                        </select>
+                    </div>
+                
+                    <div class="col">
+                        <div class="row">
+                            <!-- Champ de texte pour la date du début du voyage -->
+                            <div class="col" id="date_aller-col">
+                                <label for="date_aller" class="form-label custom-font-labels">Entrez
+                                    la date
+                                    de départ</label>
+                                <br>
+                                <input type="date" id="date_aller" name="date_aller" class="form-control" placeholder="Date aller"
+                                    required <% if (typeof date_aller !== 'undefined') { %> value="<%=date_aller%>" <% } %>>
+                            </div>
+                
+                            <!-- Champ de texte pour la date de fin du voyage -->
+                            <div class="col" id="date_retour-col" style="display: none;">
+                                <label for="date_retour" class="form-label custom-font-labels">Entrez la
+                                    date de retour</label>
+                                <br>
+                                <input type="date" id="date_retour" name="date_retour" class="form-control" placeholder="Date retour"
+                                <% if (typeof date_retour !== 'undefined') { %> value="<%=date_retour%>" <% } %>>
+                            </div>
+                
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                
+                    <!--Champ de texte pour la destination du voyage-->
+                    <div class="col">
+                        <label for="planete_destination" class="form-label custom-font-labels">Entrez l'astre de
+                            destination</label>
+                        <br>
+                        <select id="planete_destination" name="planete_destination" class="form-control" required>
+                            <% if (typeof planetes_bd !=='undefined' && planetes_bd.length> 0) { %>
+                                <% planetes_bd.forEach(function(planete, i) { %>
+                                    <option value="<%= planete[0] %>" <%if (typeof planete_destination !=='undefined' && i +
+                                        1==planete_destination) { %>selected <% } %> >
+                                            <%= planete[1] %>
+                                    </option>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <option selected>Aucune planète disponible</option>
+                                            <% } %>
+                        </select>
+                    </div>
+                
+                    <!--Champ de texte pour le nombre de billets dans le voyage-->
+                    <div class=" col">
+                        <label for="personnes" class="form-label custom-font-labels">Entrez le
+                            nombre de
+                            passagers</label>
+                        <br>
+                        <input type="number" name="personnes" id="personnes" class="form-control" placeholder="Nombre de personnes"
+                            required min="0" <% if (typeof personnes !== 'undefined') { %> value="<%=personnes%>" <%  }%>>
+                    </div>
+                
+                </div>
+                <div class="row mb-3">
+                
+                    <!--Champ de sélection entre "aller simple" et "aller retour"-->
+                    <div class="col text-center">
+                        <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
+                            <!--Aller simple-->
+                            <label for="aller-simple" class="form-label custom-font-labels-radio">Aller
+                                simple</label>
+                            <input type="radio" id="aller-simple" value="aller-simple" name="type-billet" checked>
+                        </div>
+                    </div>
+                    <div class="col text-center">
+                        <div class="d-inline-block rounded-pill p-2 custom-font-labels-bg">
+                            <!--Aller simple-->
+                            <label for="aller-retour" class="form-label custom-font-labels-radio">Aller-retour</label>
+                            <input type="radio" id="aller-retour" value="aller-retour" name="type-billet">
+                        </div>
+                    </div>
+                </div>
+                
+                <!--Boutton submit pour rechercher un voyage-->
+                <div class="text-center">
+                    <button type="button" id="bouton_post_index" onclick="post_index()" class="btn btn-outline-light btn-lg custom-font-planet-p">Rechercher</button>
+                </div>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        function post_index() {
+            /*if (typeof planete_util === 'undefined') {
+                document.getElementById("bouton_post_index").disabled = true;
+                document.getElementById("message_negatif").textContent = "Vous ne pouvez pas réserver de voyage en tant qu'administrateur."
+            } else {*/
+            const regex_personnes = new RegExp("\\d+");
+            const personnes_valides = regex_personnes.test(document.getElementById("personnes").value);
+
+            let deplacement_origine_destination = true;
+
+            if (document.getElementById("planete_origine").value == document.getElementById("planete_destination").value){
+                deplacement_origine_destination = false;
+            }
+
+            let aller_retour_possible = true;
+            let message_erreur = "";
+
+            if (document.getElementById("date_retour").required){
+
+                if (!document.getElementById("date_retour").value){
+                message_erreur = "Veuillez remplir le champ de date de retour.\r\n";
+
+                document.getElementById("date_retour").classList.add('is-invalid');
+
+                aller_retour_possible = false;
+                }
+            } else document.getElementById("date_retour").classList.remove('is-invalid');
+
+            if (!document.getElementById("date_aller").value){
+                message_erreur += "Veuillez remplir le champ de date de départ.\r\n";
+
+                document.getElementById("date_aller").classList.add('is-invalid');
+
+                aller_retour_possible = false;
+            } else document.getElementById("date_aller").classList.remove('is-invalid');
+
+            if (document.getElementById("date_aller").value >= document.getElementById("date_retour").value
+                && message_erreur == "" && document.getElementById("date_retour").required) {
+                message_erreur += "La date de retour doit être après la date d'aller.\r\n";
+
+                document.getElementById("date_aller").classList.add('is-invalid');
+                document.getElementById("date_retour").classList.add('is-invalid');
+
+                aller_retour_possible = false;
+            }
+            
+
+            if (personnes_valides && aller_retour_possible && deplacement_origine_destination) {
+                const f = fetch("/", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        planete_origine: document.getElementById("planete_origine").value,
+                        planete_destination: document.getElementById("planete_destination").value,
+                        personnes: document.getElementById("personnes").value,
+                        date_aller: document.getElementById("date_aller").value,
+                        date_retour: document.getElementById("date_retour").value
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        window.location.href = "http://localhost:4000/reservation";
+                    }).catch((error) => {
+                        console.error('Erreur:', error);
+                    });
+            } else {
+                if (!personnes_valides) {
+                    document.getElementById("personnes").classList.add('is-invalid');
+                    message_erreur += "Le nombre de passagers saisi est invalide.\r\n";
+                } else document.getElementById("personnes").classList.remove('is-invalid');
+
+                if (aller_retour_possible){
+                    document.getElementById("date_aller").classList.remove('is-invalid');
+                    document.getElementById("date_retour").classList.remove('is-invalid');
+                }
+
+                if (deplacement_origine_destination){
+                    document.getElementById("planete_origine").classList.remove('is-invalid');
+                    document.getElementById("planete_destination").classList.remove('is-invalid');
+                } else {
+                    document.getElementById("planete_origine").classList.add('is-invalid');
+                    document.getElementById("planete_destination").classList.add('is-invalid');
+
+                    message_erreur += "L'astre d'origine et de destination ne peuvent pas être le même.\r\n";
+                }
+
+                document.getElementById("message_negatif").textContent = message_erreur;
+            }
+            //}
+        }
+    </script>
     <script src="/javascript/index.js"></script>
     <%- include ("../partials/footer.ejs") %>

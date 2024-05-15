@@ -12,7 +12,8 @@
         font-style: normal;
     }
 
-    body {
+    body,
+    html {
         height: 100vh;
     }
 
@@ -34,7 +35,7 @@
     }
 
     .custom-background {
-        background-image: url('../images/spacebg.jpg');
+        background-image: url('../images/spacebg.webp');
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
@@ -61,16 +62,18 @@
     .custom-message-negatif {
         font-family: 'PPStellar', sans-serif;
         color: red;
+        background-color: black;
         font-size: 20px;
     }
 
     .custom-message-positif {
         font-family: 'PPStellar', sans-serif;
         color: lime;
+        background-color: black;
         font-size: 20px;
     }
 
-    .custom-font-planet-t {
+    .custom-font-planete-t {
         text-align: left;
         font-family: 'Iceland', sans-serif;
         color: white;
@@ -87,7 +90,7 @@
         font-size: 3.2rem;
     }
 
-    .custom-font-planet-p {
+    .custom-font-planete-p {
         font-family: 'PPStellar', sans-serif;
         color: white;
         font-size: 125%;
@@ -157,6 +160,22 @@
         margin-top: -5px;
     }
 
+    .scrollable-list {
+        overflow-y: auto;
+        max-height: 80vh;
+    }
+
+    .scrollable-table {
+        overflow-y: auto;
+        max-height: 70vh;
+    }
+
+    .wrap-text {
+        word-wrap: break-word;
+        white-space: normal;
+        max-width: 250px;
+    }
+
     /*SCROLLBAR*/
     ::-webkit-scrollbar {
         width: 2px;
@@ -164,7 +183,7 @@
 
     ::-webkit-scrollbar-thumb {
         background-color: rgba(66, 66, 66, 0.6);
-    }   
+    }
 
     ::-webkit-scrollbar-track {
         background: rgb(0, 0, 0);

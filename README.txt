@@ -1,9 +1,27 @@
 Dans command prompt (en tant qu'admin):
 
+Pour initialiser le conteneur mongoDB:
+
+Ouvrir l'invite de commandes windows
+
+Se diriger dans le dossier scripts du dépôt Github:
+cd /chemin/vers/scripts
+
+Créer le conteneur à partir du fichier docker-compose:
+docker-compose up -d
+
+Dans docker exec pour se connecter:
+mongosh "mongodb://novago:mongo@localhost:27017"
+
+
+Pour initialiser le conteneur oracle:
+
+Ouvrir l'invite de commandes windows
+
 Pull l'image oracle:
 docker pull gvenzl/oracle-xe:21
 
-Run l'image dans docker:
+Run l'image oracle dans docker:
 docker run -d -p 1521:1521 --name oracle-xe -e ORACLE_PASSWORD=oracle gvenzl/oracle-xe:21
 
 Copier le script de creation dans le container docker:
@@ -18,7 +36,7 @@ docker cp /chemin/vers/nom_script_insertion.ddl oracle-xe:/home/nom_script_inser
 Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_3.0.ddl oracle-xe:/home/script_insertion_novago_3.0.ddl
 
 
-Dans docker exec:
+Dans docker exec pour la BD oracle:
 
 Se connecter en tant qu'admin:
 sqlplus sys/oracle as sysdba
@@ -42,7 +60,7 @@ Lancer le script de creation:
 Lancer le script d'insertion:
 @/home/script_insertion_novago_3.0.ddl
 
-EXIT; (pour s'assurer que les changements soient commit)
+COMMIT;
 
 Normalement, c'est bon!
 
@@ -79,3 +97,7 @@ Pour initialiser un serveur dans Visual Studio Code en utilisant nodemon :
 4. Ouvrir le terminal intégré dans Visual Studio Code en utilisant Affichage > Terminal
 6. Si "nodemon" n'est pas installé, installe-le : Executer dans le terminal : npm install -g nodemon
 5. Executer dans le terminal : npx nodemon server.js
+
+Pour se connecter à un compte admin: 
+Courriel: odrolest@gmail.com
+Mot de passe: novago2034730
