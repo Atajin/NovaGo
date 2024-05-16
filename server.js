@@ -133,7 +133,7 @@ async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) 
               planeteRetour: planeteRetour },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
-        if (!voyageResult){
+        if (voyageResult.rows.length == 0){
             voyageResult = await oracleConnexion.execute(
                 `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
                 { planeteAller: planeteAller,
@@ -148,7 +148,7 @@ async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) 
                 planeteRetour: planeteRetour },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
-        if (!voyageResult){
+        if (voyageResult.rows.length == 0){
             voyageResult = await oracleConnexion.execute(
                 `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
                 { planeteAller: planeteAller },
@@ -568,32 +568,42 @@ async function demarrerServeur() {
                     } else voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination, false);
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
-                    for (const voyage of voyageResult.rows) {
-                        const planeteId = voyage.PLANETE_ID_PLANETE2;
-                        const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
-
-                        try {
-
-                            const planeteResult = await obtenirDonneesPlaneteParId(planeteId);
-                            const vaisseauResult = await obtenirDonneesVaisseauParId(vaisseauId);
-
-                            // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
-                            voyage.planeteData = planeteResult.rows[0];
-                            voyage.vaisseauData = vaisseauResult.rows[0];
-
-                        } catch (error) {
-                            console.error("Une erreur s'est produite lors de la récupération des données :", error);
+                    if (voyageResult.rows.length > 0){
+                        for (const voyage of voyageResult.rows) {
+                            const planeteId = voyage.PLANETE_ID_PLANETE2;
+                            const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
+    
+                            try {
+    
+                                const planeteResult = await obtenirDonneesPlaneteParId(planeteId);
+                                const vaisseauResult = await obtenirDonneesVaisseauParId(vaisseauId);
+    
+                                // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
+                                voyage.planeteData = planeteResult.rows[0];
+                                voyage.vaisseauData = vaisseauResult.rows[0];
+    
+                            } catch (error) {
+                                console.error("Une erreur s'est produite lors de la récupération des données :", error);
+                            }
                         }
-                    }
-
-                    if (result.rows.length > 0) {
+    
+                        if (result.rows.length > 0) {
+                            res.render('pages/reservation', {
+                                est_connecte: req.session.est_connecte,
+                                rechercheData: rechercheData,
+                                voyages_bd: voyageResult.rows,
+                                message_negatif: 
+                                "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
+                            });
+                        }
+                    } else {
                         res.render('pages/reservation', {
-                            est_connecte: req.session.est_connecte,
-                            rechercheData: rechercheData,
-                            voyages_bd: voyageResult.rows,
-                            message_negatif: 
-                            "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
-                        });
+                        est_connecte: req.session.est_connecte,
+                        rechercheData: rechercheData,
+                        voyages_bd: voyageResult.rows,
+                        message_negatif: 
+                        "Aucun voyage n'a été trouvé qui répond aux paramètres de votre recherche."
+                    });
                     }
                 } else {
                     req.session.message_negatif = "Connectez vous à un compte utilisateur pour réserver un voyage.";
