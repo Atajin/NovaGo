@@ -694,7 +694,24 @@ async function demarrerServeur() {
     });
 
     app.post('/checkout', async (req, res) => {
-        const { dataPanier } = req.body;
+        const { dataPanier, codeRabais } = req.body;
+        let resultRabais = 0;
+        console.log(codeRabais);
+        if (codeRabais){
+            resultRabais = await oracleConnexion.execute(
+                `SELECT * FROM RABAIS WHERE CODE = :codeRabais `,
+                { codeRabais: codeRabais },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+        }
+        let rabais = 1;
+        if (resultRabais.rows.length > 0){
+            rabais = resultRabais.rows[0].POURCENTAGE
+            if (new Date < resultRabais.rows[0].DATE_DEBUT || new Date > resultRabais.rows[0].DATE_FIN){
+                rabais = 0;
+            }
+            rabais = 1 - rabais/100;
+        }
         console.log(dataPanier);
         let quantiteBilletPanier = [];
         let prixPanier = [];
@@ -741,7 +758,7 @@ async function demarrerServeur() {
                         classe: dataPanier[i].classeVoyage,
                         siege: siege,
                         voyage_id_voyage: dataPanier[i].idVoyage,
-                        prix: prixPanier[i] / 100,
+                        prix: (prixPanier[i] / 100),
                         utilisateur_id_utilisateur: req.session.id_connecte,
                         transaction_id_transaction: null
                     };
