@@ -529,7 +529,7 @@ async function demarrerServeur() {
             try {
                 const courriel = req.session.courriel;
                 req.session.est_connecte = req.session.courriel && req.session.mdp;
-                if (req.session.est_connecte) {
+                if (req.session.est_connecte && !req.session.est_admin) {
                     // Exécution de la requête pour vérifier le courriel
                     const result = await oracleConnexion.execute(
                         `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
@@ -580,7 +580,7 @@ async function demarrerServeur() {
                         });
                     }
                 } else {
-                    req.session.message_negatif = "Connectez vous pour réserver un voyage.";
+                    req.session.message_negatif = "Connectez vous à un compte utilisateur pour réserver un voyage.";
                     res.redirect('/connexion');
                 }
             } catch (err) {
