@@ -124,21 +124,37 @@ async function recupererPlanetes() {
     }
 }
 
-async function recupererVoyages(planeteAller, planeteRetour) {
+async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) {
     let voyageResult;
-    if (planeteRetour){
+    if (voyageAllerRetour){
         voyageResult = await oracleConnexion.execute(
-            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour OR planete_id_planete2 = :planeteAller AND PLANETE_ID_PLANETE = :planeteRetour`,
             { planeteAller: planeteAller,
               planeteRetour: planeteRetour },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
+        if (!voyageResult){
+            voyageResult = await oracleConnexion.execute(
+                `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
+                { planeteAller: planeteAller,
+                  planeteRetour: planeteRetour },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+        }
     } else {
         voyageResult = await oracleConnexion.execute(
-            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
-            { planeteAller: planeteAller },
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour`,
+            {   planeteAller: planeteAller,
+                planeteRetour: planeteRetour },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
+        if (!voyageResult){
+            voyageResult = await oracleConnexion.execute(
+                `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
+                { planeteAller: planeteAller },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+        }
     }
     return voyageResult;
 }
@@ -538,7 +554,7 @@ async function demarrerServeur() {
                     );
 
                     const rechercheData = {
-                        planeteOrigine: await chercherNomPlaneteParId(req.session.planete_util),
+                        planeteOrigine: await chercherNomPlaneteParId(req.session.planete_util, req.session.planete_destination),
                         planeteDestination: await chercherNomPlaneteParId(req.session.planete_destination),
                         dateDepart: req.session.date_aller,
                         dateRetour: req.session.date_retour,
@@ -548,8 +564,8 @@ async function demarrerServeur() {
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     let voyageResult;
                     if (req.session.date_retour){
-                        voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination);
-                    } else voyageResult = await recupererVoyages(req.session.planete_util, null);
+                        voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination, true);
+                    } else voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination, false);
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
                     for (const voyage of voyageResult.rows) {
