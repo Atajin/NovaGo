@@ -2,21 +2,21 @@ window.onload = function() {
     // Si vous avez au moins une transaction dans votre ensemble de données
     if (transactionData.length > 0) {
         // Appelez afficherTransaction avec l'ID de la première transaction
-        afficherTransaction(transactionData[0].ID_TRANSACTION);
+        afficherTransaction(transactionData[0].ID_TRANSACTION, transactionData);
     }
 };
 
-function afficherTransaction(idTransaction) {
-    var transactionSelectionnee = transactionData.find(function (transaction) {
+function afficherTransaction(idTransaction, transactionData) {
+    let transactionSelectionnee = transactionData.find(function (transaction) {
         return transaction.ID_TRANSACTION == idTransaction;
     });
 
     // Construct the content string
-    var content = "Transaction " + transactionSelectionnee.ID_TRANSACTION + " - " + transactionSelectionnee.DATE_TRANSACTION.split("T")[0]; 
+    let content = "Transaction " + transactionSelectionnee.ID_TRANSACTION + " - " + transactionSelectionnee.DATE_TRANSACTION.split("T")[0]; 
     
     document.getElementById("nomBillet").innerHTML = content;
 
-    var transactionDetailsHTML = ""; // Initialisez la variable
+    let transactionDetailsHTML = ""; // Initialisez la letiable
 
     // Vérifier si la transaction a été trouvée 
     if (transactionSelectionnee) {
@@ -71,7 +71,7 @@ function afficherTransaction(idTransaction) {
                                         </div>`;
         });
 
-        var transactionsContainer = document.getElementById("transactionsContainer");
+        let transactionsContainer = document.getElementById("transactionsContainer");
         if (transactionsContainer) {
             transactionsContainer.innerHTML = transactionDetailsHTML;
         }
