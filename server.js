@@ -768,23 +768,6 @@ async function demarrerServeur() {
                         utilisateur_id_utilisateur: req.session.id_connecte,
                         transaction_id_transaction: null
                     };
-                    
-                    // Insérer les données du billet dans la base de données
-                    await oracleConnexion.execute(
-                        `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
-                            VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
-                        {
-                            classe: billetData.classe,
-                            siege: billetData.siege,
-                            voyage_id_voyage: billetData.voyage_id_voyage,
-                            prix: billetData.prix,
-                            utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
-                            transaction_id_transaction: billetData.transaction_id_transaction
-                        }
-                    );
-                    console.log('Nouveau billet inséré avec succès');
-                    console.log(billetData);
-                    await oracleConnexion.commit();
                 }
             }
 
@@ -799,7 +782,7 @@ async function demarrerServeur() {
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}',
+                success_url: `http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}&billetData=${encodeURIComponent(JSON.stringify(billetData))}`,
                 cancel_url: 'http://localhost:4000/reservation',
             });
 
@@ -821,9 +804,9 @@ async function demarrerServeur() {
                     return billetsVendus + 1;
                 }
                 else if (dataPanier[index].classeVoyage == "economique" && (parseInt(billetsMax * 0.9)) - billetsVendus > 0) {
-                    return billetsVendus + 1;
+                    return parseInt(billetsMax * 0.1) + billetsVendus + 1;
                 }
-                
+
                 return null;
             }
 
@@ -836,9 +819,27 @@ async function demarrerServeur() {
 
     app.get('/success', async (req, res) => {
         req.session.est_connecte = req.session.courriel && req.session.mdp;
-
         try {
             if (req.session.est_connecte) {
+                const billetData = JSON.parse(decodeURIComponent(req.query.billetData));
+
+                // Insérer les données du billet dans la base de données
+                await oracleConnexion.execute(
+                    `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
+                            VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
+                    {
+                        classe: billetData.classe,
+                        siege: billetData.siege,
+                        voyage_id_voyage: billetData.voyage_id_voyage,
+                        prix: billetData.prix,
+                        utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
+                        transaction_id_transaction: billetData.transaction_id_transaction
+                    }
+                );
+                console.log('Nouveau billet inséré avec succès');
+                console.log(billetData);
+                await oracleConnexion.commit();
+
                 const courriel = req.session.courriel;
                 const sessionId = req.query.session_id;
                 const userId = req.session.id_connecte;
