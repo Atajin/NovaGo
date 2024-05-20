@@ -189,7 +189,9 @@ function gestionConfirmerModification(event) {
 
 function gestionSupprimer() {
     const rowIndex = this.getAttribute('data-index');
-    const sqlRowIndex = parseInt(rowIndex, 10) + 1;
+    const row = document.querySelector(`tr[data-row-index="${rowIndex}"]`);
+    const firstCell = row.querySelector('td');
+    const sqlRowIndex = parseInt(firstCell.textContent, 10);
 
     if (!confirm('Êtes-vous sûr de vouloir supprimer cette ligne ?')) return;
 
