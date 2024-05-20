@@ -11,46 +11,7 @@ window.onload = function () {
     if (transactionData.length > 0) {
         // Appelez afficherTransaction avec l'ID de la première transaction
         afficherTransaction(transactionData[0].ID_TRANSACTION);
-    }
-
-    let transactionSelectionnee = transactionData.find(function (transaction) {
-        return transaction.ID_TRANSACTION == idTransaction;
-    });
-    
-    let auMoinsUnBilletExpire = false;
-    let tousBilletsExpirent = true;
-    
-    transactionSelectionnee.billets.forEach(function (billet) {
-        const dateDepart = new Date(billet.voyage.DATE_DEPART.split("T")[0]);
-        const dateActuelle = new Date();
-        
-        let billetExpire = false;
-    
-        if (dateDepart > dateActuelle) {
-            billetExpire = false;
-        } else {
-            billetExpire = true;
-        }
-    
-        auMoinsUnBilletExpire = auMoinsUnBilletExpire || billetExpire; // Au moins un billet expire
-        tousBilletsExpirent = tousBilletsExpirent && billetExpire; // Tous les billets expirent
-    });
-    
-    const annulerBtn = document.querySelector('.annuler-btn');
-    
-    if (auMoinsUnBilletExpire && !tousBilletsExpirent) {
-        annulerBtn.addEventListener('click', function () {
-            annulerVoyage(idTransaction);
-        });
-        annulerBtn.disabled = false; // Réactive le bouton d'annulation
-    } else {
-        annulerBtn.disabled = true; // Désactive le bouton d'annulation
-        alert("Impossible d'annuler la transaction. Tous les billets ne sont pas expirés.");
-    }
-    
-    // Réinitialiser les variables booléennes
-    auMoinsUnBilletExpire = false;
-    tousBilletsExpirent = true;    
+    }   
     
     const recuBtn = document.querySelector('.recu-btn');
     recuBtn.addEventListener('click', function () {
@@ -67,19 +28,16 @@ function afficherTransaction(idTransaction) {
     });
 
     let auMoinsUnBilletExpire = false;
+    let toutBilletExpire = true;
 
     transactionSelectionnee.billets.forEach(function (billet) {
         const dateDepart = new Date(billet.voyage.DATE_DEPART.split("T")[0]);
         const dateActuelle = new Date();
 
-        let billetExpire = false;
+        let billetExpire = dateDepart <= dateActuelle;
 
-        if (dateDepart > dateActuelle) {
-            billetExpire = false;
-        } else {
-            billetExpire = true;
-        }
-        auMoinsUnBilletExpire = billetExpire; // Au moins un billet expire
+        auMoinsUnBilletExpire = auMoinsUnBilletExpire || billetExpire; // Au moins un billet expire
+        toutBilletExpire = toutBilletExpire && billetExpire; // Tous les billets sont expirés
     });
 
     const annulerBtn = document.querySelector('.annuler-btn');
@@ -89,11 +47,11 @@ function afficherTransaction(idTransaction) {
             annulerVoyage(idTransaction);
         });
         annulerBtn.disabled = false; // Réactive le bouton d'annulation
-        ajouterElementSVG(false);
     } else {
         annulerBtn.disabled = true; // Désactive le bouton d'annulation
-        ajouterElementSVG(true);
     }
+
+    ajouterElementSVG(toutBilletExpire);
 
     // Réinitialiser les variables booléennes
     auMoinsUnBilletExpire = false;
