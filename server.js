@@ -631,7 +631,7 @@ async function demarrerServeur() {
                 const result = await oracleConnexion.execute("SELECT * FROM PLANETE");
 
                 const commentaires = dbMongo.collection("commentaires");
-                const listeCommentaires = commentaires.find();
+                const listeCommentaires = await commentaires.find().toArray();
                 console.log("listeCommentaires");
                 console.log(listeCommentaires);
 
