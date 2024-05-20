@@ -13,3 +13,6 @@ db.commentaires.insertMany([
     { nom: "Ivan", note: 5, contenu: "Vortexia vous transporte dans une autre dimension. Incroyable!", planete: "Vortexia" },
     { nom: "Judy", note: 3, contenu: "Terra Nova est un choix solide pour les débutants en voyage spatial.", planete: "Terra Nova" }
 ]);
+
+db.createCollection("wishlist");
+db.wishlist.insertOne({ id_utilisateur: "1", id_voyage: "1", date: new Date() });
