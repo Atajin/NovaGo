@@ -819,14 +819,32 @@ async function demarrerServeur() {
 
     app.get('/success', async (req, res) => {
         req.session.est_connecte = req.session.courriel && req.session.mdp;
+    
+        if (!req.session.est_connecte) {
+            return res.render('pages/connexion', {
+                message_negatif: 'Connectez vous pour réserver un voyage'
+            });
+        }
+    
         try {
-            if (req.session.est_connecte) {
-                const billetData = JSON.parse(decodeURIComponent(req.query.billetData));
-
-                // Insérer les données du billet dans la base de données
+            const { courriel, id_connecte: userId } = req.session;
+            const sessionId = req.query.session_id;
+    
+            if (req.query.billetData) {
+                // Log billetData for debugging
+                console.log('billetData:', req.query.billetData);
+    
+                let billetData;
+                try {
+                    billetData = JSON.parse(decodeURIComponent(req.query.billetData));
+                } catch (jsonError) {
+                    throw new Error('Invalid JSON in billetData: ' + jsonError.message);
+                }
+    
+                // Insert the ticket data into the database
                 await oracleConnexion.execute(
                     `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
-                            VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
+                     VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
                     {
                         classe: billetData.classe,
                         siege: billetData.siege,
@@ -838,86 +856,83 @@ async function demarrerServeur() {
                 );
                 console.log('Nouveau billet inséré avec succès');
                 await oracleConnexion.commit();
-
-                const courriel = req.session.courriel;
-                const sessionId = req.query.session_id;
-                const userId = req.session.id_connecte;
-
-                // Début d'une transaction
-                // Exécution de la requête pour vérifier le courriel
-                const result = await oracleConnexion.execute(
-                    `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
-                    { courriel: courriel },
-                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                );
-
-                // Récupération des billets de l'utilisateur avec une transaction nulle
-                const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId);
-                console.log(billetsUtilisateur);
-
-                // Calcul du prix total des billets
-                const prixTotal = calculerPrixTotalBillets(billetsUtilisateur);
-                console.log(prixTotal);
-
-                if (prixTotal != 0) {
-                    // Création d'une nouvelle transaction dans la base de données
-                    const idTransaction = await creerNouvelleTransaction(prixTotal);
-
-                    // Mise à jour de chaque billet avec l'identifiant de transaction
-                    await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId);
-                }
-
-                const transactionData = await recupererTransactionsIdUser(userId);
-
-                for (const transaction of transactionData) {
-                    // Récupère le total des billets pour cette transaction
-                    const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION);
-
-                    // Récupère les billets pour cette transaction
-                    const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION);
-
-                    // Pour chaque billet dans la transaction
-                    for (const billet of billetsTransaction) {
-                        // Récupère les détails du voyage associé à ce billet
-                        const result = await oracleConnexion.execute(
-                            `SELECT *
-                             FROM VOYAGE
-                             WHERE ID_VOYAGE = :idVoyage`,
-                            { idVoyage: billet.VOYAGE_ID_VOYAGE },
-                            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                        );
-                        let voyageDetails = result.rows[0];
-
-                        if (voyageDetails) {
-                            const vaisseauNom = await chercherNomVaisseauParId(voyageDetails.VAISSEAU_ID_VAISSEAU);
-                            voyageDetails.vaisseau_nom = vaisseauNom.NOM;
-
-                            // Ajoute les détails du voyage au billet
-                            billet.voyage = voyageDetails;
-                        } else {
-                            console.error("Aucun détail de voyage trouvé pour l'ID de voyage :", billet.voyage_id_voyage);
-                        }
+            }
+    
+            // Retrieve user data by email
+            const userResult = await oracleConnexion.execute(
+                `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                { courriel: courriel },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+    
+            // Retrieve user's tickets with null transactions
+            const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId);
+            console.log(billetsUtilisateur);
+    
+            // Calculate total price of the tickets
+            const prixTotal = calculerPrixTotalBillets(billetsUtilisateur);
+            console.log(prixTotal);
+    
+            // Create a new transaction if total price is not zero
+            if (prixTotal !== 0) {
+                const idTransaction = await creerNouvelleTransaction(prixTotal);
+    
+                // Update each ticket with the transaction ID
+                await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId);
+            }
+    
+            // Retrieve user's transaction data
+            const transactionData = await recupererTransactionsIdUser(userId);
+    
+            for (const transaction of transactionData) {
+                // Get total tickets for this transaction
+                const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION);
+    
+                // Get tickets for this transaction
+                const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION);
+    
+                for (const billet of billetsTransaction) {
+                    // Get travel details for this ticket
+                    const voyageResult = await oracleConnexion.execute(
+                        `SELECT * FROM VOYAGE WHERE ID_VOYAGE = :idVoyage`,
+                        { idVoyage: billet.VOYAGE_ID_VOYAGE },
+                        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                    );
+    
+                    const voyageDetails = voyageResult.rows[0];
+    
+                    if (voyageDetails) {
+                        // Get vessel name by ID and add to voyage details
+                        const vaisseauNom = await chercherNomVaisseauParId(voyageDetails.VAISSEAU_ID_VAISSEAU);
+                        voyageDetails.vaisseau_nom = vaisseauNom.NOM;
+    
+                        // Add voyage details to the ticket
+                        billet.voyage = voyageDetails;
+                    } else {
+                        console.error("Aucun détail de voyage trouvé pour l'ID de voyage :", billet.voyage_id_voyage);
                     }
-
-                    // Ajoute les billets à l'objet transaction
-                    transaction.billets = billetsTransaction;
-
-                    // Ajoute le total des billets à l'objet transaction
-                    transaction.billetTotal = totalBillets;
                 }
-
-                if (result.rows.length > 0) {
-                    // Rendu d'une page de succès ou redirection vers une URL de succès avec le prix total
-                    res.render('pages/success', { est_connecte: req.session.est_connecte, sessionId: sessionId, transactionData: transactionData });
-                }
-            } else res.render('pages/connexion', {
-                message_negatif: 'Connectez vous pour réserver un voyage'
-            });
-        } catch (erreur) {
-            console.error('Erreur lors de la finalisation du paiement :', erreur);
-            res.status(500).send('Erreur lors de la finalisation du paiement');
+    
+                // Add tickets and total tickets to the transaction object
+                transaction.billets = billetsTransaction;
+                transaction.billetTotal = totalBillets;
+            }
+    
+            // Render success page if user data is found
+            if (userResult.rows.length > 0) {
+                return res.render('pages/success', {
+                    est_connecte: req.session.est_connecte,
+                    sessionId: sessionId,
+                    transactionData: transactionData
+                });
+            }
+    
+        } catch (error) {
+            console.error('Erreur lors de la finalisation du paiement :', error);
+            return res.status(500).send('Erreur lors de la finalisation du paiement');
         }
     });
+    
 
     async function recupererBilletsAvecTransactionNulle(idUtilisateur) {
         const resultat = await oracleConnexion.execute(
