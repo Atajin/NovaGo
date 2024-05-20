@@ -31,7 +31,7 @@ let mongoConnexion;
 let dbMongo;
 let deconnecte = false;
 
-//Permet de comparer deux champs différents d'express-validator
+// Permet de comparer deux champs différents d'express-validator
 const validationMdpEgal = (value, { req }) => {
     if (value !== req.body.confirmation) {
         throw new Error('Le mot de passe doit être recopié correctement.');
@@ -124,21 +124,43 @@ async function recupererPlanetes() {
     }
 }
 
-async function recupererVoyages(planeteAller, planeteRetour) {
+async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) {
     let voyageResult;
-    if (planeteRetour){
+    if (voyageAllerRetour) {
         voyageResult = await oracleConnexion.execute(
-            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
-            { planeteAller: planeteAller,
-              planeteRetour: planeteRetour },
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour OR planete_id_planete2 = :planeteAller AND PLANETE_ID_PLANETE = :planeteRetour`,
+            {
+                planeteAller: planeteAller,
+                planeteRetour: planeteRetour
+            },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
+        if (voyageResult.rows.length == 0) {
+            voyageResult = await oracleConnexion.execute(
+                `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
+                {
+                    planeteAller: planeteAller,
+                    planeteRetour: planeteRetour
+                },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+        }
     } else {
         voyageResult = await oracleConnexion.execute(
-            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
-            { planeteAller: planeteAller },
+            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour`,
+            {
+                planeteAller: planeteAller,
+                planeteRetour: planeteRetour
+            },
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
+        if (voyageResult.rows.length == 0) {
+            voyageResult = await oracleConnexion.execute(
+                `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
+                { planeteAller: planeteAller },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+        }
     }
     return voyageResult;
 }
@@ -266,7 +288,7 @@ async function demarrerServeur() {
 
                 let message_positif = req.session.message_positif;
                 req.session.message_positif = "";
-                if (deconnecte){
+                if (deconnecte) {
                     message_positif = "Déconnexion réussie!";
                     deconnecte = false;
                 }
@@ -529,7 +551,7 @@ async function demarrerServeur() {
             try {
                 const courriel = req.session.courriel;
                 req.session.est_connecte = req.session.courriel && req.session.mdp;
-                if (req.session.est_connecte) {
+                if (req.session.est_connecte && !req.session.est_admin) {
                     // Exécution de la requête pour vérifier le courriel
                     const result = await oracleConnexion.execute(
                         `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
@@ -538,7 +560,7 @@ async function demarrerServeur() {
                     );
 
                     const rechercheData = {
-                        planeteOrigine: await chercherNomPlaneteParId(req.session.planete_util),
+                        planeteOrigine: await chercherNomPlaneteParId(req.session.planete_util, req.session.planete_destination),
                         planeteDestination: await chercherNomPlaneteParId(req.session.planete_destination),
                         dateDepart: req.session.date_aller,
                         dateRetour: req.session.date_retour,
@@ -547,40 +569,50 @@ async function demarrerServeur() {
 
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     let voyageResult;
-                    if (req.session.date_retour){
-                        voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination);
-                    } else voyageResult = await recupererVoyages(req.session.planete_util, null);
+                    if (req.session.date_retour) {
+                        voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination, true);
+                    } else voyageResult = await recupererVoyages(req.session.planete_util, req.session.planete_destination, false);
 
                     // Récupérer les informations de la planète et du vaisseau pour chaque voyage
-                    for (const voyage of voyageResult.rows) {
-                        const planeteId = voyage.PLANETE_ID_PLANETE2;
-                        const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
+                    if (voyageResult.rows.length > 0) {
+                        for (const voyage of voyageResult.rows) {
+                            const planeteId = voyage.PLANETE_ID_PLANETE2;
+                            const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
 
-                        try {
+                            try {
 
-                            const planeteResult = await obtenirDonneesPlaneteParId(planeteId);
-                            const vaisseauResult = await obtenirDonneesVaisseauParId(vaisseauId);
+                                const planeteResult = await obtenirDonneesPlaneteParId(planeteId);
+                                const vaisseauResult = await obtenirDonneesVaisseauParId(vaisseauId);
 
-                            // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
-                            voyage.planeteData = planeteResult.rows[0];
-                            voyage.vaisseauData = vaisseauResult.rows[0];
+                                // Stocker les données de la planète et du vaisseau dans l'objet de voyage actuel
+                                voyage.planeteData = planeteResult.rows[0];
+                                voyage.vaisseauData = vaisseauResult.rows[0];
 
-                        } catch (error) {
-                            console.error("Une erreur s'est produite lors de la récupération des données :", error);
+                            } catch (error) {
+                                console.error("Une erreur s'est produite lors de la récupération des données :", error);
+                            }
                         }
-                    }
 
-                    if (result.rows.length > 0) {
+                        if (result.rows.length > 0) {
+                            res.render('pages/reservation', {
+                                est_connecte: req.session.est_connecte,
+                                rechercheData: rechercheData,
+                                voyages_bd: voyageResult.rows,
+                                message_negatif:
+                                    "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
+                            });
+                        }
+                    } else {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
                             voyages_bd: voyageResult.rows,
-                            message_negatif: 
-                            "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
+                            message_negatif:
+                                "Aucun voyage n'a été trouvé qui répond aux paramètres de votre recherche."
                         });
                     }
                 } else {
-                    req.session.message_negatif = "Connectez vous pour réserver un voyage.";
+                    req.session.message_negatif = "Connectez vous à un compte utilisateur pour réserver un voyage.";
                     res.redirect('/connexion');
                 }
             } catch (err) {
@@ -678,7 +710,24 @@ async function demarrerServeur() {
     });
 
     app.post('/checkout', async (req, res) => {
-        const { dataPanier } = req.body;
+        const { dataPanier, codeRabais } = req.body;
+        let resultRabais = 0;
+        console.log(codeRabais);
+        if (codeRabais != null) {
+            resultRabais = await oracleConnexion.execute(
+                `SELECT * FROM RABAIS WHERE CODE = :codeRabais `,
+                { codeRabais: codeRabais },
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+        }
+        let rabais = 1;
+        if (resultRabais.rows.length > 0) {
+            rabais = resultRabais.rows[0].POURCENTAGE
+            if (new Date < resultRabais.rows[0].DATE_DEBUT || new Date > resultRabais.rows[0].DATE_FIN) {
+                rabais = 0;
+            }
+            rabais = 1 - rabais / 100;
+        }
         console.log(dataPanier);
         let quantiteBilletPanier = [];
         let prixPanier = [];
@@ -718,34 +767,17 @@ async function demarrerServeur() {
                 for (let j = 0; j < quantiteBilletPanier[i]; j++) {
 
                     // Générer un numéro de siège aléatoire pour chaque billet
-                    let siege = genererNumeroSiege();
+                    let siege = await trouverNumeroSiege(i);
 
                     // Créer l'objet billetData pour chaque billet
                     billetData = {
                         classe: dataPanier[i].classeVoyage,
                         siege: siege,
                         voyage_id_voyage: dataPanier[i].idVoyage,
-                        prix: prixPanier[i] / 100,
+                        prix: (prixPanier[i] / 100),
                         utilisateur_id_utilisateur: req.session.id_connecte,
                         transaction_id_transaction: null
                     };
-
-                    // Insérer les données du billet dans la base de données
-                    await oracleConnexion.execute(
-                        `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
-                            VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
-                        {
-                            classe: billetData.classe,
-                            siege: billetData.siege,
-                            voyage_id_voyage: billetData.voyage_id_voyage,
-                            prix: billetData.prix,
-                            utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
-                            transaction_id_transaction: billetData.transaction_id_transaction
-                        }
-                    );
-                    console.log('Nouveau billet inséré avec succès');
-                    console.log(billetData);
-                    await oracleConnexion.commit();
                 }
             }
 
@@ -760,15 +792,32 @@ async function demarrerServeur() {
                 payment_method_types: ['card'],
                 line_items: panier,
                 mode: 'payment',
-                success_url: 'http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}',
+                success_url: `http://localhost:4000/success?session_id={CHECKOUT_SESSION_ID}&billetData=${encodeURIComponent(JSON.stringify(billetData))}`,
                 cancel_url: 'http://localhost:4000/reservation',
             });
 
-            // Générer un numéro de siège aléatoire
-            function genererNumeroSiege() {
-                const chiffres = '0123456789';
-                const chiffreAleatoire = chiffres[Math.floor(Math.random() * chiffres.length)];
-                return chiffreAleatoire;
+            // Trouver le prochain numéro de siège
+            async function trouverNumeroSiege(index) {
+                const resultCountBillet = await oracleConnexion.execute(
+                    `SELECT COUNT(*) FROM BILLET WHERE CLASSE = :classe AND VOYAGE_ID_VOYAGE = :idVoyage`,
+                    {
+                        classe: dataPanier[index].classeVoyage,
+                        idVoyage: dataPanier[index].idVoyage
+                    },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+
+                const billetsVendus = resultCountBillet.rows[0][0] ? resultCountBillet.rows[0][0] : 0;
+                const billetsMax = dataPanier[index].capaciteVaisseau;
+                console.log(`Billets vendus: ${billetsVendus}, Billets max: ${billetsMax}`)
+                if (dataPanier[index].classeVoyage == "affaires" && (parseInt(billetsMax * 0.1)) - billetsVendus > 0) {
+                    return billetsVendus + 1;
+                }
+                else if (dataPanier[index].classeVoyage == "economique" && (parseInt(billetsMax * 0.9)) - billetsVendus > 0) {
+                    return parseInt(billetsMax * 0.1) + billetsVendus + 1;
+                }
+
+                return null;
             }
 
             return res.json({ url: session.url });
@@ -780,9 +829,26 @@ async function demarrerServeur() {
 
     app.get('/success', async (req, res) => {
         req.session.est_connecte = req.session.courriel && req.session.mdp;
-
         try {
             if (req.session.est_connecte) {
+                const billetData = JSON.parse(decodeURIComponent(req.query.billetData));
+
+                // Insérer les données du billet dans la base de données
+                await oracleConnexion.execute(
+                    `INSERT INTO billet (classe, siege, voyage_id_voyage, prix, utilisateur_id_utilisateur, transaction_id_transaction)
+                            VALUES (:classe, :siege, :voyage_id_voyage, :prix, :utilisateur_id_utilisateur, :transaction_id_transaction)`,
+                    {
+                        classe: billetData.classe,
+                        siege: billetData.siege,
+                        voyage_id_voyage: billetData.voyage_id_voyage,
+                        prix: billetData.prix,
+                        utilisateur_id_utilisateur: billetData.utilisateur_id_utilisateur,
+                        transaction_id_transaction: billetData.transaction_id_transaction
+                    }
+                );
+                console.log('Nouveau billet inséré avec succès');
+                await oracleConnexion.commit();
+
                 const courriel = req.session.courriel;
                 const sessionId = req.query.session_id;
                 const userId = req.session.id_connecte;
@@ -816,10 +882,10 @@ async function demarrerServeur() {
                 for (const transaction of transactionData) {
                     // Récupère le total des billets pour cette transaction
                     const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION);
-                
+
                     // Récupère les billets pour cette transaction
                     const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION);
-                
+
                     // Pour chaque billet dans la transaction
                     for (const billet of billetsTransaction) {
                         // Récupère les détails du voyage associé à ce billet
@@ -831,11 +897,11 @@ async function demarrerServeur() {
                             { outFormat: oracledb.OUT_FORMAT_OBJECT }
                         );
                         let voyageDetails = result.rows[0];
-                        
+
                         if (voyageDetails) {
                             const vaisseauNom = await chercherNomVaisseauParId(voyageDetails.VAISSEAU_ID_VAISSEAU);
                             voyageDetails.vaisseau_nom = vaisseauNom.NOM;
-                        
+
                             // Ajoute les détails du voyage au billet
                             billet.voyage = voyageDetails;
                         } else {
@@ -845,7 +911,7 @@ async function demarrerServeur() {
 
                     // Ajoute les billets à l'objet transaction
                     transaction.billets = billetsTransaction;
-                
+
                     // Ajoute le total des billets à l'objet transaction
                     transaction.billetTotal = totalBillets;
                 }

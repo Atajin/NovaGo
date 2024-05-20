@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                dataPanier: dataPanier
+                dataPanier: dataPanier,
+                codeRabais: document.getElementById("rabais").value
             }),
         })
         .then(response => response.json())
@@ -56,10 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     let voyageCode = ""; // Utilisation de la lettre correspondante
                     if (voyage.PRIX_ECONO == nouveauPrix) {
                         voyageCode = "Code " + voyage.ID_VOYAGE + ".E";
-                        dataPanier.push({ idVoyage: voyage.ID_VOYAGE, classeVoyage: "economique", quantiteBillet: 1 });
+                        dataPanier.push({ idVoyage: voyage.ID_VOYAGE, classeVoyage: "economique", quantiteBillet: 1, capaciteVaisseau: voyage.vaisseauData.CAPACITE });
                     } else if (voyage.PRIX_BUSINESS == nouveauPrix) {
                         voyageCode = "Code " + voyage.ID_VOYAGE + ".A";
-                        dataPanier.push({ idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaires", quantiteBillet: 1 });
+                        dataPanier.push({ idVoyage: voyage.ID_VOYAGE, classeVoyage: "affaires", quantiteBillet: 1, capaciteVaisseau: voyage.vaisseauData.CAPACITE });
                     }
 
                     nombre_voyages++;
