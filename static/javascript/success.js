@@ -1,11 +1,11 @@
 let idTransactionActuelle;
 
- // Récupérer les données transactionData depuis l'attribut de données
+// Récupérer les données transactionData depuis l'attribut de données
 const transactionDataElement = document.getElementById('transactionData');
-    const transactionDataString = transactionDataElement.getAttribute('data-transaction');
-    const transactionData = JSON.parse(transactionDataString);
+const transactionDataString = transactionDataElement.getAttribute('data-transaction');
+const transactionData = JSON.parse(transactionDataString);
 
-window.onload = function() {
+window.onload = function () {
 
     // Si vous avez au moins une transaction dans votre ensemble de données
     if (transactionData.length > 0) {
@@ -13,16 +13,48 @@ window.onload = function() {
         afficherTransaction(transactionData[0].ID_TRANSACTION);
     }
 
-    const annulerBtn = document.querySelector('.annuler-btn');
-    annulerBtn.addEventListener('click', function() {
-        const idTransaction = idTransactionActuelle; 
-        annulerVoyage(idTransaction);
+    let transactionSelectionnee = transactionData.find(function (transaction) {
+        return transaction.ID_TRANSACTION == idTransaction;
     });
-
+    
+    let auMoinsUnBilletExpire = false;
+    let tousBilletsExpirent = true;
+    
+    transactionSelectionnee.billets.forEach(function (billet) {
+        const dateDepart = new Date(billet.voyage.DATE_DEPART.split("T")[0]);
+        const dateActuelle = new Date();
+        
+        let billetExpire = false;
+    
+        if (dateDepart > dateActuelle) {
+            billetExpire = false;
+        } else {
+            billetExpire = true;
+        }
+    
+        auMoinsUnBilletExpire = auMoinsUnBilletExpire || billetExpire; // Au moins un billet expire
+        tousBilletsExpirent = tousBilletsExpirent && billetExpire; // Tous les billets expirent
+    });
+    
+    const annulerBtn = document.querySelector('.annuler-btn');
+    
+    if (auMoinsUnBilletExpire && !tousBilletsExpirent) {
+        annulerBtn.addEventListener('click', function () {
+            annulerVoyage(idTransaction);
+        });
+        annulerBtn.disabled = false; // Réactive le bouton d'annulation
+    } else {
+        annulerBtn.disabled = true; // Désactive le bouton d'annulation
+        alert("Impossible d'annuler la transaction. Tous les billets ne sont pas expirés.");
+    }
+    
+    // Réinitialiser les variables booléennes
+    auMoinsUnBilletExpire = false;
+    tousBilletsExpirent = true;    
     
     const recuBtn = document.querySelector('.recu-btn');
-    recuBtn.addEventListener('click', function() {
-        const idTransaction = idTransactionActuelle; 
+    recuBtn.addEventListener('click', function () {
+        const idTransaction = idTransactionActuelle;
         ouvrirRecu(idTransaction);
     });
 };
@@ -34,9 +66,39 @@ function afficherTransaction(idTransaction) {
         return transaction.ID_TRANSACTION == idTransaction;
     });
 
+    let auMoinsUnBilletExpire = false;
+
+    transactionSelectionnee.billets.forEach(function (billet) {
+        const dateDepart = new Date(billet.voyage.DATE_DEPART.split("T")[0]);
+        const dateActuelle = new Date();
+
+        let billetExpire = false;
+
+        if (dateDepart > dateActuelle) {
+            billetExpire = false;
+        } else {
+            billetExpire = true;
+        }
+        auMoinsUnBilletExpire = billetExpire; // Au moins un billet expire
+    });
+
+    const annulerBtn = document.querySelector('.annuler-btn');
+
+    if (!auMoinsUnBilletExpire) {
+        annulerBtn.addEventListener('click', function () {
+            annulerVoyage(idTransaction);
+        });
+        annulerBtn.disabled = false; // Réactive le bouton d'annulation
+    } else {
+        annulerBtn.disabled = true; // Désactive le bouton d'annulation
+    }
+
+    // Réinitialiser les variables booléennes
+    auMoinsUnBilletExpire = false;
+
     // Construct the content string
-    let content = "Transaction " + transactionSelectionnee.ID_TRANSACTION + " - " + transactionSelectionnee.DATE_TRANSACTION.split("T")[0]; 
-    
+    let content = "Transaction " + transactionSelectionnee.ID_TRANSACTION + " - " + transactionSelectionnee.DATE_TRANSACTION.split("T")[0];
+
     document.getElementById("nomBillet").innerHTML = content;
 
     let transactionDetailsHTML = ""; // Initialisez la letiable
@@ -109,13 +171,13 @@ function annulerVoyage(idTransaction) {
         },
         body: JSON.stringify({ idTransaction: idTransaction })
     })
-    .then(() => {
-        // Recharger la page après avoir envoyé la demande d'annulation du voyage
-        window.location.reload();
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
+        .then(() => {
+            // Recharger la page après avoir envoyé la demande d'annulation du voyage
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+        });
 }
 
 function ouvrirRecu(idTransaction) {
@@ -126,16 +188,16 @@ function ouvrirRecu(idTransaction) {
         },
         body: JSON.stringify({ idTransaction: idTransaction })
     })
-    .then(response => {
-        if (response.redirected) {
-            window.location.href = response.url; // Rediriger l'utilisateur vers l'URL du reçu
-        } else {
-            return response.json().then(data => {
-                console.error('Erreur :', data.error);
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url; // Rediriger l'utilisateur vers l'URL du reçu
+            } else {
+                return response.json().then(data => {
+                    console.error('Erreur :', data.error);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+        });
 }
