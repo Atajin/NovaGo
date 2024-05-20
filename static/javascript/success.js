@@ -89,8 +89,10 @@ function afficherTransaction(idTransaction) {
             annulerVoyage(idTransaction);
         });
         annulerBtn.disabled = false; // Réactive le bouton d'annulation
+        ajouterElementSVG(false);
     } else {
         annulerBtn.disabled = true; // Désactive le bouton d'annulation
+        ajouterElementSVG(true);
     }
 
     // Réinitialiser les variables booléennes
@@ -200,4 +202,32 @@ function ouvrirRecu(idTransaction) {
         .catch(error => {
             console.error('Erreur :', error);
         });
+}
+
+function ajouterElementSVG(date_expiration) {
+    const parentElement = document.getElementById('activation');
+
+    // Supprimer le dernier élément ajouté s'il en existe un
+    if (parentElement.lastChild) {
+        parentElement.removeChild(parentElement.lastChild);
+    }
+
+    const pElement = parentElement.appendChild(document.createElement('p'));
+    pElement.classList.add('custom-font-labels', 'm-0', 'px-2');
+
+    const svgElement = pElement.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "svg"));
+    svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svgElement.setAttribute('width', '15');
+    svgElement.setAttribute('height', '15');
+    svgElement.setAttribute('fill', 'currentColor');
+    svgElement.classList.add('bi', 'bi-circle', 'rounded-circle');
+
+    const pathElement = svgElement.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "path"));
+    pathElement.setAttribute('d', 'M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16');
+
+    if (date_expiration) {
+        svgElement.classList.add('bg-danger', 'text-danger');
+    } else {
+        svgElement.classList.add('bg-success', 'text-success');
+    }
 }
