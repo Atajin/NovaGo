@@ -117,7 +117,7 @@
                                         <div class="col m-2 px-2">
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <button type="button"
-                                                    class="btn btn-outline-light custom-font-planete-p"
+                                                    class="btn btn-outline-light custom-font-planete-p recu-btn"
                                                     style="font-size: small;">Voir Reçu</button>
                                                 <button type="button"
                                                     class="btn btn-outline-light custom-font-planete-p annuler-btn"
@@ -135,9 +135,8 @@
         </div>
     </div>
 
-    <script src="/javascript/success.js"></script>
-    <script>
-         const transactionData = <%- JSON.stringify(transactionData) %>;
-    </script>
+    <div id="transactionData" data-transaction='<%- JSON.stringify(transactionData) %>' style="display: none;"></div> 
 
+    <script src="/javascript/success.js"></script>
+  
     <%- include ("../partials/footer.ejs") %>

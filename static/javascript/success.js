@@ -1,6 +1,12 @@
 let idTransactionActuelle;
 
+ // Récupérer les données transactionData depuis l'attribut de données
+const transactionDataElement = document.getElementById('transactionData');
+    const transactionDataString = transactionDataElement.getAttribute('data-transaction');
+    const transactionData = JSON.parse(transactionDataString);
+
 window.onload = function() {
+
     // Si vous avez au moins une transaction dans votre ensemble de données
     if (transactionData.length > 0) {
         // Appelez afficherTransaction avec l'ID de la première transaction
@@ -11,6 +17,13 @@ window.onload = function() {
     annulerBtn.addEventListener('click', function() {
         const idTransaction = idTransactionActuelle; 
         annulerVoyage(idTransaction);
+    });
+
+    
+    const recuBtn = document.querySelector('.recu-btn');
+    recuBtn.addEventListener('click', function() {
+        const idTransaction = idTransactionActuelle; 
+        ouvrirRecu(idTransaction);
     });
 };
 
@@ -99,6 +112,28 @@ function annulerVoyage(idTransaction) {
     .then(() => {
         // Recharger la page après avoir envoyé la demande d'annulation du voyage
         window.location.reload();
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+}
+
+function ouvrirRecu(idTransaction) {
+    fetch('/recu', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idTransaction: idTransaction })
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url; // Rediriger l'utilisateur vers l'URL du reçu
+        } else {
+            return response.json().then(data => {
+                console.error('Erreur :', data.error);
+            });
+        }
     })
     .catch(error => {
         console.error('Erreur :', error);

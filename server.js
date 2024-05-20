@@ -652,14 +652,42 @@ async function demarrerServeur() {
             res.redirect('/');
         });
 
-    app.route('/recu-billet')
-        /*
-            Accès à la page de reçu
-            paramètres : est_connecte
-        */
-        .get((req, res) => {
-            res.render('pages/recu-billet', {})
-        });
+    app.post('/recu', async (req, res) => {
+        try {
+            // Récupérer l'identifiant de la transaction
+            const idTransaction = req.body.idTransaction;
+
+            // Vérifier si l'identifiant de la transaction est fourni
+            if (!idTransaction) {
+                return res.status(400).json({ error: 'ID de transaction manquant' });
+            }
+
+
+            // Rediriger l'utilisateur vers la page du reçu
+            res.redirect(`/recu?idTransaction=${idTransaction}`);
+
+        } catch (error) {
+            console.error('Erreur :', error);
+            res.status(500).json({ error: 'Erreur serveur' });
+        }
+    });
+
+    // Route pour afficher la page du reçu
+    app.get('/recu', async (req, res) => {
+        const idTransaction = req.query.idTransaction;
+        const totalBillets = await recupererTotalBilletsParTransaction(idTransaction);
+        const transactionData = await recupererTransactionParId(idTransaction);
+
+        // Récupérer les billets pour cette transaction
+        const billetsTransaction = await recupererBilletsParTransaction(idTransaction);
+        transactionData.billets = billetsTransaction;
+
+        const rabais = null;
+        const frais = null;
+
+        res.render('pages/recu', { totalBillets: totalBillets, transactionData: transactionData, rabais: rabais,  frais:  frais });
+    });
+
     /*
         Accès à la page de déconnexion
         paramètres : message_positif, planetes_bd, est_connecte
@@ -824,24 +852,24 @@ async function demarrerServeur() {
     app.get('/success', async (req, res) => {
         // Vérifier si l'utilisateur est connecté en vérifiant la présence de l'e-mail et du mot de passe dans la session
         req.session.est_connecte = req.session.courriel && req.session.mdp;
-    
+
         // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion avec un message
         if (!req.session.est_connecte) {
             return res.render('pages/connexion', {
                 message_negatif: 'Connectez vous pour réserver un voyage'
             });
         }
-    
+
         try {
             // Récupérer les données de l'utilisateur par e-mail
             const { courriel, id_connecte: userId } = req.session;
             const sessionId = req.query.session_id;
-    
+
             // Si des billets sont inclus dans la requête
             if (req.query.billets && !req.session.billetsAffiches) {
                 // Journaliser les billets à des fins de débogage
                 console.log('billets:', req.query.billets);
-    
+
                 let billets;
                 try {
                     // Parser les données JSON des billets
@@ -849,7 +877,7 @@ async function demarrerServeur() {
                 } catch (jsonError) {
                     throw new Error('JSON invalide dans les billets : ' + jsonError.message);
                 }
-    
+
                 // Insérer les données des billets dans la base de données
                 billets.forEach(async (billetData) => {
                     await oracleConnexion.execute(
@@ -869,34 +897,34 @@ async function demarrerServeur() {
                 await oracleConnexion.commit(); // Valider la transaction
                 req.session.billetsAffiches = true;
             }
-    
+
             // Récupérer les billets de l'utilisateur avec des transactions nulles
             const billetsUtilisateur = await recupererBilletsAvecTransactionNulle(userId);
             console.log(billetsUtilisateur);
-    
+
             // Calculer le prix total des billets
             const prixTotal = calculerPrixTotalBillets(billetsUtilisateur);
             console.log(prixTotal);
-    
+
             // Créer une nouvelle transaction si le prix total n'est pas nul
             if (prixTotal !== 0) {
                 const idTransaction = await creerNouvelleTransaction(prixTotal);
-    
+
                 // Mettre à jour chaque billet avec l'ID de transaction
                 await mettreAJourBilletsAvecTransaction(billetsUtilisateur, idTransaction, sessionId);
             }
-    
+
             // Récupérer les données de transaction de l'utilisateur
             const transactionData = await recupererTransactionsIdUser(userId);
-    
+
             // Parcourir chaque transaction
             for (const transaction of transactionData) {
                 // Obtenir le nombre total de billets pour cette transaction
                 const totalBillets = await recupererTotalBilletsParTransaction(transaction.ID_TRANSACTION);
-    
+
                 // Récupérer les billets pour cette transaction
                 const billetsTransaction = await recupererBilletsParTransaction(transaction.ID_TRANSACTION);
-    
+
                 // Parcourir chaque billet de la transaction
                 for (const billet of billetsTransaction) {
                     // Récupérer les détails du voyage pour ce billet
@@ -905,26 +933,26 @@ async function demarrerServeur() {
                         { idVoyage: billet.VOYAGE_ID_VOYAGE },
                         { outFormat: oracledb.OUT_FORMAT_OBJECT }
                     );
-    
+
                     const voyageDetails = voyageResult.rows[0];
-    
+
                     // Si les détails du voyage existent, les ajouter aux détails du billet
                     if (voyageDetails) {
                         const vaisseauNom = await chercherNomVaisseauParId(voyageDetails.VAISSEAU_ID_VAISSEAU);
                         voyageDetails.vaisseau_nom = vaisseauNom.NOM;
-    
+
                         // Ajouter les détails du voyage au billet
                         billet.voyage = voyageDetails;
                     } else {
                         console.error("Aucun détail de voyage trouvé pour l'ID de voyage :", billet.voyage_id_voyage);
                     }
                 }
-    
+
                 // Ajouter les billets et le total des billets à l'objet transaction
                 transaction.billets = billetsTransaction;
                 transaction.billetTotal = totalBillets;
             }
-    
+
             // Rendre la page de succès si des données de transaction sont trouvées
             if (transactionData && transactionData.length > 0) {
                 return res.render('pages/success', {
@@ -939,7 +967,7 @@ async function demarrerServeur() {
             return res.status(500).send('Erreur lors de la finalisation du paiement');
         }
     });
-    
+
 
     app.post('/success', async (req, res) => {
         try {
@@ -1033,6 +1061,15 @@ async function demarrerServeur() {
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         return resultat.rows;
+    }
+
+    async function recupererTransactionParId(idTransaction) {
+        const resultat = await oracleConnexion.execute(
+            `SELECT * FROM transaction WHERE id_transaction = :idTransaction`,
+            { idTransaction },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return resultat.rows[0];
     }
 
     function calculerPrixTotalBillets(billets) {
