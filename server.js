@@ -701,7 +701,6 @@ async function demarrerServeur() {
     app.post('/checkout', async (req, res) => {
         const { dataPanier, codeRabais } = req.body;
         let resultRabais = 0;
-        console.log(codeRabais);
         if (codeRabais != null) {
             resultRabais = await oracleConnexion.execute(
                 `SELECT * FROM RABAIS WHERE CODE = :codeRabais `,
@@ -731,6 +730,8 @@ async function demarrerServeur() {
                         product.metadata.classe_voyage === dataPanier[i].classeVoyage) {
                         let quantiteBillet = dataPanier[i].quantiteBillet;
                         let prix = await stripe.prices.list({ product: product.id });
+                        //Affectation du rabais
+                        prix.data[0].unit_amount = prix.data[0].unit_amount * rabais;
 
                         if (prix.data.length > 0) {
                             prixPanier.push(prix.data[0].unit_amount);
@@ -764,7 +765,7 @@ async function demarrerServeur() {
                         classe: dataPanier[i].classeVoyage,
                         siege: siege,
                         voyage_id_voyage: dataPanier[i].idVoyage,
-                        prix: (prixPanier[i] / 100),
+                        prix: (prixPanier[i] * rabais / 100),
                         utilisateur_id_utilisateur: req.session.id_connecte,
                         transaction_id_transaction: null
                     };
