@@ -51,9 +51,8 @@ async function initialiserBaseDeDonnees() {
         console.log("Connexion à la base de données Oracle réussie !");
 
 
-        //mongoConnexion = await connectToMongo(MONGO_DB_URI);
-        //dbMongo = mongoConnexion.db("test");
-        console.log("Connexion à la base de données MongoDB réussie !");
+        mongoConnexion = await connectToMongo(MONGO_DB_URI);
+        dbMongo = mongoConnexion.db("test");
 
     } catch (err) {
         console.error("Impossible de se connecter à la base de données Oracle ou MongoDB:", err);
