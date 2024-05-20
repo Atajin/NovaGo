@@ -1,12 +1,22 @@
+let idTransactionActuelle;
+
 window.onload = function() {
     // Si vous avez au moins une transaction dans votre ensemble de données
     if (transactionData.length > 0) {
         // Appelez afficherTransaction avec l'ID de la première transaction
         afficherTransaction(transactionData[0].ID_TRANSACTION);
     }
+
+    const annulerBtn = document.querySelector('.annuler-btn');
+    annulerBtn.addEventListener('click', function() {
+        const idTransaction = idTransactionActuelle; 
+        annulerVoyage(idTransaction);
+    });
 };
 
 function afficherTransaction(idTransaction) {
+    idTransactionActuelle = idTransaction;
+
     let transactionSelectionnee = transactionData.find(function (transaction) {
         return transaction.ID_TRANSACTION == idTransaction;
     });
@@ -76,4 +86,21 @@ function afficherTransaction(idTransaction) {
             transactionsContainer.innerHTML = transactionDetailsHTML;
         }
     }
+}
+
+function annulerVoyage(idTransaction) {
+    fetch('/success', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idTransaction: idTransaction })
+    })
+    .then(() => {
+        // Recharger la page après avoir envoyé la demande d'annulation du voyage
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
 }
