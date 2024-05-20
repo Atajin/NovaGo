@@ -2,11 +2,11 @@ window.onload = function() {
     // Si vous avez au moins une transaction dans votre ensemble de données
     if (transactionData.length > 0) {
         // Appelez afficherTransaction avec l'ID de la première transaction
-        afficherTransaction(transactionData[0].ID_TRANSACTION, transactionData);
+        afficherTransaction(transactionData[0].ID_TRANSACTION);
     }
 };
 
-function afficherTransaction(idTransaction, transactionData) {
+function afficherTransaction(idTransaction) {
     let transactionSelectionnee = transactionData.find(function (transaction) {
         return transaction.ID_TRANSACTION == idTransaction;
     });

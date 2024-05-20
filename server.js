@@ -837,7 +837,6 @@ async function demarrerServeur() {
                     }
                 );
                 console.log('Nouveau billet inséré avec succès');
-                console.log(billetData);
                 await oracleConnexion.commit();
 
                 const courriel = req.session.courriel;
