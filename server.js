@@ -1114,7 +1114,12 @@ async function demarrerServeur() {
                 req.session.est_connecte = req.session.courriel && req.session.mdp;
                 if (req.session.est_connecte && req.session.est_admin) {
                     const result = await oracleConnexion.execute("SELECT table_name FROM user_tables");
-                    res.render('pages/administrateur', { tables: result.rows });
+                    const collections = await dbMongo.listCollections().toArray();
+
+                    res.render('pages/administrateur', {
+                        oracleTables: result.rows,
+                        mongoCollections: collections.map(collection => collection.name)
+                    });
                 } else {
                     req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
                     res.redirect('/connexion');
@@ -1122,6 +1127,28 @@ async function demarrerServeur() {
             } catch (err) {
                 console.error(err);
                 return res.render('pages/administrateur', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+            }
+        });
+
+        app.post('/administrateur/voirCollection', async (req, res) => {
+            const { nomCollection } = req.body;
+        
+            try {
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
+                if (req.session.est_connecte && req.session.est_admin) {
+                    const collection = dbMongo.collection(nomCollection);
+                    const data = await collection.find().toArray();
+        
+                    let colonnes = data.length > 0 ? Object.keys(data[0]) : [];
+        
+                    res.render('pages/voir-collection', { data: data, nomCollection: nomCollection, colonnes: colonnes });
+                } else {
+                    req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
+                    res.redirect('/connexion');
+                }
+            } catch (err) {
+                console.error('Erreur lors de la requête:', err);
+                res.status(401).send("Erreur lors de la récupération des données.");
             }
         });
 

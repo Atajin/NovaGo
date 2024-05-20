@@ -1,8 +1,6 @@
-Dans command prompt (en tant qu'admin):
-
 Pour initialiser le conteneur mongoDB:
 
-Ouvrir l'invite de commandes windows
+Ouvrir l'invite de commandes windows en tant qu'admin
 
 Se diriger dans le dossier scripts du dépôt Github:
 cd /chemin/vers/scripts
@@ -13,10 +11,12 @@ docker-compose up -d
 Dans docker exec pour se connecter:
 mongosh "mongodb://novago:mongo@localhost:27017"
 
+Si jamais il y a un problème avec la BD, s'assurer d'effacer le volume et container mongo dans docker et réessayer.
+
 
 Pour initialiser le conteneur oracle:
 
-Ouvrir l'invite de commandes windows
+Ouvrir l'invite de commandes windows en tant qu'admin
 
 Pull l'image oracle:
 docker pull gvenzl/oracle-xe:21
