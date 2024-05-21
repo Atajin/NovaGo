@@ -33,7 +33,9 @@
                                                 </div>
                                                 <div id="origineVoyage" style="display: none;"></div>
                                                 <div class="col" style="text-align: right;">
-                                                <button class="m-0 p-0" style="border: none; background: none; color: white;" onclick="ajouterAWishlist()">
+                                                    <button class="m-0 p-0" id="boutonWishlist"
+                                                        style="border: none; background: none; color: white;"
+                                                        onclick="ajouterAWishlist()">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16"
                                                             id="coeur">
@@ -190,28 +192,6 @@
                                             autocomplete="off">
                                         <label class="btn btn-outline-light" for="affaires">Affaires</label>
                                     </div>
-                                    <div class="rounded custom-bg-rvt" style="width: 100%;">
-                                        <div class="row px-2 mt-2" style="display: none;">
-                                            <div class="col">
-                                                <label class="form-label custom-font-labels" for="rabais">Code de
-                                                    rabais:</label>
-                                            </div>
-                                            <div class="col-7" id="rabaisInputContainer">
-                                                <input type="text" id="rabais" style="height: 30px; width: 120px;">
-                                                <button onclick="envoyerCodeRabais()" class="btn btn-outline-light" style="width: 100px;">Appliquer</button>
-                                            </div>
-                                            <div class="col-7" id="rabaisDisplayContainer" style="display: none;">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <p id="rabaisAffiche" class="text-end"></p>
-                                                    </div>
-                                                    <div class="col text-right">
-                                                        <button class="btn btn-outline-light" onclick="annulerRabais()">Annuler</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="mt-1 p-1 rounded custom-bg-rvt">
@@ -320,16 +300,10 @@
             <script src="/javascript/reserv-info-voyage.js"></script>
             <script src="/javascript/reserv-panier.js"></script>
             <script src="/javascript/reserv-prix.js"></script>
-            <script src="/javascript/reserv-rabais.js"></script>
 
             <% if (voyages_bd) { %>
                 <script>
                     const voyagesData = <%- JSON.stringify(voyages_bd) %>;
                 </script> <!--Probleme avec EJS et JS confusion de Visual Studio-->
                 <% } %>
-
-                <script>
-                    const rabaisData = <%- JSON.stringify(rabaisData) %>;
-                </script>
-
                     <%- include ("../partials/footer.ejs") %>
