@@ -27,13 +27,13 @@ docker run -d -p 1521:1521 --name oracle-xe -e ORACLE_PASSWORD=oracle gvenzl/ora
 Copier le script de creation dans le container docker:
 docker cp /chemin/vers/nom_script_creation.ddl oracle-xe:/home/nom_script_creation.ddl
 
-Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_creation_novago_9.0_21c.ddl oracle-xe:/home/script_creation_novago_9.0_21c.ddl
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_creation_novago_11.0_21c.ddl oracle-xe:/home/script_creation_novago_11.0_21c.ddl
 
 
 Copier le script d'insertion dans le container docker:
 docker cp /chemin/vers/nom_script_insertion.ddl oracle-xe:/home/nom_script_insertion.ddl
 
-Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_3.0.ddl oracle-xe:/home/script_insertion_novago_3.0.ddl
+Par exemple, pour moi: docker cp C:/Users/kianl/NovaGo/scripts/script_insertion_novago_4.0.ddl oracle-xe:/home/script_insertion_novago_4.0.ddl
 
 
 Dans docker exec pour la BD oracle:
@@ -55,10 +55,10 @@ Se connecter en tant que le nouvel utilisateur (novago):
 sqlplus novago/oracle
 
 Lancer le script de creation:
-@/home/script_creation_novago_9.0_21c.ddl
+@/home/script_creation_novago_11.0_21c.ddl
 
 Lancer le script d'insertion:
-@/home/script_insertion_novago_3.0.ddl
+@/home/script_insertion_novago_4.0.ddl
 
 COMMIT;
 
