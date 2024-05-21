@@ -124,19 +124,6 @@
 <colAssociation fkAssociation="3B53D6D5-0DBD-552D-69C2-752569E22325" referredColumn="3153461A-89F2-B0C3-F9F0-1CDA53932FBE"/>
 </associations>
 </Column>
-<Column name="rabais_id_rabais" id="46F5291E-A321-0EC5-1D3B-EDB645C18FA6">
-<createdBy>kianl</createdBy>
-<createdTime>2024-02-26 17:53:40 UTC</createdTime>
-<generatorID>FE378A5F-16F5-7593-A268-B8C8F65E3A11</generatorID>
-<ownerDesignName>modele novago 5.4</ownerDesignName>
-<nullsAllowed>true</nullsAllowed>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT019</logicalDatatype>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-<previousColumn>false</previousColumn>
-<autoIncrementCycle>false</autoIncrementCycle>
-</Column>
 <Column name="prix_business" id="10EE5A85-4A68-5540-9AC7-1312B77B264D">
 <createdBy>kianl</createdBy>
 <createdTime>2024-02-26 17:53:40 UTC</createdTime>
