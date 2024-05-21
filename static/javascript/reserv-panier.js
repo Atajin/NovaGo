@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let dataPanier = [];
 
     document.getElementById('confirmer-btn').addEventListener('click', function () {
-        console.log(document.getElementById("nombre_billets").value);
-        if (document.getElementById("nombre_billets").value > 0){
+        if (document.getElementById("nombre_billets").innerHTML > 0){
             // Disable the button to prevent multiple clicks
             this.disabled = true;
         
