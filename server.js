@@ -127,7 +127,7 @@ async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) 
     let voyageResult;
     if (voyageAllerRetour) {
         voyageResult = await oracleConnexion.execute(
-            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour OR planete_id_planete2 = :planeteAller AND PLANETE_ID_PLANETE = :planeteRetour`,
+            `SELECT * FROM voyage WHERE (planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour OR planete_id_planete2 = :planeteAller AND PLANETE_ID_PLANETE = :planeteRetour) AND DATE_DEPART > SYSDATE`,
             {
                 planeteAller: planeteAller,
                 planeteRetour: planeteRetour
@@ -136,7 +136,7 @@ async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) 
         );
         if (voyageResult.rows.length == 0) {
             voyageResult = await oracleConnexion.execute(
-                `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour `,
+                `SELECT * FROM voyage WHERE (planete_id_planete = :planeteAller OR planete_id_planete = :planeteRetour) AND DATE_DEPART > SYSDATE`,
                 {
                     planeteAller: planeteAller,
                     planeteRetour: planeteRetour
@@ -146,7 +146,7 @@ async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) 
         }
     } else {
         voyageResult = await oracleConnexion.execute(
-            `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour`,
+            `SELECT * FROM voyage WHERE (planete_id_planete = :planeteAller AND PLANETE_ID_PLANETE2 = :planeteRetour) AND DATE_DEPART > SYSDATE`,
             {
                 planeteAller: planeteAller,
                 planeteRetour: planeteRetour
@@ -155,7 +155,7 @@ async function recupererVoyages(planeteAller, planeteRetour, voyageAllerRetour) 
         );
         if (voyageResult.rows.length == 0) {
             voyageResult = await oracleConnexion.execute(
-                `SELECT * FROM voyage WHERE planete_id_planete = :planeteAller`,
+                `SELECT * FROM voyage WHERE (planete_id_planete = :planeteAller) AND DATE_DEPART > SYSDATE`,
                 { planeteAller: planeteAller },
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
@@ -523,7 +523,7 @@ async function demarrerServeur() {
                             { outFormat: oracledb.OUT_FORMAT_OBJECT }
                         );
                         req.session.id_connecte = resultUser.rows[0].ID_UTILISATEUR;
-                        
+
                         req.session.courriel = courriel;
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.courriel && req.session.mdp;
