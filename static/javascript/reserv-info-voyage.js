@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("typeVaisseau").innerHTML = premierVoyage.vaisseauData.TYPE_DE_PROPULSION;
     document.getElementById("capaciteVaisseau").innerHTML = premierVoyage.vaisseauData.CAPACITE;
     document.getElementById("dateDepartVoyage").innerHTML = new Date(premierVoyage.DATE_DEPART).toISOString().split('T')[0];
+    document.getElementById("origineVoyage").innerHTML = voyage.ORIGINE;
 });
 
 
@@ -18,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function afficherDetails(idVoyage) {
     // Recherche du voyage correspondant dans les données des voyages
     const voyage = voyagesData.find(v => v.ID_VOYAGE == idVoyage);
-
     if (voyage) {
         document.getElementById("codeVoyage").innerHTML = "Code " + voyage.ID_VOYAGE;
 
@@ -30,6 +30,8 @@ function afficherDetails(idVoyage) {
         document.getElementById("typeVaisseau").innerHTML = voyage.vaisseauData.TYPE_DE_PROPULSION;
         document.getElementById("capaciteVaisseau").innerHTML = voyage.vaisseauData.CAPACITE;
         document.getElementById("dateDepartVoyage").innerHTML = new Date(voyage.DATE_DEPART).toISOString().split('T')[0];
+
+        document.getElementById("origineVoyage").innerHTML = voyage.ORIGINE;
     } else {
         console.error("Voyage non trouvé pour l'ID : ", idVoyage);
     }
