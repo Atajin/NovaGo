@@ -1,7 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<ProcessModel class="oracle.dbtools.crest.model.design.process.ProcessModel" name="Process Model" id="BE488438-B0B0-2C47-4FF1-13C0FB547D9D">
-<createdBy>Kian</createdBy>
-<createdTime>2024-02-21 02:58:03 UTC</createdTime>
-<ownerDesignName>modele novago 2.5</ownerDesignName>
-<shouldBeOpen>false</shouldBeOpen>
-</ProcessModel>

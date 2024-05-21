@@ -11,7 +11,7 @@ docker-compose up -d
 Dans docker exec pour se connecter:
 mongosh "mongodb://novago:mongo@localhost:27017"
 
-Si jamais il y a un problème avec la BD, s'assurer d'effacer le volume et container mongo dans docker et réessayer.
+Si jamais il y a un problème avec la BD mongo, s'assurer d'effacer le container ET le volume mongodb dans docker et réessayer.
 
 
 Pour initialiser le conteneur oracle:
@@ -99,7 +99,7 @@ Pour initialiser un serveur dans Visual Studio Code en utilisant nodemon :
 5. Executer dans le terminal : npx nodemon server.js
 
 Pour se connecter à un compte admin: 
-Courriel: NIThyrian@gmail.com
+Courriel: nithyrian@gmail.com
 Mot de passe: csgopr0123
 
 Vous pouvez vous créer un compte avec le site pour utiliser un compte utilisateur normal.
