@@ -1,136 +1,142 @@
 <%- include ("../partials/header.ejs") %>
+    <% if (message_negatif !="" ) { %>
+        <span id="message_negatif" class="custom-message-negatif">
+            <%= message_negatif %>
+        </span>
+        <% } %>
 
-    <p style="display: none;">
-        Session ID: <%= sessionId %>
-    </p>
+            <p style="display: none;">
+                Session ID: <%= sessionId %>
+            </p>
 
-    <div class="container-fluid mt-2">
-        <div class="container">
-            <div class="row text-white">
-                <div class="col-sm-4 m-1">
-                    <div class="row">
-                        <h1 class="custom-font-titles text-center">Voyages Réservés</h1>
-                    </div>
-                    <div class="row mt-1 rounded custom-bg-rvt p-1 px-3" style="overflow: auto; height: 300px;">
-                        <div class="p-1">
-                            <% transactionData.forEach(transaction=> { %>
-                                <div class="row custom-bg-rvt rounded mt-1 custom-white-btn" style="cursor: pointer;"
-                                    onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>')">
-
-                                    <div class="row m-0 p-0">
-                                        <div class="col">
-                                            <p class="custom-font-rvt m-0">
-                                                Transaction <%= transaction.ID_TRANSACTION %>
-                                            </p>
-                                        </div>
-                                        <div class="col text-end">
-                                            <p class="custom-font-rvt m-0">
-
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="row m-0 p-0">
-                                        <div class="col">
-                                            <p class="custom-font-rvt m-0">
-                                                <%= transaction.billetTotal %> billets
-                                            </p>
-                                        </div>
-                                        <div class="col text-end">
-                                            <p class="custom-font-rvt m-0">
-                                                <%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="row m-0 p-0">
-                                        <div class="col">
-                                            <p class="custom-font-rvt m-0">
-                                                <%= transaction.PRIX_TOTAL %> $
-                                            </p>
-                                        </div>
-                                        <div class="col text-end">
-                                            <p class="custom-font-rvt m-0">
-                                                <%=transaction.DATE_TRANSACTION.toLocaleTimeString('fr-CA', { hour12:
-                                                    false }) %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <% }); %>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-
-                    </div>
-                </div>
-                <div class="col m-1">
-                    <div class="row">
-                        <h1 class="custom-font-titles text-center">Détails du voyage</h1>
-                    </div>
-                    <div class="row mt-1 rounded p-1 custom-bg-rvt">
-                        <div class="p-1">
+            <div class="container-fluid mt-2">
+                <div class="container">
+                    <div class="row text-white">
+                        <div class="col-sm-4 m-1">
                             <div class="row">
-                                <div class="col-sm-12">
+                                <h1 class="custom-font-titles text-center">Voyages Réservés</h1>
+                            </div>
+                            <div class="row mt-1 rounded custom-bg-rvt p-1 px-3" style="overflow: auto; height: 300px;">
+                                <div class="p-1">
+                                    <% transactionData.forEach(transaction=> { %>
+                                        <div class="row custom-bg-rvt rounded mt-1 custom-white-btn"
+                                            style="cursor: pointer;"
+                                            onclick="afficherTransaction('<%= transaction.ID_TRANSACTION %>')">
+
+                                            <div class="row m-0 p-0">
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0">
+                                                        Transaction <%= transaction.ID_TRANSACTION %>
+                                                    </p>
+                                                </div>
+                                                <div class="col text-end">
+                                                    <p class="custom-font-rvt m-0">
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row m-0 p-0">
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0">
+                                                        <%= transaction.billetTotal %> billets
+                                                    </p>
+                                                </div>
+                                                <div class="col text-end">
+                                                    <p class="custom-font-rvt m-0">
+                                                        <%= transaction.DATE_TRANSACTION.toISOString().slice(0, 10) %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row m-0 p-0">
+                                                <div class="col">
+                                                    <p class="custom-font-rvt m-0">
+                                                        <%= transaction.PRIX_TOTAL %> $
+                                                    </p>
+                                                </div>
+                                                <div class="col text-end">
+                                                    <p class="custom-font-rvt m-0">
+                                                        <%=transaction.DATE_TRANSACTION.toLocaleTimeString('fr-CA', {
+                                                            hour12: false }) %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+
+                            </div>
+                        </div>
+                        <div class="col m-1">
+                            <div class="row">
+                                <h1 class="custom-font-titles text-center">Détails du voyage</h1>
+                            </div>
+                            <div class="row mt-1 rounded p-1 custom-bg-rvt">
+                                <div class="p-1">
                                     <div class="row">
-                                        <div class="col">
-                                            <p class="custom-font-labels m-0 px-2" id="nomBillet">
-                                            </p>
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p class="custom-font-labels m-0 px-2" id="nomBillet">
+                                                    </p>
+                                                </div>
+                                                <div class="col text-end" id="activation">
+
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col text-end" id="activation">
-                                             
+                                        <div class="col-sm-12">
+                                            <div class="rounded custom-bg-rvt mt-1 p-1 px-3"
+                                                style="overflow: auto; height: 200px;">
+                                                <div class="row">
+                                                    <div class="col p-0 px-1">
+                                                        <h2 class="custom-font-labels m-0">
+                                                            Billets <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                height="16" fill="currentColor" class="bi bi-ticket"
+                                                                viewBox="0 0 16 16" style="transform: rotate(90deg);">
+                                                                <path
+                                                                    d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
+                                                            </svg>
+                                                        </h2>
+                                                    </div>
+                                                    <div class="col text-end">
+
+                                                    </div>
+                                                </div>
+
+                                                <div id="transactionsContainer">
+
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col m-2 px-2">
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <button type="button"
+                                                            class="btn btn-outline-light custom-font-planete-p recu-btn"
+                                                            style="font-size: small;">Voir Reçu</button>
+                                                        <button type="button"
+                                                            class="btn btn-outline-light custom-font-planete-p annuler-btn"
+                                                            style="font-size: small;">Annuler Voyage</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
-                                <div class="col-sm-12">
-                                    <div class="rounded custom-bg-rvt mt-1 p-1 px-3"
-                                        style="overflow: auto; height: 200px;">
-                                        <div class="row">
-                                            <div class="col p-0 px-1">
-                                                <h2 class="custom-font-labels m-0">
-                                                    Billets <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                        height="16" fill="currentColor" class="bi bi-ticket"
-                                                        viewBox="0 0 16 16" style="transform: rotate(90deg);">
-                                                        <path
-                                                            d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
-                                                    </svg>
-                                                </h2>
-                                            </div>
-                                            <div class="col text-end">
-
-                                            </div>
-                                        </div>
-
-                                        <div id="transactionsContainer">
-
-                                        </div>
-                                    </div> 
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="row">
-                                        <div class="col m-2 px-2">
-                                            <div class="btn-group" role="group" aria-label="Basic example">
-                                                <button type="button"
-                                                    class="btn btn-outline-light custom-font-planete-p recu-btn"
-                                                    style="font-size: small;">Voir Reçu</button>
-                                                <button type="button"
-                                                    class="btn btn-outline-light custom-font-planete-p annuler-btn"
-                                                    style="font-size: small;">Annuler Voyage</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <script src="/javascript/success.js"></script>
+            <script src="/javascript/success.js"></script>
 
-    <script>
-        const transactionData = <%- JSON.stringify(transactionData) %>;
-    </script>
-  
-    <%- include ("../partials/footer.ejs") %>
+            <script>
+                const transactionData = <%- JSON.stringify(transactionData) %>;
+            </script>
+
+            <%- include ("../partials/footer.ejs") %>

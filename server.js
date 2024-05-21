@@ -1010,6 +1010,16 @@ async function demarrerServeur() {
                 transaction.billetTotal = totalBillets;
             }
 
+              // Si aucune transaction n'est trouvée ou si le tableau de transactions est vide
+              if (!transactionData || transactionData.length === 0) {
+                return res.render('pages/success', {
+                    est_connecte: req.session.est_connecte,
+                    sessionId: sessionId,
+                    transactionData: transactionData,
+                    message_negatif: 'Aucun billet ou transaction trouvé.'
+                });
+            }
+
             // Rendre la page de succès si des données de transaction sont trouvées
             if (transactionData && transactionData.length > 0) {
                 return res.render('pages/success', {
