@@ -1,10 +1,5 @@
 let idTransactionActuelle;
 
-// Récupérer les données transactionData depuis l'attribut de données
-const transactionDataElement = document.getElementById('transactionData');
-const transactionDataString = transactionDataElement.getAttribute('data-transaction');
-const transactionData = JSON.parse(transactionDataString);
-
 window.onload = function () {
 
     // Si vous avez au moins une transaction dans votre ensemble de données

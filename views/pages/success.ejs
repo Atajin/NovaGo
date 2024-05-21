@@ -127,8 +127,10 @@
         </div>
     </div>
 
-    <div id="transactionData" data-transaction='<%- JSON.stringify(transactionData) %>' style="display: none;"></div> 
-
     <script src="/javascript/success.js"></script>
+
+    <script>
+        const transactionData = <%- JSON.stringify(transactionData) %>;
+    </script>
   
     <%- include ("../partials/footer.ejs") %>
