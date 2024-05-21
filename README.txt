@@ -101,3 +101,5 @@ Pour initialiser un serveur dans Visual Studio Code en utilisant nodemon :
 Pour se connecter à un compte admin: 
 Courriel: odrolest@gmail.com
 Mot de passe: novago2034730
+
+Vous pouvez vous créer un compte avec le site pour utiliser un compte utilisateur normal.
