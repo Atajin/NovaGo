@@ -1,0 +1,111 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="66444D47-0D6D-C476-CAB4-F65150415336" name="modification">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:51:08 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id_modification" id="3CB4855B-AA33-9A21-4511-D89F70A3E030">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:51:28 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="type_action" id="7D23D738-AC4E-E796-BE17-389E0F7D509A">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:51:43 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 CHAR</dataTypeSize>
+<ownDataTypeParameters>32 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="table_cible" id="7E0FADFC-6A33-EE50-9DE8-B391793FF033">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:53:27 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="description" id="338C0F0F-91D5-D556-3703-A09B9AF20413">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:54:58 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1024 CHAR</dataTypeSize>
+<ownDataTypeParameters>1024 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="timestamp_action" id="6226DCB0-1E0C-BEAA-85D0-F6C8AEC20349">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:56:26 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT047</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_administrateur" id="3BC3CF8F-1440-9E26-E6A1-DD28DF8B57EC">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 15:05:52 UTC</createdTime>
+<generatorID>530B2279-EE1C-09CB-4EF6-75ED70AB5CDD</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<referedAttribute>51A469B1-377F-90DB-0AFA-2EC4A38E072D</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="567DAC50-F85B-5E5C-7785-ACFE8BFFD274" name="modification PK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 14:51:36 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>3CB4855B-AA33-9A21-4511-D89F70A3E030</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

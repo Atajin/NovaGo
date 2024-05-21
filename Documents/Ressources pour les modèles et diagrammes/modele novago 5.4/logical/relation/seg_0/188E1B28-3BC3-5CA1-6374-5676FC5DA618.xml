@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="planete_utilisateur" directorySegmentName="seg_0" id="188E1B28-3BC3-5CA1-6374-5676FC5DA618">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>47FAA755-1CEE-C694-2746-AFD5F409D02E</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<sourcePk>204D3179-49BD-0B63-BDFD-A56475250A52</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>D8FAD98F-9CE8-03EE-0CD7-AF1CA6763574</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>CCE98592-8A3A-9727-864F-27AAB2B3B6E9</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

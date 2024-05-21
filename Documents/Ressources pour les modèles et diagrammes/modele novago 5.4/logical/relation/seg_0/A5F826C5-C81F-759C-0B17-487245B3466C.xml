@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="voyage_billet" directorySegmentName="seg_0" id="A5F826C5-C81F-759C-0B17-487245B3466C">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>29E08EED-26BF-31B3-B9BF-8371A825FDCE</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<sourcePk>76CCCFD9-FD66-2E2C-6B7B-821DCD23247E</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>DD6848EB-897B-5B2D-059F-921A3B06408E</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>08E5C6E7-5AF1-15BF-8F1A-E357B08971A8</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="44AC78D8-0709-2918-FAE4-33224C9EB544" containerWithKeyObject="DE653B9A-9DA8-61BF-5844-4794CEC77C5D" localFKIndex="289F4C08-E804-E10F-5754-46566AA85895" name="utilisateur_planete_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>188E1B28-3BC3-5CA1-6374-5676FC5DA618</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<referredTableLongName>planete</referredTableLongName>
+<deleteRule>CASCADE</deleteRule>
+<referredTableID>FDDCD77D-A683-1CB8-9802-1DEF7E1B1935</referredTableID>
+<keyObject>ACF0F745-FF1C-8CCB-7002-FE31D58FC682</keyObject>
+<referredKeyID>ACF0F745-FF1C-8CCB-7002-FE31D58FC682</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id_planete</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

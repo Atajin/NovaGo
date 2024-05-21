@@ -1,0 +1,190 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="DD6848EB-897B-5B2D-059F-921A3B06408E" name="voyage">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>563B73F0-920C-B3CE-3C6D-40672DE62D5C</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id_voyage" id="D7FC60A3-D819-E660-B6C8-76C54E597EF7">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>E3AB5C9C-5F38-CB1D-B0A8-6F3BE276DE73</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="origine" id="B3FAA6E8-7568-7596-5D24-78768ADB479C">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>1CFF458D-F792-64A2-735E-8376B8D4CABF</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="destination" id="3ED3375E-6236-AB10-9B50-FF58505B679E">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>6AD8A7D6-986B-AE02-C488-14E9CCEDB452</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="date_depart" id="7D0EB7B7-7D68-EFB2-5439-838AAC8D27F3">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>F14B3AEC-49B9-1FB5-5230-60F617A0771C</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="nb_heures" id="59F42D38-BD5E-76A8-9F31-3B54995C062C">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>CFC109E7-50A9-13A1-76AB-DAC221B60264</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="prix_econo" id="A7398014-4D7D-0CAD-91CB-4F0A5BB1612D">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>4A933BCB-6B70-20D4-3A18-90B261C9B4C9</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeScale>2</dataTypeScale>
+<ownDataTypeParameters>,,2</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_vaisseau" id="CB3FB762-99F7-A56E-DED2-54AFDE53B549">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<generatorID>0FE5429D-3229-4966-06E2-E4AAB4BE94EE</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>A3DE98A6-48C8-D01E-EBE2-43907B43D60A</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<referedAttribute>403A7B2E-E45C-AFE4-7756-F728CB31E559</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_planete" id="656131A5-5EEA-0886-A0F3-BCD78BFDE349">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<generatorID>9D858582-28E4-B30F-8B8C-241D46F1AAB4</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>D2041135-9858-05C1-3E9D-88EB23512CBB</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<referedAttribute>97268986-473A-9CA3-237E-5F3779A9FD0A</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_planete1" id="8C08B3CC-A1C3-455D-AAB4-338381CEDCDE">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<generatorID>8208E7DF-AFC1-FC7A-3585-7ACB0D665A91</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>B848B4C9-EB72-9AE8-454D-ADBAE9CE4C38</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<referedAttribute>97268986-473A-9CA3-237E-5F3779A9FD0A</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_rabais" id="FE378A5F-16F5-7593-A268-B8C8F65E3A11">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<generatorID>193859BB-F10C-7159-AA38-395B0608A07A</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>CECC0824-CD48-A68A-4171-34C5FEA78B47</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<referedAttribute>16C700D5-8DFD-298C-D25D-5E44CA97D8EE</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="prix_business" id="F8A7B043-AA21-018C-33A9-C98626352AAF">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-21 13:41:10 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeScale>2</dataTypeScale>
+<ownDataTypeParameters>,,2</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="76CCCFD9-FD66-2E2C-6B7B-821DCD23247E" name="voyage PK">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 03:03:19 UTC</createdTime>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<importedID>55109853-E4A7-9042-82C5-1F28EA99D7E4</importedID>
+<engineerTo>
+<item key="EC3E92D6-C9C8-B77B-5375-E11334F9481E" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>D7FC60A3-D819-E660-B6C8-76C54E597EF7</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

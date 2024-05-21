@@ -1,0 +1,113 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="7459F9E4-D764-E9D5-B194-C5013893094C" name="modification">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>66444D47-0D6D-C476-CAB4-F65150415336</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id_modification" id="5C0662F1-1DD4-7959-6328-A5D14DF47EBE">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>3CB4855B-AA33-9A21-4511-D89F70A3E030</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="type_action" id="AEB853EE-F13E-66B3-FA86-FF508F56DEDD">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>7D23D738-AC4E-E796-BE17-389E0F7D509A</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 CHAR</dataTypeSize>
+<ownDataTypeParameters>32 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="table_cible" id="362B4883-9597-91ED-D45E-8E872346656F">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>7E0FADFC-6A33-EE50-9DE8-B391793FF033</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 CHAR</dataTypeSize>
+<ownDataTypeParameters>128 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="description" id="AABC2067-2448-8BD9-694F-CB64A68915B6">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>338C0F0F-91D5-D556-3703-A09B9AF20413</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1024 CHAR</dataTypeSize>
+<ownDataTypeParameters>1024 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="timestamp_action" id="E4BB2B63-AA85-50E4-8D53-7D9DEF1C777D">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>6226DCB0-1E0C-BEAA-85D0-F6C8AEC20349</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT047</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="admin_id_admin" id="347E1886-562F-8828-E019-75867BA14949">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>3BC3CF8F-1440-9E26-E6A1-DD28DF8B57EC</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="650E24D4-A029-53C6-FCB5-72706399CD12" referredColumn="7952B390-C4BF-5B6A-E723-9D1197ABA613"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="F083B8B8-04B1-9247-D0A6-1914A679D422" name="modification_PK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>567DAC50-F85B-5E5C-7785-ACFE8BFFD274</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5C0662F1-1DD4-7959-6328-A5D14DF47EBE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="ABA7CBE0-646B-C9A3-58D0-41EE2F4A3035" name="modification_administrateur_FK">
+<createdBy>kianl</createdBy>
+<createdTime>2024-02-26 17:53:40 UTC</createdTime>
+<generatorID>530B2279-EE1C-09CB-4EF6-75ED70AB5CDD</generatorID>
+<ownerDesignName>modele novago 5.4</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="347E1886-562F-8828-E019-75867BA14949"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
