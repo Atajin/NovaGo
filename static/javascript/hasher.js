@@ -3,16 +3,7 @@ import bcrypt from "bcrypt";
 const saltRounds = 10
 
 let passwords = [
-    'LumiereStellaire21$',
-    'RoverRouge82#',
-    'Venussien2024!',
-    'JupiterJumper88*',
-    'SaturneRingz4$',
-    'AquaExplorer7%',
-    'CrystalMountain22&',
-    'ElectroStorm99@',
-    'ElysiumDream33$',
-    'VortexVisionary5*'
+    'csgopr0123'
 ];
 
 async function encryptList(passwords, saltRounds) {

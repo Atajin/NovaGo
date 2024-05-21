@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="modele novago 5.4" id="AEB3683E-4FD0-5697-9328-F7100B3D7249" version="3.5">
+<createdBy>Kian</createdBy>
+<createdTime>2024-02-21 02:58:03 UTC</createdTime>
+<ownerDesignName>modele novago 2.5</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>AEB3683E-4FD0-5697-9328-F7100B3D7249</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="ACA93606-65F0-C3AC-2DFC-F46286814609">
+<designStoragePath>C:\Users\Kian\Documents\modele novago 2.2</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
+</OSDM_Design>
