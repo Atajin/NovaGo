@@ -675,12 +675,9 @@ async function demarrerServeur() {
         try {
             const commentaires = dbMongo.collection("commentaires");
             const { nom, note, contenu, planete } = req.body;
-            console.log(req.body);
             const nomPlanete = await chercherNomPlaneteParId(planete);
-            console.log(nomPlanete);
             const insert = {nom: nom, note: note, contenu: contenu, planete: nomPlanete};
             const result = await commentaires.insertOne(insert);
-            console.log(result);
             res.status(201).json({message_positif: "Commentaire ajouté!"});
         } catch (error) {
             console.error('Erreur :', error);

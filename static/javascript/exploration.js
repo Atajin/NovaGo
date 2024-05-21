@@ -42,7 +42,7 @@ if (document.querySelector('input[name="selection_planete"]')) {
                 .then(response => response.json())
                 .then(data => {
                   if (typeof data.message_positif !== 'undefined'){
-                    console.log("Commentaire ajouté!");
+                    window.location.href = "http://localhost:4000/exploration";
                   }
                 }).catch((error) => {
                   console.error('Erreur:', error);
