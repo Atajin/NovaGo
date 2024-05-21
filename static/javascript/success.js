@@ -99,9 +99,6 @@ function afficherTransaction(idTransaction) {
                                                             <p class='custom-font-rvt m-0' style='font-size: small;'>Date de départ : ${billet.voyage.DATE_DEPART.split("T")[0]}</p>
                                                         </div>
                                                         <div class='row'>
-                                                            <p class='custom-font-rvt m-0' style='font-size: small;'>Date de Retour : </p>
-                                                        </div>
-                                                        <div class='row'>
                                                             <p class='custom-font-rvt m-0' style='font-size: small;'>Siege : ${billet.SIEGE}</p>
                                                         </div>
                                                         <div class='row'>
