@@ -31,3 +31,31 @@ function afficherDetails(idVoyage) {
         console.error("Voyage non trouvé pour l'ID : ", idVoyage);
     }
 }
+
+function ajouterAWishlist() {
+    const idVoyageString = document.getElementById("codeVoyage").innerHTML;
+    const idVoyage = parseInt(idVoyageString.match(/\d+/)[0]);
+    console.log("idVoyage: ", idVoyage, "idVoyageString:", idVoyageString);
+    const dateDepart = document.getElementById("dateDepartVoyage").innerHTML;
+    const nomDestination = document.getElementById("nomDestination").innerHTML;
+    const nomOrigine = document.getElementById("origineVoyage").innerHTML
+    const nomVoyage = `${nomOrigine} -> ${nomDestination}`;
+    fetch('/reservation/ajoutWishlist', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id_voyage: idVoyage, nom_voyage: nomVoyage, date_depart: dateDepart }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Succès:', data.message);
+        } else {
+            console.error(data.error);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
