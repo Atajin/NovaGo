@@ -640,6 +640,19 @@ async function demarrerServeur() {
             }
         });
 
+        app.post('/reservation/ajoutWishlist', async (req, res) => {
+            const { id_voyage, nom_voyage, date_depart } = req.body;
+    
+            try {
+                const wishlistCollection = dbMongo.collection('wishlist');
+                wishlistCollection.insertOne({ id_utilisateur: req.session.id_connecte, id_voyage: id_voyage, nom_voyage: nom_voyage, date_depart: new Date(date_depart), date_ajout: new Date() });
+
+            } catch (err) {
+                console.error("Erreur lors de l'ajout à la liste de souhaits.", err);
+                res.status(500).json({ success: false, message: "Erreur lors de l'ajout à la liste de souhaits." });
+            }
+        });
+
     async function recupererRabaisActifs() {
         const dateActuelle = new Date();
         const resultat = await oracleConnexion.execute(
@@ -1010,6 +1023,16 @@ async function demarrerServeur() {
                 transaction.billetTotal = totalBillets;
             }
 
+              // Si aucune transaction n'est trouvée ou si le tableau de transactions est vide
+              if (!transactionData || transactionData.length === 0) {
+                return res.render('pages/success', {
+                    est_connecte: req.session.est_connecte,
+                    sessionId: sessionId,
+                    transactionData: transactionData,
+                    message_negatif: 'Aucun billet ou transaction trouvé.'
+                });
+            }
+
             // Rendre la page de succès si des données de transaction sont trouvées
             if (transactionData && transactionData.length > 0) {
                 return res.render('pages/success', {
@@ -1162,7 +1185,7 @@ async function demarrerServeur() {
 
     app.route('/administrateur')
         /*
-            Accès à la page de réservation
+            Accès à la page administrateur
             paramètres : est_connecte
         */
         .get(async (req, res) => {
@@ -1322,6 +1345,35 @@ async function demarrerServeur() {
             res.status(500).json({ success: false, message: 'Erreur lors de la suppression.' });
         }
 
+    });
+
+    app.route('/wishlist')
+    /*
+        Accès à la page wishlist
+        paramètres : est_connecte
+    */
+    .get(async (req, res) => {
+        try {
+            req.session.message_positif = "";
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
+            if (req.session.est_connecte) {
+                const courriel = req.session.courriel;
+                
+                const wishlistCollection = dbMongo.collection('wishlist');
+                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: req.session.id_connecte }).toArray();
+                console.log("Wishlist: ", wishlistUtilisateur);
+
+                res.render('pages/wishlist', {
+                    wishlistUtilisateur: wishlistUtilisateur
+                });
+            } else {
+                req.session.message_negatif = "Connectez vous pour accéder à cette page";
+                res.redirect('/connexion');
+            }
+        } catch (err) {
+            console.error(err);
+            return res.render('pages/wishlist', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+        }
     });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    
     const premierVoyage = voyagesData[0]; // Accès au premier élément dans le tableau
     console.log("Détails du premier voyage : ", premierVoyage);
     document.getElementById("codeVoyage").innerHTML = "Code " + premierVoyage.ID_VOYAGE;
@@ -11,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("capaciteVaisseau").innerHTML = premierVoyage.vaisseauData.CAPACITE;
     document.getElementById("dateDepartVoyage").innerHTML = new Date(premierVoyage.DATE_DEPART).toISOString().split('T')[0];
 });
+
+
 
 function afficherDetails(idVoyage) {
     // Recherche du voyage correspondant dans les données des voyages

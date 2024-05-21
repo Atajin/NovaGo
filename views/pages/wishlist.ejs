@@ -1,0 +1,41 @@
+<%- include ("../partials/header.ejs") %>
+    <!--Gestion des messages d'erreur-->
+    <% if (typeof message_negatif !=='undefined' ) { %>
+        <div class="custom-message-negatif" id="message_negatif">
+            <%= message_negatif %>
+        </div>
+        <% } %>
+            <!--Gestion de l'affichage de l'état de connexion de l'utilisateur-->
+            <% if (typeof message_positif !=='undefined' ) { %>
+                <div class="custom-message-positif" id="message_positif">
+                    <%= message_positif %>
+                </div>
+                <% } %>
+
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="custom-font-planete-t petit-titre" id="titrePage">Liste de souhaits
+                        </h1>
+                    </div>
+                    <div class="table-responsive scrollable-table">
+                        <table class="table" id="tableWishlist">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom du voyage</th>
+                                    <th scope="col">Date d'ajout</th>
+                                    <th scope="col">Date de départ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% wishlistUtilisateur.forEach(function(voyage) { %>
+                                    <tr>
+                                        <td class="wrap-text"><%= voyage.nom_voyage %></td>
+                                        <td class="wrap-text"><%= voyage.date_ajout %></td>
+                                        <td class="wrap-text"><%= voyage.date_depart %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    <%- include ("../partials/footer.ejs") %>

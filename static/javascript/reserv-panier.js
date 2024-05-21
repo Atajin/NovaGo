@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById('confirmer-btn').addEventListener('click', function () {
         if (document.getElementById("nombre_billets").innerHTML > 0){
-            // Disable the button to prevent multiple clicks
             this.disabled = true;
         
             // Utiliser AJAX pour envoyer les données au serveur

@@ -31,6 +31,7 @@ INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (15, TO_DATE
 INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (20, TO_DATE('2024-10-01', 'YYYY-MM-DD'), TO_DATE('2024-10-15', 'YYYY-MM-DD'), 'AUTOMNE20');
 INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (25, TO_DATE('2024-12-20', 'YYYY-MM-DD'), TO_DATE('2024-12-25', 'YYYY-MM-DD'), 'FETES25');
 INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (5, TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2024-02-28', 'YYYY-MM-DD'), 'HIVER5');
+INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (50, TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2028-02-28', 'YYYY-MM-DD'), 'SECRET50');
 
 -- Table utilisateur
 INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('zara.lumina@espace.com', '$2b$10$wnnLvPjGl69qiT.7.Jklne2YjKOJCAIPmVkHP4zKJcCzfBa/siaES', 'Lumina', 'Zara', 'Paris, France', 0742382392, 1);
@@ -49,6 +50,7 @@ INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, p
 INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('kianlettres@gmail.com', '$2b$10$Asg/V/Gwe/I/qvZu8SycAuHOAwaAG81yXnI0KjsKznkle9TyQqilC', 'Chowanietz', 'Kian', 'Montreal, Quebec', 1234567890);
 INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('odrolest@gmail.com', '$2b$10$XjHZN7iZ.PF93vCJShqeeOGTCukMDXjgVtJd8RDEOXztiTMkWi/YG', 'Drolet', 'Olivier', 'Laval, Quebec', 0987654321);
 INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('lechubilly@gmail.com', '$2b$10$LCW1MF2R.xrsiHyeMYTdS.rZq5grMdNTrtoApP2c4n0t.YFqMNMh.', 'Le Chu', 'Billy', 'Montreal, Quebec', 1029384756);
+INSERT INTO administrateur (email, mot_de_passe, nom, prenom, adresse, telephone) VALUES ('nithyrian@gmail.com', '$2b$10$zr4oela87eTyQtQphLLuhurAc3DN.0w4EZx9ODsbiDU5UOqAUtu5W', 'Brodeur-Béliveau', 'Mathieu', 'Montreal, Quebec', 5144155114);
 
 -- Table vaisseau
 INSERT INTO vaisseau (nom, type_de_propulsion, capacite) VALUES ('Etoile Voyageur', 'Propulsion ionique', 150);
@@ -153,17 +155,3 @@ INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_
 INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES ('JqoEzEiFRKqG4EizIkcsDWXJogDq7xQr8dcShPzekrA3aUI4I1W2mwHlxUMdZeUl', TIMESTAMP '2023-10-08 10:00:00', TIMESTAMP '2023-10-08 11:00:00', 8);
 INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES ('4mtlbwF5jMaVFV8PSIyR9Z6vqBWx4DXZfEIoPOG0rGaiJYDYIsj0GX8GPc0dxFDy', TIMESTAMP '2023-10-09 10:00:00', TIMESTAMP '2023-10-09 11:00:00', 9);
 INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES ('3hlrjWYde1bGCOke158qM4hYq1i2Q1RVLFBCkCAwiqaGggcTAVcDPCbH6iq6K4j3', TIMESTAMP '2023-10-10 10:00:00', TIMESTAMP '2023-10-10 11:00:00', 10);
-
--- Table wishlist
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-01 12:00:00', 1);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-02 12:00:00', 2);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-03 12:00:00', 3);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-04 12:00:00', 4);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-05 12:00:00', 5);
-
--- Table wishlist_voyage
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (1, 1);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (2, 2);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (3, 3);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (4, 4);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (5, 5);
