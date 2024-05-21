@@ -15,4 +15,4 @@ db.commentaires.insertMany([
 ]);
 
 db.createCollection("wishlist");
-db.wishlist.insertOne({ id_utilisateur: "1", id_voyage: "1", date: new Date() });
+db.wishlist.insertOne({ id_utilisateur: 1, id_voyage: 1, nom_voyage: "Terre -> Mars", date_depart: new Date('2024-04-15T08:00:00Z'), date_ajout: new Date() });

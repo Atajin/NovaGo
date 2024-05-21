@@ -1162,7 +1162,7 @@ async function demarrerServeur() {
 
     app.route('/administrateur')
         /*
-            Accès à la page de réservation
+            Accès à la page administrateur
             paramètres : est_connecte
         */
         .get(async (req, res) => {
@@ -1322,6 +1322,41 @@ async function demarrerServeur() {
             res.status(500).json({ success: false, message: 'Erreur lors de la suppression.' });
         }
 
+    });
+
+    app.route('/wishlist')
+    /*
+        Accès à la page wishlist
+        paramètres : est_connecte
+    */
+    .get(async (req, res) => {
+        try {
+            req.session.message_positif = "";
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
+            if (req.session.est_connecte) {
+                const courriel = req.session.courriel;
+
+                const resultIdUtilisateur = await oracleConnexion.execute(
+                    `SELECT ID_UTILISATEUR FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                    { courriel: courriel },
+                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                );
+                
+                const wishlistCollection = dbMongo.collection('wishlist');
+                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: resultIdUtilisateur.rows[0].ID_UTILISATEUR }).toArray();
+                console.log("Wishlist: ", wishlistUtilisateur);
+
+                res.render('pages/wishlist', {
+                    wishlistUtilisateur: wishlistUtilisateur
+                });
+            } else {
+                req.session.message_negatif = "Connectez vous pour accéder à cette page";
+                res.redirect('/connexion');
+            }
+        } catch (err) {
+            console.error(err);
+            return res.render('pages/wishlist', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
+        }
     });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.
