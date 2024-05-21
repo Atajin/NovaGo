@@ -99,7 +99,7 @@ Pour initialiser un serveur dans Visual Studio Code en utilisant nodemon :
 5. Executer dans le terminal : npx nodemon server.js
 
 Pour se connecter à un compte admin: 
-Courriel: odrolest@gmail.com
-Mot de passe: novago2034730
+Courriel: NIThyrian@gmail.com
+Mot de passe: csgopr0123
 
 Vous pouvez vous créer un compte avec le site pour utiliser un compte utilisateur normal.

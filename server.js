@@ -640,6 +640,19 @@ async function demarrerServeur() {
             }
         });
 
+        app.post('/reservation/ajoutWishlist', async (req, res) => {
+            const { id_voyage, nom_voyage, date_depart } = req.body;
+    
+            try {
+                const wishlistCollection = dbMongo.collection('wishlist');
+                wishlistCollection.insertOne({ id_utilisateur: req.session.id_connecte, id_voyage: id_voyage, nom_voyage: nom_voyage, date_depart: new Date(date_depart), date_ajout: new Date() });
+
+            } catch (err) {
+                console.error("Erreur lors de l'ajout à la liste de souhaits.", err);
+                res.status(500).json({ success: false, message: "Erreur lors de l'ajout à la liste de souhaits." });
+            }
+        });
+
     async function recupererRabaisActifs() {
         const dateActuelle = new Date();
         const resultat = await oracleConnexion.execute(
@@ -1335,15 +1348,9 @@ async function demarrerServeur() {
             req.session.est_connecte = req.session.courriel && req.session.mdp;
             if (req.session.est_connecte) {
                 const courriel = req.session.courriel;
-
-                const resultIdUtilisateur = await oracleConnexion.execute(
-                    `SELECT ID_UTILISATEUR FROM UTILISATEUR WHERE EMAIL = :courriel`,
-                    { courriel: courriel },
-                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                );
                 
                 const wishlistCollection = dbMongo.collection('wishlist');
-                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: resultIdUtilisateur.rows[0].ID_UTILISATEUR }).toArray();
+                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: req.session.id_connecte }).toArray();
                 console.log("Wishlist: ", wishlistUtilisateur);
 
                 res.render('pages/wishlist', {

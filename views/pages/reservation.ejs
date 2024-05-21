@@ -26,15 +26,13 @@
                                                     <h2 class="custom-font-labels m-0 px-2" id="codeVoyage">
                                                         <!--Code du Voyage-->
                                                     </h2>
-                                                    <h2 class="custom-font-labels mt-1 m-0">Date de départ</h2>
-                                                    <p class="custom-font-rvt m-0" id="dateDepartVoyage">
+                                                    <h2 class="custom-font-labels m-0 px-2">Date de départ</h2>
+                                                    <p class="custom-font-rvt m-0 px-2" id="dateDepartVoyage">
                                                         <!--Date de départ du voyage-->
                                                     </p>
                                                 </div>
                                                 <div class="col" style="text-align: right;">
-                                                    <!--le bouton n'est somehow pas un coeur-->
-                                                    <button class="m-0 p-0"
-                                                        style="border: none; background: none; color: white;">
+                                                <button class="m-0 p-0" style="border: none; background: none; color: white;" onclick="ajouterAWishlist()">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16"
                                                             id="coeur">
@@ -127,7 +125,7 @@
                                             <p class="custom-font-rvt m-0">Origine</p>
                                         </div>
                                         <div class="col" style="text-align: right;">
-                                            <p class="custom-font-rvt m-0">
+                                            <p class="custom-font-rvt m-0" id="planeteOrigine">
                                                 <%= rechercheData.planeteOrigine %>
                                             </p>
                                         </div>
@@ -330,7 +328,7 @@
                 <% } %>
 
                 <script>
-                       const rabaisData = <%- JSON.stringify(rabaisData) %>;
+                    const rabaisData = <%- JSON.stringify(rabaisData) %>;
                 </script>
 
                     <%- include ("../partials/footer.ejs") %>
