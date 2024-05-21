@@ -714,6 +714,20 @@ async function demarrerServeur() {
         }
     });
 
+    app.post('/ajoutCommentaire', async (req, res) => {
+        try {
+            const commentaires = dbMongo.collection("commentaires");
+            const { nom, note, contenu, planete } = req.body;
+            const nomPlanete = await chercherNomPlaneteParId(planete);
+            const insert = {nom: nom, note: note, contenu: contenu, planete: nomPlanete};
+            const result = await commentaires.insertOne(insert);
+            res.status(201).json({message_positif: "Commentaire ajouté!"});
+        } catch (error) {
+            console.error('Erreur :', error);
+            res.status(500).json({ error: 'Erreur serveur' });
+        }
+    });
+
     // Route pour afficher la page du reçu
     app.get('/recu', async (req, res) => {
         const idTransaction = req.query.idTransaction;
