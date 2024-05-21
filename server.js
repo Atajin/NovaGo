@@ -675,11 +675,10 @@ async function demarrerServeur() {
 
                 const commentaires = dbMongo.collection("commentaires");
                 const listeCommentaires = await commentaires.find().toArray();
-                console.log("listeCommentaires");
-                console.log(listeCommentaires);
 
                 res.render('pages/exploration', {
                     planetes_bd: result.rows,
+                    commentaires_bd: listeCommentaires
                 });
             } catch (err) {
                 console.error(err);
