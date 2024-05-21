@@ -20,27 +20,44 @@ if (document.querySelector('input[name="selection_planete"]')) {
               note = j;
             }
           }
-          if (note != 0){
-            if (document.getElementById("contenu"+i).value != null){
-              if (document.getElementById("nom"+i).value != null){
+          if (note != 0 && document.getElementById("contenu"+i).value != "" && document.getElementById("nom"+i).value != ""){
                 document.getElementById("bouton_commentaire"+i).innerHTML = "Laisser un commentaire";
                 document.getElementById("custom_commentaire"+i).style.display = "none";
 
                 document.getElementById("contenu"+i).classList.remove('is-invalid');
                 document.getElementById("nom"+i).classList.remove('is-invalid');
 
+
+                //ajout sur mongodb
+                const f = fetch("ajoutCommentaire", {
+                  method: "POST",
+                  headers: {'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                      nom: document.getElementById("nom"+i).value,
+                      note: note,
+                      contenu: document.getElementById("contenu"+i).value,
+                      planete: i
+                  }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if (typeof data.message_positif !== 'undefined'){
+                    window.location.href = "http://localhost:4000/exploration";
+                  }
+                }).catch((error) => {
+                  console.error('Erreur:', error);
+                });
                 document.getElementById("contenu"+i).value = "";
                 document.getElementById("nom"+i).value = "";
                 document.getElementById(""+note+i).checked = false;
-                //ajout sur mongodb ici
-            } else {
-              document.getElementById("nom"+i).classList.add('is-invalid');
             }
-          } else {
-            document.getElementById("contenu"+i).classList.add('is-invalid');
-          }
-          } else {
-          }
+            if (document.getElementById("nom"+i).value == "") {
+              document.getElementById("nom"+i).classList.add('is-invalid');
+            } else document.getElementById("nom"+i).classList.remove('is-invalid');
+
+            if (document.getElementById("contenu"+i).value == "") {
+              document.getElementById("contenu"+i).classList.add('is-invalid');
+            } else document.getElementById("contenu"+i).classList.remove('is-invalid');
         }
       });
   };
