@@ -566,6 +566,8 @@ async function demarrerServeur() {
                         nombrePersonnes: req.session.personnes
                     };
 
+                    const rabaisData = recupererRabaisActifs();
+
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     let voyageResult;
                     if (req.session.date_retour) {
@@ -579,7 +581,6 @@ async function demarrerServeur() {
                             const vaisseauId = voyage.VAISSEAU_ID_VAISSEAU;
 
                             try {
-
                                 const planeteResult = await obtenirDonneesPlaneteParId(planeteId);
                                 const vaisseauResult = await obtenirDonneesVaisseauParId(vaisseauId);
 
@@ -596,6 +597,7 @@ async function demarrerServeur() {
                             res.render('pages/reservation', {
                                 est_connecte: req.session.est_connecte,
                                 rechercheData: rechercheData,
+                                rabaisData: rabaisData,
                                 voyages_bd: voyageResult.rows,
                                 message_negatif:
                                     "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
@@ -605,6 +607,7 @@ async function demarrerServeur() {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
+                            rabaisData: rabaisData,
                             voyages_bd: voyageResult.rows,
                             message_negatif:
                                 "Aucun voyage n'a été trouvé qui répond aux paramètres de votre recherche."
@@ -619,6 +622,46 @@ async function demarrerServeur() {
                 return res.render('pages/inscription', { message_negatif: 'Erreur lors de la connexion à la base de données' });
             }
         });
+
+        app.post('/reservation', async (req, res) => {
+            const { code } = req.body;
+            try {
+                const rabais = await recupererRabaisParCode(code);
+                console.log(rabais);
+        
+                if (rabais) {
+                    res.json({ success: true, discount: rabais });
+                } else {
+                    res.json({ success: false, message: 'Code de rabais invalide' });
+                }
+            } catch (err) {
+                console.error('Erreur lors de la récupération du rabais:', err);
+                res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
+            }
+        });
+
+    async function recupererRabaisActifs() {
+        const dateActuelle = new Date();
+        const resultat = await oracleConnexion.execute(
+            `SELECT * FROM RABAIS 
+                 WHERE (DATE_DEBUT <= :dateActuelle)
+                 AND (DATE_FIN >= :dateActuelle)`,
+            { dateActuelle },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        console.log(resultat.rows);
+        return resultat.rows;
+    }
+
+    // Fonction pour récupérer un rabais par code
+    async function recupererRabaisParCode(code) {
+        const resultat = await oracleConnexion.execute(
+            `SELECT * FROM RABAIS WHERE CODE = :code`,
+            { code },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        return resultat.rows[0];
+    }
 
     app.route('/exploration')
         /*
@@ -685,7 +728,7 @@ async function demarrerServeur() {
         const rabais = null;
         const frais = null;
 
-        res.render('pages/recu', { totalBillets: totalBillets, transactionData: transactionData, rabais: rabais,  frais:  frais });
+        res.render('pages/recu', { totalBillets: totalBillets, transactionData: transactionData, rabais: rabais, frais: frais });
     });
 
     /*
@@ -1131,27 +1174,27 @@ async function demarrerServeur() {
             }
         });
 
-        app.post('/administrateur/voirCollection', async (req, res) => {
-            const { nomCollection } = req.body;
-        
-            try {
-                req.session.est_connecte = req.session.courriel && req.session.mdp;
-                if (req.session.est_connecte && req.session.est_admin) {
-                    const collection = dbMongo.collection(nomCollection);
-                    const data = await collection.find().toArray();
-        
-                    let colonnes = data.length > 0 ? Object.keys(data[0]) : [];
-        
-                    res.render('pages/voir-collection', { data: data, nomCollection: nomCollection, colonnes: colonnes });
-                } else {
-                    req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
-                    res.redirect('/connexion');
-                }
-            } catch (err) {
-                console.error('Erreur lors de la requête:', err);
-                res.status(401).send("Erreur lors de la récupération des données.");
+    app.post('/administrateur/voirCollection', async (req, res) => {
+        const { nomCollection } = req.body;
+
+        try {
+            req.session.est_connecte = req.session.courriel && req.session.mdp;
+            if (req.session.est_connecte && req.session.est_admin) {
+                const collection = dbMongo.collection(nomCollection);
+                const data = await collection.find().toArray();
+
+                let colonnes = data.length > 0 ? Object.keys(data[0]) : [];
+
+                res.render('pages/voir-collection', { data: data, nomCollection: nomCollection, colonnes: colonnes });
+            } else {
+                req.session.message_negatif = "Connectez vous en tant qu'administrateur pour accéder à cette page";
+                res.redirect('/connexion');
             }
-        });
+        } catch (err) {
+            console.error('Erreur lors de la requête:', err);
+            res.status(401).send("Erreur lors de la récupération des données.");
+        }
+    });
 
     app.post('/administrateur/voirTable', async (req, res) => {
         const { tableName } = req.body;
