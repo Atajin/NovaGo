@@ -12,25 +12,30 @@
                 </div>
                 <% } %>
 
-                    <div class="container-fluid">
-                        <div class="row justify-content-center">
-                            <div class="col-md-3">
-                                <h1 class="custom-font-planete-t petit-titre">Liste de souhaits</h1>
-                                <ul class="list-group scrollable-list">
-                                    <% if (typeof wishlistUtilisateur !=='undefined' ) { wishlistUtilisateur.forEach(function(voyage) {
-                                        %>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <%= voyage %>
-                                                <form action="/administrateur/voirTable" method="POST"
-                                                    style="margin-bottom:0;">
-                                                    <input type="hidden" name="nomVoyage" value="<%= voyage %>">
-                                                    <button type="submit" class="btn btn-primary">Voir le voyage</button>
-                                                </form>
-                                        </li>
-                                        <% }) %>
-                                            <% } %>
-                                </ul>
-                            </div>
-                        </div>
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="custom-font-planete-t petit-titre" id="titrePage">Liste de souhaits
+                        </h1>
                     </div>
+                    <div class="table-responsive scrollable-table">
+                        <table class="table" id="tableWishlist">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom du voyage</th>
+                                    <th scope="col">Date d'ajout</th>
+                                    <th scope="col">Date de départ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% wishlistUtilisateur.forEach(function(voyage) { %>
+                                    <tr>
+                                        <td class="wrap-text"><%= voyage.nom_voyage %></td>
+                                        <td class="wrap-text"><%= voyage.date_ajout %></td>
+                                        <td class="wrap-text"><%= voyage.date_depart %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                     <%- include ("../partials/footer.ejs") %>

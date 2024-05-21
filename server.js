@@ -1284,9 +1284,10 @@ async function demarrerServeur() {
                     { courriel: courriel },
                     { outFormat: oracledb.OUT_FORMAT_OBJECT }
                 );
-
+                
                 const wishlistCollection = dbMongo.collection('wishlist');
-                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: resultIdUtilisateur.rows[0] }).toArray();
+                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: resultIdUtilisateur.rows[0].ID_UTILISATEUR }).toArray();
+                console.log("Wishlist: ", wishlistUtilisateur);
 
                 res.render('pages/wishlist', {
                     wishlistUtilisateur: wishlistUtilisateur
