@@ -566,8 +566,6 @@ async function demarrerServeur() {
                         nombrePersonnes: req.session.personnes
                     };
 
-                    const rabaisData = recupererRabaisActifs();
-
                     // Exécution de la requête SQL pour rechercher les voyages correspondants
                     let voyageResult;
                     if (req.session.date_retour) {
@@ -597,7 +595,6 @@ async function demarrerServeur() {
                             res.render('pages/reservation', {
                                 est_connecte: req.session.est_connecte,
                                 rechercheData: rechercheData,
-                                rabaisData: rabaisData,
                                 voyages_bd: voyageResult.rows,
                                 message_negatif:
                                     "Attention! Dû au nombre limité de voyages offerts, il est possible qu'aucun voyage présenté sur cette page concorde à la recherche effecutée. Vérifiez toujours la destination et les dates avant de réserver un voyage."
@@ -607,7 +604,6 @@ async function demarrerServeur() {
                         res.render('pages/reservation', {
                             est_connecte: req.session.est_connecte,
                             rechercheData: rechercheData,
-                            rabaisData: rabaisData,
                             voyages_bd: voyageResult.rows,
                             message_negatif:
                                 "Aucun voyage n'a été trouvé qui répond aux paramètres de votre recherche."
@@ -623,58 +619,18 @@ async function demarrerServeur() {
             }
         });
 
-        app.post('/reservation', async (req, res) => {
-            const { code } = req.body;
-            try {
-                const rabais = await recupererRabaisParCode(code);
-                console.log(rabais);
-        
-                if (rabais) {
-                    res.json({ success: true, discount: rabais });
-                } else {
-                    res.json({ success: false, message: 'Code de rabais invalide' });
-                }
-            } catch (err) {
-                console.error('Erreur lors de la récupération du rabais:', err);
-                res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
-            }
-        });
+    app.post('/reservation/ajoutWishlist', async (req, res) => {
+        const { id_voyage, nom_voyage, date_depart } = req.body;
 
-        app.post('/reservation/ajoutWishlist', async (req, res) => {
-            const { id_voyage, nom_voyage, date_depart } = req.body;
-    
-            try {
-                const wishlistCollection = dbMongo.collection('wishlist');
-                wishlistCollection.insertOne({ id_utilisateur: req.session.id_connecte, id_voyage: id_voyage, nom_voyage: nom_voyage, date_depart: new Date(date_depart), date_ajout: new Date() });
+        try {
+            const wishlistCollection = dbMongo.collection('wishlist');
+            wishlistCollection.insertOne({ id_utilisateur: req.session.id_connecte, id_voyage: id_voyage, nom_voyage: nom_voyage, date_depart: new Date(date_depart), date_ajout: new Date() });
 
-            } catch (err) {
-                console.error("Erreur lors de l'ajout à la liste de souhaits.", err);
-                res.status(500).json({ success: false, message: "Erreur lors de l'ajout à la liste de souhaits." });
-            }
-        });
-
-    async function recupererRabaisActifs() {
-        const dateActuelle = new Date();
-        const resultat = await oracleConnexion.execute(
-            `SELECT * FROM RABAIS 
-                 WHERE (DATE_DEBUT <= :dateActuelle)
-                 AND (DATE_FIN >= :dateActuelle)`,
-            { dateActuelle },
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-        );
-        console.log(resultat.rows);
-        return resultat.rows;
-    }
-
-    // Fonction pour récupérer un rabais par code
-    async function recupererRabaisParCode(code) {
-        const resultat = await oracleConnexion.execute(
-            `SELECT * FROM RABAIS WHERE CODE = :code`,
-            { code },
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-        );
-        return resultat.rows[0];
-    }
+        } catch (err) {
+            console.error("Erreur lors de l'ajout à la liste de souhaits.", err);
+            res.status(500).json({ success: false, message: "Erreur lors de l'ajout à la liste de souhaits." });
+        }
+    });
 
     app.route('/exploration')
         /*
@@ -732,9 +688,9 @@ async function demarrerServeur() {
             const commentaires = dbMongo.collection("commentaires");
             const { nom, note, contenu, planete } = req.body;
             const nomPlanete = await chercherNomPlaneteParId(planete);
-            const insert = {nom: nom, note: note, contenu: contenu, planete: nomPlanete};
+            const insert = { nom: nom, note: note, contenu: contenu, planete: nomPlanete };
             const result = await commentaires.insertOne(insert);
-            res.status(201).json({message_positif: "Commentaire ajouté!"});
+            res.status(201).json({ message_positif: "Commentaire ajouté!" });
         } catch (error) {
             console.error('Erreur :', error);
             res.status(500).json({ error: 'Erreur serveur' });
@@ -751,10 +707,9 @@ async function demarrerServeur() {
         const billetsTransaction = await recupererBilletsParTransaction(idTransaction);
         transactionData.billets = billetsTransaction;
 
-        const rabais = null;
         const frais = null;
 
-        res.render('pages/recu', { totalBillets: totalBillets, transactionData: transactionData, rabais: rabais, frais: frais });
+        res.render('pages/recu', { totalBillets: totalBillets, transactionData: transactionData, frais: frais });
     });
 
     /*
@@ -796,23 +751,7 @@ async function demarrerServeur() {
     });
 
     app.post('/checkout', async (req, res) => {
-        const { dataPanier, codeRabais } = req.body;
-        let resultRabais = 0;
-        if (codeRabais != null) {
-            resultRabais = await oracleConnexion.execute(
-                `SELECT * FROM RABAIS WHERE CODE = :codeRabais `,
-                { codeRabais: codeRabais },
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
-        }
-        let rabais = 1;
-        if (resultRabais.rows.length > 0) {
-            rabais = resultRabais.rows[0].POURCENTAGE
-            if (new Date < resultRabais.rows[0].DATE_DEBUT || new Date > resultRabais.rows[0].DATE_FIN) {
-                rabais = 0;
-            }
-            rabais = 1 - rabais / 100;
-        }
+        const { dataPanier } = req.body;
         console.log(dataPanier);
         let quantiteBilletPanier = [];
         let prixPanier = [];
@@ -827,8 +766,6 @@ async function demarrerServeur() {
                         product.metadata.classe_voyage === dataPanier[i].classeVoyage) {
                         let quantiteBillet = dataPanier[i].quantiteBillet;
                         let prix = await stripe.prices.list({ product: product.id });
-                        //Affectation du rabais
-                        prix.data[0].unit_amount = prix.data[0].unit_amount * rabais;
 
                         if (prix.data.length > 0) {
                             prixPanier.push(prix.data[0].unit_amount);
@@ -862,7 +799,7 @@ async function demarrerServeur() {
                         classe: dataPanier[i].classeVoyage,
                         siege: siege,
                         voyage_id_voyage: dataPanier[i].idVoyage,
-                        prix: (prixPanier[i] * rabais / 100),
+                        prix: (prixPanier[i]),
                         utilisateur_id_utilisateur: req.session.id_connecte,
                         transaction_id_transaction: null
                     };
@@ -1023,8 +960,8 @@ async function demarrerServeur() {
                 transaction.billetTotal = totalBillets;
             }
 
-              // Si aucune transaction n'est trouvée ou si le tableau de transactions est vide
-              if (!transactionData || transactionData.length === 0) {
+            // Si aucune transaction n'est trouvée ou si le tableau de transactions est vide
+            if (!transactionData || transactionData.length === 0) {
                 return res.render('pages/success', {
                     est_connecte: req.session.est_connecte,
                     sessionId: sessionId,
@@ -1348,33 +1285,33 @@ async function demarrerServeur() {
     });
 
     app.route('/wishlist')
-    /*
-        Accès à la page wishlist
-        paramètres : est_connecte
-    */
-    .get(async (req, res) => {
-        try {
-            req.session.message_positif = "";
-            req.session.est_connecte = req.session.courriel && req.session.mdp;
-            if (req.session.est_connecte) {
-                const courriel = req.session.courriel;
-                
-                const wishlistCollection = dbMongo.collection('wishlist');
-                const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: req.session.id_connecte }).toArray();
-                console.log("Wishlist: ", wishlistUtilisateur);
+        /*
+            Accès à la page wishlist
+            paramètres : est_connecte
+        */
+        .get(async (req, res) => {
+            try {
+                req.session.message_positif = "";
+                req.session.est_connecte = req.session.courriel && req.session.mdp;
+                if (req.session.est_connecte) {
+                    const courriel = req.session.courriel;
 
-                res.render('pages/wishlist', {
-                    wishlistUtilisateur: wishlistUtilisateur
-                });
-            } else {
-                req.session.message_negatif = "Connectez vous pour accéder à cette page";
-                res.redirect('/connexion');
+                    const wishlistCollection = dbMongo.collection('wishlist');
+                    const wishlistUtilisateur = await wishlistCollection.find({ id_utilisateur: req.session.id_connecte }).toArray();
+                    console.log("Wishlist: ", wishlistUtilisateur);
+
+                    res.render('pages/wishlist', {
+                        wishlistUtilisateur: wishlistUtilisateur
+                    });
+                } else {
+                    req.session.message_negatif = "Connectez vous pour accéder à cette page";
+                    res.redirect('/connexion');
+                }
+            } catch (err) {
+                console.error(err);
+                return res.render('pages/wishlist', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
             }
-        } catch (err) {
-            console.error(err);
-            return res.render('pages/wishlist', { message_negatif: 'Erreur lors de la connexion à la base de données.' });
-        }
-    });
+        });
 
     // Démarrage du serveur après la tentative de connexion à la base de données.
     const server = app.listen(4000, function () {

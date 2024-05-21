@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    
+
     const premierVoyage = voyagesData[0]; // Accès au premier élément dans le tableau
     console.log("Détails du premier voyage : ", premierVoyage);
     document.getElementById("codeVoyage").innerHTML = "Code " + premierVoyage.ID_VOYAGE;
@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function afficherDetails(idVoyage) {
+    // Reset de la couleur du bouton wishlist
+    const boutonCoeur = document.getElementById('coeur');
+    boutonCoeur.style.fill = 'white';
+
     // Recherche du voyage correspondant dans les données des voyages
     const voyage = voyagesData.find(v => v.ID_VOYAGE == idVoyage);
     if (voyage) {
@@ -38,6 +42,9 @@ function afficherDetails(idVoyage) {
 }
 
 function ajouterAWishlist() {
+    const boutonCoeur = document.getElementById('coeur');
+    boutonCoeur.style.fill = 'red';
+
     const idVoyageString = document.getElementById("codeVoyage").innerHTML;
     const idVoyage = parseInt(idVoyageString.match(/\d+/)[0]);
     console.log("idVoyage: ", idVoyage, "idVoyageString:", idVoyageString);
@@ -52,15 +59,15 @@ function ajouterAWishlist() {
         },
         body: JSON.stringify({ id_voyage: idVoyage, nom_voyage: nomVoyage, date_depart: dateDepart }),
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Succès:', data.message);
-        } else {
-            console.error(data.error);
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Succès:', data.message);
+            } else {
+                console.error(data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
