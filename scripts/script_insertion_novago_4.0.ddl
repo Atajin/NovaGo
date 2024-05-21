@@ -25,14 +25,6 @@ INSERT INTO planete (nom, type, gravite, description, image) VALUES ('Ventara', 
 INSERT INTO planete (nom, type, gravite, description, image) VALUES ('Shadowmere', 'Solide', 4.5, 'Planète enveloppée dans une obscurité constante, avec des formes de vie adaptées à l''absence de lumière.', 'planete24.png');
 INSERT INTO planete (nom, type, gravite, description, image) VALUES ('Solara', 'Solide', 12.0, 'Planète désertique baignée de lumière solaire, avec des tempêtes de sable doré et des oasis cachées abritant la vie.', 'planete25.png');
 
--- Table rabais
-INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (10, TO_DATE('2024-04-01', 'YYYY-MM-DD'), TO_DATE('2024-04-30', 'YYYY-MM-DD'), 'PRINTEMPS10');
-INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (15, TO_DATE('2024-07-01', 'YYYY-MM-DD'), TO_DATE('2024-07-15', 'YYYY-MM-DD'), 'SOLEIL15');
-INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (20, TO_DATE('2024-10-01', 'YYYY-MM-DD'), TO_DATE('2024-10-15', 'YYYY-MM-DD'), 'AUTOMNE20');
-INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (25, TO_DATE('2024-12-20', 'YYYY-MM-DD'), TO_DATE('2024-12-25', 'YYYY-MM-DD'), 'FETES25');
-INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (5, TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2024-02-28', 'YYYY-MM-DD'), 'HIVER5');
-INSERT INTO rabais (pourcentage, date_debut, date_fin, code) VALUES (50, TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2028-02-28', 'YYYY-MM-DD'), 'SECRET50');
-
 -- Table utilisateur
 INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('zara.lumina@espace.com', '$2b$10$wnnLvPjGl69qiT.7.Jklne2YjKOJCAIPmVkHP4zKJcCzfBa/siaES', 'Lumina', 'Zara', 'Paris, France', 0742382392, 1);
 INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, adresse, telephone, planete_id_planete) VALUES ('jax.tar@espace.com', '$2b$10$RVrxgl/1lcA6v6eb8Q8c/.WAwLucKUUmZawuC1uHPMoDMfaYpPE9O', 'Tar', 'Jax', 'Vallée Rouge', 1234567891, 2);
