@@ -153,17 +153,3 @@ INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_
 INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES ('JqoEzEiFRKqG4EizIkcsDWXJogDq7xQr8dcShPzekrA3aUI4I1W2mwHlxUMdZeUl', TIMESTAMP '2023-10-08 10:00:00', TIMESTAMP '2023-10-08 11:00:00', 8);
 INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES ('4mtlbwF5jMaVFV8PSIyR9Z6vqBWx4DXZfEIoPOG0rGaiJYDYIsj0GX8GPc0dxFDy', TIMESTAMP '2023-10-09 10:00:00', TIMESTAMP '2023-10-09 11:00:00', 9);
 INSERT INTO session_util (token, date_creation, date_expiration, utilisateur_id_utilisateur) VALUES ('3hlrjWYde1bGCOke158qM4hYq1i2Q1RVLFBCkCAwiqaGggcTAVcDPCbH6iq6K4j3', TIMESTAMP '2023-10-10 10:00:00', TIMESTAMP '2023-10-10 11:00:00', 10);
-
--- Table wishlist
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-01 12:00:00', 1);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-02 12:00:00', 2);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-03 12:00:00', 3);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-04 12:00:00', 4);
-INSERT INTO wishlist (date_ajout, utilisateur_id_utilisateur) VALUES (TIMESTAMP '2023-10-05 12:00:00', 5);
-
--- Table wishlist_voyage
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (1, 1);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (2, 2);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (3, 3);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (4, 4);
-INSERT INTO wishlist_voyage (wishlist_id_wishlist, voyage_id_voyage) VALUES (5, 5);
