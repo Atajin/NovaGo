@@ -517,6 +517,13 @@ async function demarrerServeur() {
                         const id_nouvel_util = Number(nouvel_util.rows);
                         const planete_util = await trouverPlaneteUtil(id_nouvel_util);
 
+                        const resultUser = await oracleConnexion.execute(
+                            `SELECT * FROM UTILISATEUR WHERE EMAIL = :courriel`,
+                            { courriel: courriel },
+                            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+                        );
+                        req.session.id_connecte = resultUser.rows[0].ID_UTILISATEUR;
+                        
                         req.session.courriel = courriel;
                         req.session.mdp = hashedMdp;
                         req.session.est_connecte = req.session.courriel && req.session.mdp;
