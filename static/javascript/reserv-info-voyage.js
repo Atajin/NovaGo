@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("typeVaisseau").innerHTML = premierVoyage.vaisseauData.TYPE_DE_PROPULSION;
     document.getElementById("capaciteVaisseau").innerHTML = premierVoyage.vaisseauData.CAPACITE;
     document.getElementById("dateDepartVoyage").innerHTML = new Date(premierVoyage.DATE_DEPART).toISOString().split('T')[0];
-    document.getElementById("origineVoyage").innerHTML = voyage.ORIGINE;
+    document.getElementById("origineVoyage").innerHTML = premierVoyage.ORIGINE;
 });
 
 
