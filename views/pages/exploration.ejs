@@ -10,7 +10,7 @@
     <% if (typeof planetes_bd==='undefined' || planetes_bd.length===0) { %>
         <!--Champ d'affichage des erreurs lors de connexion-->
         <% if (typeof message_negatif !=='undefined' ) { %>
-            <div class="custom-message-negatif">
+            <div class="custom-message-negatif" id="message_negatif">
                 <%= message_negatif %>
             </div>
             <% } %>
@@ -77,13 +77,36 @@
                                         </div>
                                         <br>
                                     </div>
-                                    <div class="card mb-3" style="width: 75%; position: relative; left: 12%;">
+                                    <div class="card mb-3" style="width: 75%; position: relative; left: 15%;">
+                                        <button class="btn btn-outline-light btn-lg custom-font-planet-p" id="bouton_commentaire<%=planete[0]%>">Laisser un commentaire</button>
+                                        <div class="card-body">
+                                            <h5 class="card-title" id="custom_commentaire<%=planete[0]%>" style="display: none;">
+
+                                                <label for="nom<%=planete[0]%>">Entrez votre nom</label>
+                                                <input type="text" id="nom<%=planete[0]%>" name="nom" class="form-control" placeholder="Votre nom" >
+
+                                                <label>Entrez la note sur 5</label>
+                                                <br>
+                                                <input type="radio" id="1<%=planete[0]%>" name="note">
+                                                <input type="radio" id="2<%=planete[0]%>" name="note">
+                                                <input type="radio" id="3<%=planete[0]%>" name="note">
+                                                <input type="radio" id="4<%=planete[0]%>" name="note">
+                                                <input type="radio" id="5<%=planete[0]%>" name="note">
+                                                <br>
+                                                
+                                                <label for="nom">Comment était votre voyage?</label>
+                                                <input type="text" id="contenu<%=planete[0]%>" name="nom" class="form-control" placeholder="Comment était votre voyage?" >
+                                            </h5>
+                                        </div>
+                                        <% commentaires_bd.forEach(function(commentaire) { %>
+                                            <% if (commentaire.planete == planete[1]) { %>
                                         <!-- Commentaire -->
                                         <div class="card-body">
-                                            <h5 class="card-title"><i>[Nom utilisateur]</i></h5>
+                                            <h5 class="card-title"><i><%=commentaire.nom %> | <%=commentaire.note %> étoiles</i></h5>
                                             <hr>
-                                            <p class="card-text"><i>[Commentaire utilisateur]</i></p>
+                                            <p class="card-text"><i><%=commentaire.contenu %></i></p>
                                         </div>
+                                        <% } }); %>
                                     </div>
                                 </div>
                                 <% }); %>
@@ -109,6 +132,5 @@
                         </button>
                     </div>
                     <% } %>
-
                         <script src="/javascript/exploration.js"></script>
                         <%- include ("../partials/footer.ejs") %>
