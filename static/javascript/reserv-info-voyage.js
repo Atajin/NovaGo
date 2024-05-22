@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function afficherDetails(idVoyage) {
+    document.getElementById("message_positif").innerHTML = "";
     // Reset de la couleur du bouton wishlist
     const boutonCoeur = document.getElementById('coeur');
     boutonCoeur.style.fill = 'white';
@@ -42,6 +43,7 @@ function afficherDetails(idVoyage) {
 }
 
 function ajouterAWishlist() {
+    document.getElementById("message_positif").innerHTML = "Voyage ajouté à votre liste de souhait avec succès!";
     const boutonCoeur = document.getElementById('coeur');
     boutonCoeur.style.fill = 'red';
 
