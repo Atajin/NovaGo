@@ -14,11 +14,12 @@ import bcrypt from "bcrypt";
 import { connect } from "http2";
 import Stripe from 'stripe';
 import { error } from "console";
+import dotenv from 'dotenv';
 
-const MONGO_DB_URI = "mongodb://novago:mongo@localhost:27017"
-const stripe = new Stripe('sk_test_51OyhQ9HnZinsmfjjIC2WMi0WX4MeknqPktZdbrEWHNhibQL4SOlHC8fvohjiMYeZqcJG1kzSF0KEaQFiCZjetdx9009ovLcic3');
-const stripeWebhookSecret = "whsec_a93d5332994993d080718740b3cc00760a043306bcc28a80dfd8920692957166";
+dotenv.config();
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const MONGO_DB_URI = process.env.MONGO_DB_URI;
 const app = express();
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
